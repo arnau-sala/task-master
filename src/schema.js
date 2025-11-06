@@ -9,12 +9,21 @@ const users = sqliteTable('users', {
     passwordPlain: text('passwordPlain'), // Store plain password for display purposes
 });
 
+// FOLDERS TABLE
+const folders = sqliteTable('folders', {
+    id: integer('id').primaryKey({autoIncrement: true}),
+    name: text('name').notNull(),
+    color: text('color'),
+    userId: integer('userId').references(() => users.id),
+});
+
 // TAGS TABLE
 const tags = sqliteTable('tags', {
     id: integer('id').primaryKey({autoIncrement: true}),
     name: text('name').notNull(),
     color: text('color'),
     userId: integer('userId').references(() => users.id),
+    folderId: integer('folderId').references(() => folders.id),
 });
 
 // TASKS TABLE
@@ -37,5 +46,5 @@ const taskTags = sqliteTable('task_tags', {
     tagId: integer('tagId').references(() => tags.id),
 });
 
-module.exports = {users, tasks, tags, taskTags};
+module.exports = {users, tasks, tags, taskTags, folders};
 

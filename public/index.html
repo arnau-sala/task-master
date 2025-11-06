@@ -423,6 +423,152 @@
             background: #2563eb;
         }
 
+        .logout-btn {
+            background: transparent !important;
+            border: none !important;
+            padding: 0;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            width: auto;
+            text-align: center;
+            display: block;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: none !important;
+            text-shadow: none !important;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .logout-btn:hover {
+            background: transparent !important;
+            color: #dc2626;
+            text-decoration: underline;
+            box-shadow: none !important;
+        }
+
+        .logout-btn:focus {
+            background: transparent !important;
+            outline: none;
+            box-shadow: none !important;
+        }
+
+        .logout-btn:active {
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        /* Logout Confirmation Modal Styles */
+        .logout-confirm-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.2s ease;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logout-confirm-overlay.active {
+            display: flex;
+        }
+
+        .logout-confirm-modal {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            animation: slideUpScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: center;
+        }
+
+        @keyframes slideUpScale {
+            from {
+                transform: translateY(20px) scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .logout-confirm-content {
+            padding: 32px;
+            text-align: center;
+        }
+
+        .logout-confirm-content h3 {
+            margin: 0 0 12px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .logout-confirm-content p {
+            margin: 0 0 24px 0;
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .logout-confirm-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .logout-confirm-btn {
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            min-width: 120px;
+        }
+
+        .logout-confirm-yes {
+            background: #ef4444;
+            color: white;
+        }
+
+        .logout-confirm-yes:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
+        }
+
+        .logout-confirm-yes:active {
+            transform: translateY(0);
+        }
+
+        .logout-confirm-no {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .logout-confirm-no:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-confirm-no:active {
+            transform: translateY(0);
+        }
+
         /* Profile Modal Styles */
         .profile-overlay {
             display: none;
@@ -525,15 +671,23 @@
             display: flex;
             flex-direction: column;
             gap: 40px;
+            width: 500px;
+            flex-shrink: 0;
         }
 
         .profile-section {
             margin-bottom: 0;
             background: #ffffff;
             padding: 24px;
+            padding-bottom: 20px;
             border-radius: 16px;
             border: 1px solid #e2e8f0;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
         .profile-section:last-child {
@@ -544,8 +698,8 @@
             font-size: 16px;
             font-weight: 700;
             color: #0f172a;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
             border-bottom: 2px solid #e2e8f0;
             letter-spacing: -0.2px;
         }
@@ -562,6 +716,9 @@
         .profile-info.editable {
             background: #ffffff;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            overflow: hidden;
+            padding: 16px 20px;
+            min-height: 48px;
         }
 
         .profile-info-item {
@@ -601,9 +758,14 @@
             margin: 0;
             text-align: left;
             width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
             outline: none;
             cursor: text;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            height: auto;
+            min-height: 24px;
+            line-height: 1.6;
         }
 
         .password-input-wrapper {
@@ -620,16 +782,13 @@
         }
 
         .profile-editable-input:hover {
-            background: #f8fafc;
-            border-radius: 6px;
-            padding: 4px 8px;
+            background: #f1f5f9;
+            border-radius: 4px;
         }
 
         .profile-editable-input:focus {
-            background: #f8fafc;
-            padding: 4px 8px;
-            border-radius: 6px;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+            background: #f1f5f9;
+            border-radius: 4px;
         }
 
         .password-toggle-btn {
@@ -670,6 +829,8 @@
 
         .profile-editable-input[readonly] {
             cursor: default;
+            user-select: none;
+            pointer-events: none;
         }
 
         .profile-editable-input:not([readonly]) {
@@ -782,6 +943,155 @@
             background: #c82333;
         }
 
+        .new-folder-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .new-folder-form input {
+            flex: 1;
+        }
+
+        .new-folder-form input[type="color"] {
+            width: 60px;
+            height: 44px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .folder-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        .folder-card .delete-tag:hover {
+            background: #fee2e2 !important;
+        }
+
+        .tag-item:hover {
+            background: #f1f5f9 !important;
+        }
+
+        .tag-item .delete-tag:hover {
+            opacity: 1 !important;
+            background: #fee2e2;
+        }
+
+        .create-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 2px solid #3b82f6;
+            background: #3b82f6;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+            padding: 0;
+        }
+
+        .create-btn:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+        }
+
+        .create-btn:active {
+            transform: translateY(0);
+        }
+
+        .create-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .view-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            background: #ffffff;
+            color: #64748b;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            padding: 0;
+        }
+
+        .view-btn:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .view-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .view-btn.active:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+        }
+
+        .folder-card-clickable {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .folder-card-clickable:hover {
+            transform: translateX(2px);
+        }
+
+        .folder-item:hover {
+            transform: translateX(2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .folder-tags-collapsed {
+            display: none;
+        }
+
+        /* Hide scrollbars but keep scroll functionality */
+        #foldersColumn::-webkit-scrollbar,
+        #tagsColumn::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        #foldersColumn,
+        #tagsColumn {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        #foldersColumn::-webkit-scrollbar-track,
+        #tagsColumn::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #allTagsColumn::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        #allTagsColumn {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        #allTagsColumn::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
         .new-tag-form {
             display: flex;
             gap: 10px;
@@ -796,6 +1106,16 @@
             width: 50px;
             height: 38px;
             padding: 2px;
+        }
+
+        .new-tag-form select {
+            flex: 1;
+            max-width: 150px;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            font-size: 14px;
         }
 
         /* Image Styles */
@@ -1058,7 +1378,7 @@
                 <div class="profile-left-column">
                     <div class="profile-section">
                         <h3>Account Information</h3>
-                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
                             <div class="profile-info">
                                 <div class="profile-info-item">
                                     <span class="profile-info-label">Email</span>
@@ -1090,25 +1410,69 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    
-
-                    <div class="profile-section" style="padding: 0; border: none; box-shadow: none; background: transparent;">
-                        <button class="logout-btn" style="width: 100%;" onclick="logout()">Logout</button>
+                        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                            <button class="logout-btn" onclick="showLogoutConfirm()">Log out</button>
+                        </div>
                     </div>
                 </div>
 
                 <div class="profile-right-column">
                     <div class="profile-section">
                         <h3>My Tags</h3>
-                        <div id="profileTagsList" class="tags-list" style="max-height: 450px; overflow-y: auto; margin-bottom: 20px; padding: 16px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; min-height: 100px;"></div>
-                        <div class="new-tag-form" style="margin-top: 0;">
-                            <input type="text" id="profileNewTagName" placeholder="Tag name" style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <div style="display: flex; gap: 8px;">
+                                <button id="viewFoldersBtn" class="view-btn active" onclick="setViewMode('folders')" title="View folders">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                </button>
+                                <button id="viewTagsBtn" class="view-btn" onclick="setViewMode('tags')" title="View all tags">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                                        <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                            <button id="createTagFolderBtn" class="create-btn" onclick="showCreateMenu()" title="Create">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div id="profileTagsList" class="tags-list" style="display: flex; gap: 16px; margin-bottom: 4px; flex: 1; min-height: 0; overflow: hidden; box-sizing: border-box; align-items: flex-start;">
+                            <div id="foldersColumn" style="width: 200px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; padding-right: 8px; flex-shrink: 0; box-sizing: border-box; max-height: 332px;"></div>
+                            <div id="tagsColumn" style="flex: 1; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; padding: 12px; padding-bottom: 16px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; min-height: 0; box-sizing: border-box; height: 332px; max-height: 332px;"></div>
+                            <div id="allTagsColumn" style="flex: 1; display: none; flex-direction: column; gap: 8px; overflow-y: auto; padding: 12px; padding-bottom: 16px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; min-height: 0; box-sizing: border-box; height: 332px; max-height: 332px;"></div>
+                        </div>
+                        <div class="new-folder-form" style="margin-bottom: 4px; margin-top: 0; display: none; flex-shrink: 0;" id="newFolderForm">
+                            <input type="text" id="profileNewFolderName" placeholder="Folder name" style="flex: 1;">
+                            <input type="color" id="profileNewFolderColor" value="#64748b" style="width: 60px; height: 44px; border-radius: 8px; cursor: pointer;">
+                            <button type="button" onclick="createFolderFromProfile()" style="white-space: nowrap; background: #64748b; color: white;">Create Folder</button>
+                        </div>
+                        <div class="new-tag-form" style="margin-top: 0; margin-bottom: 0; display: none; flex-shrink: 0;" id="newTagForm">
+                            <input type="text" id="profileNewTagName" placeholder="Tag name" maxlength="20" style="flex: 1;">
                             <input type="color" id="profileNewTagColor" value="#3b82f6" style="width: 60px; height: 44px; border-radius: 8px; cursor: pointer;">
+                            <select id="profileNewTagFolder" style="flex: 1; max-width: 150px; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                <option value="">No folder</option>
+                            </select>
                             <button type="button" onclick="createTagFromProfile()" style="white-space: nowrap;">Add Tag</button>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutConfirmOverlay" class="logout-confirm-overlay" onclick="closeLogoutConfirmOnOverlay(event)">
+        <div class="logout-confirm-modal" onclick="event.stopPropagation()">
+            <div class="logout-confirm-content">
+                <h3>Are you sure you want to log out?</h3>
+                <p>You will need to log in again to access your tasks.</p>
+                <div class="logout-confirm-buttons">
+                    <button class="logout-confirm-btn logout-confirm-yes" onclick="confirmLogout()">Yes, log out</button>
+                    <button class="logout-confirm-btn logout-confirm-no" onclick="closeLogoutConfirm()">Cancel</button>
                 </div>
             </div>
         </div>
@@ -1118,9 +1482,13 @@
         const API_URL = '/api/tasks';
         const AUTH_URL = '/api/auth';
         const TAGS_URL = '/api/tags';
+        const FOLDERS_URL = '/api/folders';
         const UPLOAD_URL = '/api/upload';
         let tasks = [];
         let tags = [];
+        let folders = [];
+        let viewMode = 'folders'; // 'folders' or 'tags'
+        let selectedFolderId = null; // Currently selected folder
         let token = localStorage.getItem('token');
         let userName = localStorage.getItem('userName') || '';
         let userEmail = localStorage.getItem('userEmail') || '';
@@ -1132,7 +1500,10 @@
         if (token) {
             userName = localStorage.getItem('userName') || '';
             userEmail = localStorage.getItem('userEmail') || '';
-            showApp();
+            showApp().catch(error => {
+                console.error('Error initializing app:', error);
+                showAuth();
+            });
         } else {
             showAuth();
         }
@@ -1142,13 +1513,18 @@
             document.getElementById('appScreen').style.display = 'none';
         }
 
-        function showApp() {
+        async function showApp() {
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('appScreen').style.display = 'flex';
             updateUserDisplay();
-            loadTasks();
-            loadTags();
-            updateTagSelect();
+            // Load tasks, tags and folders in parallel, but wait for all to complete
+            try {
+                await Promise.all([loadTasks(), loadTags(), loadFolders()]);
+                updateTagSelect();
+            } catch (error) {
+                console.error('Error loading app data:', error);
+                showMessage('Error loading data', 'error');
+            }
         }
 
         function updateUserDisplay() {
@@ -1218,7 +1594,7 @@
                 localStorage.setItem('userName', userName);
                 localStorage.setItem('userEmail', userEmail);
                 showMessage('Login successful', 'success');
-                showApp();
+                await showApp();
             } catch (error) {
                 showMessage('Error logging in', 'error');
             }
@@ -1298,10 +1674,12 @@
             passwordInput.style.color = '#1e293b';
             passwordInput.style.letterSpacing = 'normal';
             passwordInput.style.cursor = 'default';
+            passwordInput.style.pointerEvents = 'none';
             passwordVisible = false;
             document.getElementById('eyeIcon').style.display = 'block';
             document.getElementById('eyeOffIcon').style.display = 'none';
             loadTags(); // Refresh tags in profile
+            loadFolders(); // Refresh folders in profile
             
             // Setup name input with debounce
             setupNameInput();
@@ -1326,6 +1704,7 @@
                 passwordInput.style.color = '#1e293b';
                 passwordInput.style.letterSpacing = 'normal';
                 passwordInput.style.cursor = 'default';
+                passwordInput.style.pointerEvents = 'none';
                 eyeIcon.style.display = 'block';
                 eyeOffIcon.style.display = 'none';
                 passwordInput.title = '';
@@ -1339,16 +1718,11 @@
                 passwordInput.style.color = '#1e293b';
                 passwordInput.style.letterSpacing = 'normal';
                 passwordInput.style.cursor = 'text';
+                passwordInput.style.pointerEvents = 'auto';
                 eyeIcon.style.display = 'none';
                 eyeOffIcon.style.display = 'block';
                 passwordInput.title = 'Click to edit password';
                 passwordVisible = true;
-                
-                // Enfocar el input para facilitar la edición
-                setTimeout(() => {
-                    passwordInput.focus();
-                    passwordInput.select();
-                }, 100);
             }
         }
 
@@ -1464,14 +1838,33 @@
         function closeProfile() {
             const overlay = document.getElementById('profileOverlay');
             overlay.classList.remove('active');
-            // Clear password form
-            document.getElementById('changePasswordForm').reset();
         }
 
         function closeProfileOnOverlay(event) {
             if (event.target === event.currentTarget) {
                 closeProfile();
             }
+        }
+
+        function showLogoutConfirm() {
+            const overlay = document.getElementById('logoutConfirmOverlay');
+            overlay.classList.add('active');
+        }
+
+        function closeLogoutConfirm() {
+            const overlay = document.getElementById('logoutConfirmOverlay');
+            overlay.classList.remove('active');
+        }
+
+        function closeLogoutConfirmOnOverlay(event) {
+            if (event.target === event.currentTarget) {
+                closeLogoutConfirm();
+            }
+        }
+
+        function confirmLogout() {
+            closeLogoutConfirm();
+            logout();
         }
 
         function logout() {
@@ -1481,16 +1874,82 @@
             localStorage.removeItem('token');
             localStorage.removeItem('userName');
             localStorage.removeItem('userEmail');
+            localStorage.removeItem('userPasswordPlain');
             closeProfile();
             showAuth();
+        }
+
+        function showCreateMenu() {
+            // For now, just toggle the forms (design only)
+            const folderForm = document.getElementById('newFolderForm');
+            const tagForm = document.getElementById('newTagForm');
+            
+            if (folderForm.style.display === 'none' || folderForm.style.display === '') {
+                folderForm.style.display = 'flex';
+                tagForm.style.display = 'flex';
+            } else {
+                folderForm.style.display = 'none';
+                tagForm.style.display = 'none';
+            }
+        }
+
+        function toggleFolder(folderId) {
+            const folderTags = document.getElementById(folderId);
+            if (folderTags.style.display === 'none' || folderTags.style.display === '') {
+                folderTags.style.display = 'block';
+            } else {
+                folderTags.style.display = 'none';
+            }
+        }
+
+        async function createFolderFromProfile() {
+            const name = document.getElementById('profileNewFolderName').value.trim();
+            const color = document.getElementById('profileNewFolderColor').value;
+
+            if (!name) {
+                showMessage('Folder name is required', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(FOLDERS_URL, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ name, color })
+                });
+
+                if (res.status === 401) {
+                    logout();
+                    return;
+                }
+
+                const data = await res.json();
+                if (!res.ok) {
+                    showMessage(data.message || 'Error creating folder', 'error');
+                    return;
+                }
+
+                showMessage('Folder created', 'success');
+                document.getElementById('profileNewFolderName').value = '';
+                document.getElementById('newFolderForm').style.display = 'none';
+                await loadFolders();
+            } catch (error) {
+                showMessage('Error creating folder', 'error');
+            }
         }
 
         async function createTagFromProfile() {
             const name = document.getElementById('profileNewTagName').value.trim();
             const color = document.getElementById('profileNewTagColor').value;
+            const folderId = document.getElementById('profileNewTagFolder').value || null;
 
             if (!name) {
                 showMessage('Tag name is required', 'error');
+                return;
+            }
+
+            if (name.length > 20) {
+                showMessage('Tag name must be 20 characters or less', 'error');
                 return;
             }
 
@@ -1498,7 +1957,7 @@
                 const res = await fetch(TAGS_URL, {
                     method: 'POST',
                     headers: getAuthHeaders(),
-                    body: JSON.stringify({ name, color })
+                    body: JSON.stringify({ name, color, folderId: folderId ? parseInt(folderId) : null })
                 });
 
                 if (res.status === 401) {
@@ -1514,6 +1973,7 @@
 
                 showMessage('Tag created', 'success');
                 document.getElementById('profileNewTagName').value = '';
+                document.getElementById('newTagForm').style.display = 'none';
                 await loadTags();
             } catch (error) {
                 showMessage('Error creating tag', 'error');
@@ -1523,6 +1983,25 @@
         // Change Password form removed (password can be edited inline when visible)
 
         // Tags Management
+        async function loadFolders() {
+            try {
+                const res = await fetch(FOLDERS_URL, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (res.status === 401) {
+                    logout();
+                    return;
+                }
+                
+                folders = await res.json();
+                updateFolderSelect();
+                renderTags();
+            } catch (error) {
+                showMessage('Error loading folders', 'error');
+            }
+        }
+
         async function loadTags() {
             try {
                 const res = await fetch(TAGS_URL, {
@@ -1542,20 +2021,252 @@
             }
         }
 
+        function updateFolderSelect() {
+            const select = document.getElementById('profileNewTagFolder');
+            const currentValue = select.value;
+            select.innerHTML = '<option value="">No folder</option>';
+            folders.forEach(folder => {
+                const option = document.createElement('option');
+                option.value = folder.id;
+                option.textContent = escapeHtml(folder.name.toUpperCase());
+                select.appendChild(option);
+            });
+            if (currentValue) {
+                select.value = currentValue;
+            }
+        }
+
+        function setViewMode(mode) {
+            viewMode = mode;
+            
+            // Reset selected folder when switching to tags view
+            if (mode === 'tags') {
+                selectedFolderId = null;
+            }
+            
+            // Update button states
+            document.getElementById('viewFoldersBtn').classList.toggle('active', mode === 'folders');
+            document.getElementById('viewTagsBtn').classList.toggle('active', mode === 'tags');
+            
+            // Re-render
+            renderTags();
+        }
+
         function renderTags() {
             // Render in profile modal
-            const profileTagsList = document.getElementById('profileTagsList');
-            if (tags.length === 0) {
-                profileTagsList.innerHTML = '<div style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center;">No tags yet. Create your first tag below!</div>';
-            } else {
-                profileTagsList.innerHTML = tags.map(tag => `
-                    <div class="tag-item">
-                        <span class="tag-color" style="background-color: ${tag.color || '#3b82f6'}"></span>
-                        <span>${escapeHtml(tag.name)}</span>
-                        <button class="delete-tag" onclick="deleteTag(${tag.id})" title="Delete tag">×</button>
-                    </div>
-                `).join('');
+            const foldersColumn = document.getElementById('foldersColumn');
+            const tagsColumn = document.getElementById('tagsColumn');
+            const allTagsColumn = document.getElementById('allTagsColumn');
+            
+            if (!foldersColumn || !tagsColumn || !allTagsColumn) {
+                return;
             }
+            
+            if (viewMode === 'tags') {
+                // Show all tags in a flat list
+                // Hide folders column and tags column, show allTagsColumn
+                foldersColumn.style.display = 'none';
+                tagsColumn.style.display = 'none';
+                allTagsColumn.style.display = 'flex';
+                
+                if (tags.length === 0) {
+                    allTagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center;">No tags yet. Create your first tag below!</div>';
+                    return;
+                }
+
+                let html = '';
+                // Sort tags alphabetically
+                const sortedTags = [...tags].sort((a, b) => a.name.localeCompare(b.name));
+                sortedTags.forEach((tag, index) => {
+                    const folder = folders.find(f => f.id === tag.folderId);
+                    const isLast = index === sortedTags.length - 1;
+                    html += `
+                        <div class="tag-item" style="display: flex; align-items: center; gap: 10px; padding: 8px; background: #ffffff; border-radius: 6px; margin-bottom: ${isLast ? '0' : '6px'}; transition: background 0.2s ease;">
+                            <div style="width: 12px; height: 12px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
+                            <span style="flex: 1; color: #1e293b; font-size: 14px;">${escapeHtml(tag.name)}</span>
+                            ${folder ? `<span style="font-size: 12px; color: #64748b; padding: 2px 8px; background: ${folder.color || '#64748b'}20; border-radius: 4px; border: 1px solid ${folder.color || '#64748b'}40;">${escapeHtml(folder.name.toUpperCase())}</span>` : ''}
+                        </div>
+                    `;
+                });
+                allTagsColumn.innerHTML = html;
+                return;
+            }
+            
+            // View mode: folders
+            // Show folders column and tags column, hide allTagsColumn
+            foldersColumn.style.display = 'flex';
+            tagsColumn.style.display = 'flex';
+            allTagsColumn.style.display = 'none';
+            
+            if (tags.length === 0 && folders.length === 0) {
+                foldersColumn.innerHTML = '';
+                tagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center;">No tags or folders yet. Create your first folder or tag below!</div>';
+                return;
+            }
+
+            // Render folders in left column
+            let foldersHtml = '';
+            folders.forEach(folder => {
+                const folderTags = tags.filter(tag => tag.folderId === folder.id).sort((a, b) => a.name.localeCompare(b.name));
+                const folderColor = folder.color || '#64748b';
+                const isSelected = selectedFolderId === folder.id;
+                foldersHtml += `
+                    <div class="folder-item" onclick="selectFolder(${folder.id})" style="
+                        padding: 10px 12px;
+                        background: ${isSelected ? folderColor + '25' : folderColor + '15'};
+                        border-radius: 8px;
+                        border-left: 4px solid ${folderColor};
+                        border-right: 2px solid ${isSelected ? folderColor : '#e2e8f0'};
+                        border-top: 2px solid ${isSelected ? folderColor : '#e2e8f0'};
+                        border-bottom: 2px solid ${isSelected ? folderColor : '#e2e8f0'};
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        width: 100%;
+                        box-sizing: border-box;
+                        height: 60px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        position: relative;
+                    ">
+                        <div style="font-weight: 600; color: ${folderColor}; font-size: 14px; margin-bottom: 2px; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(folder.name.toUpperCase())}</div>
+                        <div style="font-size: 11px; color: #64748b; font-weight: 500;">${folderTags.length} ${folderTags.length === 1 ? 'tag' : 'tags'}</div>
+                    </div>
+                `;
+            });
+            
+            // Add option for tags without folder
+            const tagsWithoutFolder = tags.filter(tag => !tag.folderId);
+            if (tagsWithoutFolder.length > 0) {
+                const isSelected = selectedFolderId === 'none';
+                foldersHtml += `
+                    <div class="folder-item" onclick="selectFolder('none')" style="
+                        padding: 10px 12px;
+                        background: ${isSelected ? '#f1f5f915' : '#f8fafc'};
+                        border-radius: 8px;
+                        border-left: 4px solid #64748b;
+                        border-right: 2px solid ${isSelected ? '#64748b' : '#e2e8f0'};
+                        border-top: 2px solid ${isSelected ? '#64748b' : '#e2e8f0'};
+                        border-bottom: 2px solid ${isSelected ? '#64748b' : '#e2e8f0'};
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        width: 100%;
+                        box-sizing: border-box;
+                        height: 60px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        margin-top: 8px;
+                    ">
+                        <div style="font-weight: 600; color: #64748b; font-size: 14px; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">TAGS WITHOUT FOLDER</div>
+                        <div style="font-size: 11px; color: #64748b; font-weight: 500;">${tagsWithoutFolder.length} ${tagsWithoutFolder.length === 1 ? 'tag' : 'tags'}</div>
+                    </div>
+                `;
+            }
+            
+            foldersColumn.innerHTML = foldersHtml;
+            
+            // Render tags in right column based on selection
+            let tagsHtml = '';
+            if (selectedFolderId === null) {
+                tagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center;">Select a folder to view its tags</div>';
+            } else if (selectedFolderId === 'none') {
+                // Show tags without folder
+                if (tagsWithoutFolder.length === 0) {
+                    tagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center;">NO TAGS WITHOUT FOLDER</div>';
+                } else {
+                    tagsWithoutFolder.forEach((tag, index) => {
+                        const isLast = index === tagsWithoutFolder.length - 1;
+                        tagsHtml += `
+                            <div class="tag-item" style="display: flex; align-items: center; gap: 10px; padding: 8px; background: #ffffff; border-radius: 6px; margin-bottom: ${isLast ? '0' : '6px'}; transition: background 0.2s ease;">
+                                <div style="width: 12px; height: 12px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
+                                <span style="flex: 1; color: #1e293b; font-size: 14px;">${escapeHtml(tag.name)}</span>
+                            </div>
+                        `;
+                    });
+                    tagsColumn.innerHTML = tagsHtml;
+                }
+            } else {
+                // Show tags from selected folder
+                const selectedFolder = folders.find(f => f.id === selectedFolderId);
+                if (selectedFolder) {
+                    const folderTags = tags.filter(tag => tag.folderId === selectedFolderId);
+                    if (folderTags.length === 0) {
+                        tagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center;">This folder is empty</div>';
+                    } else {
+                        folderTags.forEach((tag, index) => {
+                            const isLast = index === folderTags.length - 1;
+                            tagsHtml += `
+                                <div class="tag-item" style="display: flex; align-items: center; gap: 10px; padding: 8px; background: #ffffff; border-radius: 6px; margin-bottom: ${isLast ? '0' : '6px'}; transition: background 0.2s ease;">
+                                    <div style="width: 12px; height: 12px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
+                                    <span style="flex: 1; color: #1e293b; font-size: 14px;">${escapeHtml(tag.name)}</span>
+                                </div>
+                            `;
+                        });
+                        tagsColumn.innerHTML = tagsHtml;
+                    }
+                }
+            }
+        }
+
+        function selectFolder(folderId) {
+            if (viewMode === 'folders') {
+                selectedFolderId = folderId;
+                renderTags();
+            }
+        }
+
+        function renderAccountTags() {
+            const accountTagsList = document.getElementById('accountTagsList');
+            if (!accountTagsList) return;
+
+            if (tags.length === 0 && folders.length === 0) {
+                accountTagsList.innerHTML = '<div style="color: #94a3b8; font-size: 12px; font-style: italic;">No tags yet</div>';
+                return;
+            }
+
+            let html = '';
+
+            // Render tags grouped by folders
+            folders.forEach(folder => {
+                const folderTags = tags.filter(tag => tag.folderId === folder.id);
+                if (folderTags.length > 0) {
+                    const folderColor = folder.color || '#64748b';
+                    html += `
+                        <div style="margin-bottom: 8px;">
+                            <div style="font-size: 11px; font-weight: 600; color: ${folderColor}; margin-bottom: 6px; letter-spacing: 0.5px;">${escapeHtml(folder.name.toUpperCase())}</div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                ${folderTags.map(tag => `
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; background: ${tag.color || '#3b82f6'}15; border: 1px solid ${tag.color || '#3b82f6'}40; border-radius: 6px; font-size: 12px; color: #1e293b;">
+                                        <span style="width: 8px; height: 8px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></span>
+                                        ${escapeHtml(tag.name)}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            // Render tags without folder
+            const tagsWithoutFolder = tags.filter(tag => !tag.folderId).sort((a, b) => a.name.localeCompare(b.name));
+            if (tagsWithoutFolder.length > 0) {
+                html += `
+                    <div style="margin-bottom: 8px;">
+                        <div style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Sin carpeta</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                            ${tagsWithoutFolder.map(tag => `
+                                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; background: ${tag.color || '#3b82f6'}15; border: 1px solid ${tag.color || '#3b82f6'}40; border-radius: 6px; font-size: 12px; color: #1e293b;">
+                                    <span style="width: 8px; height: 8px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></span>
+                                    ${escapeHtml(tag.name)}
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            accountTagsList.innerHTML = html || '<div style="color: #94a3b8; font-size: 12px; font-style: italic;">No tags yet</div>';
         }
 
         function updateTagSelect() {
@@ -1594,6 +2305,29 @@
             });
         }
 
+
+        async function deleteFolder(folderId) {
+            if (!confirm('Delete this folder? Tags in this folder will be moved out of the folder.')) return;
+
+            try {
+                const res = await fetch(`${FOLDERS_URL}/${folderId}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+
+                if (res.status === 401) {
+                    logout();
+                    return;
+                }
+
+                if (!res.ok) throw new Error();
+                showMessage('Folder deleted', 'success');
+                await loadFolders();
+                await loadTags();
+            } catch (error) {
+                showMessage('Error deleting folder', 'error');
+            }
+        }
 
         async function deleteTag(tagId) {
             if (!confirm('Delete this tag? Tasks using this tag will have it removed.')) return;

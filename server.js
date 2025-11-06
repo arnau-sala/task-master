@@ -10,9 +10,10 @@ const Database = require('better-sqlite3');
 const authRouter = require('./routes/authRoutes');
 const taskRouter = require('./routes/taskRoutes');
 const tagRouter = require('./routes/tagRoutes');
+const folderRouter = require('./routes/folderRoutes');
 const uploadRouter = require('./routes/uploadRoutes');
 const authMiddleware = require('./middleware/authMiddleware');
-const {users, tasks, tags, taskTags} = require('./src/schema');
+const {users, tasks, tags, taskTags, folders} = require('./src/schema');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,7 +33,7 @@ app.use('/uploads', express.static(uploadsDir));
 
 function initializeDataBase(){
     const sqliteDB = new Database('./sqlite.db');
-    const db = drizzle(sqliteDB, {schema: {users, tasks, tags, taskTags}});
+    const db = drizzle(sqliteDB, {schema: {users, tasks, tags, taskTags, folders}});
     
     // Create tables if they don't exist
     sqliteDB.exec(`
@@ -43,12 +44,22 @@ function initializeDataBase(){
             password TEXT NOT NULL
         );
         
-        CREATE TABLE IF NOT EXISTS tags (
+        CREATE TABLE IF NOT EXISTS folders (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             color TEXT,
             userId INTEGER,
             FOREIGN KEY (userId) REFERENCES users(id)
+        );
+        
+        CREATE TABLE IF NOT EXISTS tags (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            color TEXT,
+            userId INTEGER,
+            folderId INTEGER,
+            FOREIGN KEY (userId) REFERENCES users(id),
+            FOREIGN KEY (folderId) REFERENCES folders(id)
         );
         
         CREATE TABLE IF NOT EXISTS tasks (
@@ -87,6 +98,14 @@ function initializeDataBase(){
         try {
             sqliteDB.exec(`ALTER TABLE tasks ADD COLUMN dueDate TEXT;`);
         } catch (e) {}
+        
+        try {
+            sqliteDB.exec(`ALTER TABLE tags ADD COLUMN folderId INTEGER;`);
+        } catch (e) {}
+        
+        try {
+            sqliteDB.exec(`ALTER TABLE folders ADD COLUMN color TEXT;`);
+        } catch (e) {}
     
     try {
         sqliteDB.exec(`ALTER TABLE tasks ADD COLUMN dueTime TEXT;`);
@@ -116,6 +135,7 @@ try {
     app.use('/api/upload', authMiddleware, uploadRouter); // Requires authentication
     app.use('/api/tasks', authMiddleware, taskRouter); // Requires authentication
     app.use('/api/tags', authMiddleware, tagRouter); // Requires authentication
+    app.use('/api/folders', authMiddleware, folderRouter); // Requires authentication
     
     // Redirect root to app
     app.get('/', (req, res) => {

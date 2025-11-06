@@ -21,10 +21,14 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     const db = req.db;
     const userId = req.userId;
-    const {name, color} = req.body;
+    const {name, color, folderId} = req.body;
 
     if (!name) {
         return res.status(400).json({message: 'Tag name is required'});
+    }
+
+    if (name.length > 20) {
+        return res.status(400).json({message: 'Tag name must be 20 characters or less'});
     }
 
     try {
@@ -38,10 +42,23 @@ router.post('/', async (req, res) => {
             return res.status(400).json({message: 'Tag with this name already exists'});
         }
 
+        // Verify folder belongs to user if folderId is provided
+        if (folderId) {
+            const {folders} = require('../src/schema');
+            const folder = await db.select().from(folders)
+                .where(eq(folders.id, folderId))
+                .limit(1);
+            
+            if (folder.length === 0 || folder[0].userId !== userId) {
+                return res.status(400).json({message: 'Invalid folder'});
+            }
+        }
+
         const newTag = await db.insert(tags).values({
             name,
             color: color || '#007bff',
-            userId: userId
+            userId: userId,
+            folderId: folderId || null
         }).returning();
         
         res.status(201).json(newTag[0]);
