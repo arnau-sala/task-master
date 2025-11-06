@@ -73,7 +73,7 @@ router.put('/:id', async (req, res) => {
     const db = req.db;
     const userId = req.userId;
     const tagId = parseInt(req.params.id);
-    const {name, color} = req.body;
+    const {name, color, folderId} = req.body;
 
     try {
         const tag = await db.select().from(tags).where(eq(tags.id, tagId)).limit(1);
@@ -81,10 +81,25 @@ router.put('/:id', async (req, res) => {
             return res.status(404).json({message: 'Tag not found'});
         }
 
+        // Verify folder belongs to user if folderId is provided
+        if (folderId !== undefined) {
+            if (folderId !== null) {
+                const {folders} = require('../src/schema');
+                const folder = await db.select().from(folders)
+                    .where(eq(folders.id, folderId))
+                    .limit(1);
+                
+                if (folder.length === 0 || folder[0].userId !== userId) {
+                    return res.status(400).json({message: 'Invalid folder'});
+                }
+            }
+        }
+
         const updatedTag = await db.update(tags)
             .set({
                 name: name !== undefined ? name : tag[0].name,
-                color: color !== undefined ? color : tag[0].color
+                color: color !== undefined ? color : tag[0].color,
+                folderId: folderId !== undefined ? folderId : tag[0].folderId
             })
             .where(eq(tags.id, tagId))
             .returning();

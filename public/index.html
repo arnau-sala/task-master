@@ -4,11 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Master</title>
+    <link rel="icon" type="image/png" href="/favicon/favicon.png">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Allow text selection in input fields and textareas */
+        input,
+        textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
         }
 
         body {
@@ -1042,6 +1056,99 @@
             border-color: #2563eb;
         }
 
+        #sortOrderBtn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 0;
+        }
+
+        #sortOrderBtn svg {
+            display: block;
+            margin: 0;
+            vertical-align: middle;
+        }
+
+        /* Drag and drop styles */
+        .tag-item[draggable="true"] {
+            user-select: none;
+        }
+
+        .tag-item[draggable="true"]:active {
+            cursor: grabbing;
+        }
+
+        .folder-item.drag-over {
+            opacity: 0.7;
+            transform: scale(1.02);
+            transition: all 0.2s ease;
+        }
+
+        /* Context Menu Styles */
+        .context-menu {
+            position: fixed;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 4px;
+            z-index: 10000;
+            min-width: 150px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .context-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            color: #1e293b;
+            font-size: 14px;
+            transition: background 0.2s ease;
+        }
+
+        .context-menu-item:hover {
+            background: #f1f5f9;
+        }
+
+        .context-menu-item-danger {
+            color: #ef4444;
+        }
+
+        .context-menu-item-danger:hover {
+            background: #fee2e2;
+        }
+
+        .context-menu-item svg {
+            flex-shrink: 0;
+        }
+
+        /* Highlight styles for context menu selection */
+        .tag-item.context-selected {
+            background: #dbeafe !important;
+        }
+
+        .folder-item.context-selected {
+            position: relative;
+        }
+
+        .folder-item.context-selected::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 200, 87, 0.25) 0%, rgba(255, 140, 0, 0.25) 100%);
+            border-radius: 8px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
         .folder-card-clickable {
             cursor: pointer;
             transition: all 0.2s ease;
@@ -1433,6 +1540,25 @@
                                     </svg>
                                 </button>
                             </div>
+                            <input type="text" id="tagsSearchInput" placeholder="Search tags..." style="flex: 1; max-width: 250px; height: 36px; padding: 8px 12px; border-radius: 8px; border: 2px solid #e2e8f0; background: #ffffff; font-size: 14px; transition: all 0.2s ease; margin: 0 8px; outline: none;" oninput="handleTagsSearch()" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                            <button id="sortOrderBtn" class="view-btn" onclick="toggleSortOrder()" title="Toggle sort order">
+                                <svg id="sortAscIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M15 5h4"></path>
+                                    <path d="M12 9h7"></path>
+                                    <path d="M12 13h7"></path>
+                                    <path d="M12 17h7"></path>
+                                    <path d="M3 5l3-3 3 3"></path>
+                                    <path d="M6 2v20"></path>
+                                </svg>
+                                <svg id="sortDescIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                                    <path d="M12 5h7"></path>
+                                    <path d="M12 9h7"></path>
+                                    <path d="M12 13h7"></path>
+                                    <path d="M15 17h4"></path>
+                                    <path d="M3 19l3 3 3-3"></path>
+                                    <path d="M6 22V2"></path>
+                                </svg>
+                            </button>
                             <button id="createTagFolderBtn" class="create-btn" onclick="showCreateMenu()" title="Create">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -1478,6 +1604,24 @@
         </div>
     </div>
 
+    <!-- Context Menu -->
+    <div id="contextMenu" class="context-menu" style="display: none;" onclick="event.stopPropagation()">
+        <div class="context-menu-item" onclick="handleContextMenuEdit()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            <span>Edit</span>
+        </div>
+        <div class="context-menu-item context-menu-item-danger" onclick="handleContextMenuDelete()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            <span>Delete</span>
+        </div>
+    </div>
+
     <script>
         const API_URL = '/api/tasks';
         const AUTH_URL = '/api/auth';
@@ -1489,6 +1633,8 @@
         let folders = [];
         let viewMode = 'folders'; // 'folders' or 'tags'
         let selectedFolderId = null; // Currently selected folder
+        let tagsSearchTerm = ''; // Search term for filtering tags
+        let tagsSortOrder = 'asc'; // 'asc' for ascending (A-Z), 'desc' for descending (Z-A)
         let token = localStorage.getItem('token');
         let userName = localStorage.getItem('userName') || '';
         let userEmail = localStorage.getItem('userEmail') || '';
@@ -2062,6 +2208,9 @@
                 return;
             }
             
+            // Update sort button icon
+            updateSortButtonIcon();
+            
             if (viewMode === 'tags') {
                 // Show all tags in a flat list
                 // Hide folders column and tags column, show allTagsColumn
@@ -2075,20 +2224,38 @@
                 }
 
                 let html = '';
-                // Sort tags alphabetically
-                const sortedTags = [...tags].sort((a, b) => a.name.localeCompare(b.name));
+                // Filter and sort tags alphabetically
+                let filteredTags = tags;
+                if (tagsSearchTerm.trim()) {
+                    const searchLower = tagsSearchTerm.toLowerCase().trim();
+                    filteredTags = tags.filter(tag => tag.name.toLowerCase().includes(searchLower));
+                }
+                const sortedTags = [...filteredTags].sort((a, b) => {
+                    const comparison = a.name.localeCompare(b.name);
+                    return tagsSortOrder === 'asc' ? comparison : -comparison;
+                });
+                
+                if (sortedTags.length === 0) {
+                    allTagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center;">No tags found</div>';
+                    return;
+                }
+                
                 sortedTags.forEach((tag, index) => {
                     const folder = folders.find(f => f.id === tag.folderId);
                     const isLast = index === sortedTags.length - 1;
                     html += `
-                        <div class="tag-item" style="display: flex; align-items: center; gap: 10px; padding: 8px; background: #ffffff; border-radius: 6px; margin-bottom: ${isLast ? '0' : '6px'}; transition: background 0.2s ease;">
+                        <div class="tag-item" data-tag-id="${tag.id}" style="display: flex; align-items: center; gap: 10px; padding: 8px; background: #ffffff; border-radius: 6px; margin-bottom: ${isLast ? '0' : '6px'}; transition: background 0.2s ease;">
                             <div style="width: 12px; height: 12px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
                             <span style="flex: 1; color: #1e293b; font-size: 14px;">${escapeHtml(tag.name)}</span>
-                            ${folder ? `<span style="font-size: 12px; color: #64748b; padding: 2px 8px; background: ${folder.color || '#64748b'}20; border-radius: 4px; border: 1px solid ${folder.color || '#64748b'}40;">${escapeHtml(folder.name.toUpperCase())}</span>` : ''}
+                            ${folder ? `<span onclick="navigateToFolder(${folder.id})" style="font-size: 12px; color: ${folder.color || '#64748b'}; padding: 2px 8px; background: ${folder.color || '#64748b'}20; border-radius: 4px; border: 1px solid ${folder.color || '#64748b'}; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.color='${folder.color || '#64748b'}'; this.style.borderColor='${folder.color || '#64748b'}'; this.style.filter='brightness(1.2) saturate(1.3)'" onmouseout="this.style.color='${folder.color || '#64748b'}'; this.style.borderColor='${folder.color || '#64748b'}'; this.style.filter='none'">${escapeHtml(folder.name.toUpperCase())}</span>` : ''}
                         </div>
                     `;
                 });
                 allTagsColumn.innerHTML = html;
+                
+                // Setup context menu for tags in All Tags view
+                setupTagContextMenu();
+                
                 return;
             }
             
@@ -2105,13 +2272,49 @@
             }
 
             // Render folders in left column
+            // Include "TAGS WITHOUT FOLDER" as a virtual folder in the sorting
+            const tagsWithoutFolder = tags.filter(tag => !tag.folderId);
+            const allFoldersForSorting = [...folders];
+            
+            // Add virtual folder for tags without folder if there are any
+            if (tagsWithoutFolder.length > 0) {
+                allFoldersForSorting.push({
+                    id: 'none',
+                    name: 'TAGS WITHOUT FOLDER',
+                    color: '#000000',
+                    userId: null
+                });
+            }
+            
+            // Sort folders by number of tags (descending), then alphabetically
+            const sortedFolders = allFoldersForSorting.sort((a, b) => {
+                const aTagsCount = a.id === 'none' 
+                    ? tagsWithoutFolder.length 
+                    : tags.filter(tag => tag.folderId === a.id).length;
+                const bTagsCount = b.id === 'none' 
+                    ? tagsWithoutFolder.length 
+                    : tags.filter(tag => tag.folderId === b.id).length;
+                
+                // First sort by number of tags (descending)
+                if (aTagsCount !== bTagsCount) {
+                    return bTagsCount - aTagsCount;
+                }
+                
+                // If equal, sort alphabetically
+                return a.name.localeCompare(b.name);
+            });
+            
             let foldersHtml = '';
-            folders.forEach(folder => {
-                const folderTags = tags.filter(tag => tag.folderId === folder.id).sort((a, b) => a.name.localeCompare(b.name));
+            sortedFolders.forEach(folder => {
+                const isNoneFolder = folder.id === 'none';
+                const folderTags = isNoneFolder 
+                    ? tagsWithoutFolder 
+                    : tags.filter(tag => tag.folderId === folder.id).sort((a, b) => a.name.localeCompare(b.name));
                 const folderColor = folder.color || '#64748b';
-                const isSelected = selectedFolderId === folder.id;
+                const isSelected = isNoneFolder ? selectedFolderId === 'none' : selectedFolderId === folder.id;
+                
                 foldersHtml += `
-                    <div class="folder-item" onclick="selectFolder(${folder.id})" style="
+                    <div class="folder-item" data-folder-id="${folder.id}" onclick="selectFolder(${isNoneFolder ? "'none'" : folder.id})" style="
                         padding: 10px 12px;
                         background: ${isSelected ? folderColor + '25' : folderColor + '15'};
                         border-radius: 8px;
@@ -2135,36 +2338,13 @@
                 `;
             });
             
-            // Add option for tags without folder
-            const tagsWithoutFolder = tags.filter(tag => !tag.folderId);
-            if (tagsWithoutFolder.length > 0) {
-                const isSelected = selectedFolderId === 'none';
-                foldersHtml += `
-                    <div class="folder-item" onclick="selectFolder('none')" style="
-                        padding: 10px 12px;
-                        background: ${isSelected ? '#f1f5f915' : '#f8fafc'};
-                        border-radius: 8px;
-                        border-left: 4px solid #64748b;
-                        border-right: 2px solid ${isSelected ? '#64748b' : '#e2e8f0'};
-                        border-top: 2px solid ${isSelected ? '#64748b' : '#e2e8f0'};
-                        border-bottom: 2px solid ${isSelected ? '#64748b' : '#e2e8f0'};
-                        cursor: pointer;
-                        transition: all 0.2s ease;
-                        width: 100%;
-                        box-sizing: border-box;
-                        height: 60px;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-                        margin-top: 8px;
-                    ">
-                        <div style="font-weight: 600; color: #64748b; font-size: 14px; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">TAGS WITHOUT FOLDER</div>
-                        <div style="font-size: 11px; color: #64748b; font-weight: 500;">${tagsWithoutFolder.length} ${tagsWithoutFolder.length === 1 ? 'tag' : 'tags'}</div>
-                    </div>
-                `;
-            }
-            
             foldersColumn.innerHTML = foldersHtml;
+            
+            // Setup drag and drop event listeners for folders
+            setupDragAndDrop();
+            
+            // Setup context menu for folders
+            setupFolderContextMenu();
             
             // Render tags in right column based on selection
             let tagsHtml = '';
@@ -2172,13 +2352,24 @@
                 tagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center;">Select a folder to view its tags</div>';
             } else if (selectedFolderId === 'none') {
                 // Show tags without folder
-                if (tagsWithoutFolder.length === 0) {
-                    tagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center;">NO TAGS WITHOUT FOLDER</div>';
+                let filteredTagsWithoutFolder = tagsWithoutFolder;
+                if (tagsSearchTerm.trim()) {
+                    const searchLower = tagsSearchTerm.toLowerCase().trim();
+                    filteredTagsWithoutFolder = tagsWithoutFolder.filter(tag => tag.name.toLowerCase().includes(searchLower));
+                }
+                
+                if (filteredTagsWithoutFolder.length === 0) {
+                    tagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center;">' + (tagsSearchTerm.trim() ? 'No tags found' : 'NO TAGS WITHOUT FOLDER') + '</div>';
                 } else {
-                    tagsWithoutFolder.forEach((tag, index) => {
-                        const isLast = index === tagsWithoutFolder.length - 1;
+                    // Sort filtered tags alphabetically
+                    const sortedTagsWithoutFolder = [...filteredTagsWithoutFolder].sort((a, b) => {
+                        const comparison = a.name.localeCompare(b.name);
+                        return tagsSortOrder === 'asc' ? comparison : -comparison;
+                    });
+                        sortedTagsWithoutFolder.forEach((tag, index) => {
+                        const isLast = index === sortedTagsWithoutFolder.length - 1;
                         tagsHtml += `
-                            <div class="tag-item" style="display: flex; align-items: center; gap: 10px; padding: 8px; background: #ffffff; border-radius: 6px; margin-bottom: ${isLast ? '0' : '6px'}; transition: background 0.2s ease;">
+                            <div class="tag-item" draggable="true" data-tag-id="${tag.id}" style="display: flex; align-items: center; gap: 10px; padding: 8px; background: #ffffff; border-radius: 6px; margin-bottom: ${isLast ? '0' : '6px'}; transition: background 0.2s ease;">
                                 <div style="width: 12px; height: 12px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
                                 <span style="flex: 1; color: #1e293b; font-size: 14px;">${escapeHtml(tag.name)}</span>
                             </div>
@@ -2190,14 +2381,25 @@
                 // Show tags from selected folder
                 const selectedFolder = folders.find(f => f.id === selectedFolderId);
                 if (selectedFolder) {
-                    const folderTags = tags.filter(tag => tag.folderId === selectedFolderId);
+                    let folderTags = tags.filter(tag => tag.folderId === selectedFolderId);
+                    // Apply search filter
+                    if (tagsSearchTerm.trim()) {
+                        const searchLower = tagsSearchTerm.toLowerCase().trim();
+                        folderTags = folderTags.filter(tag => tag.name.toLowerCase().includes(searchLower));
+                    }
+                    
                     if (folderTags.length === 0) {
-                        tagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center;">This folder is empty</div>';
+                        tagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center;">' + (tagsSearchTerm.trim() ? 'No tags found' : 'This folder is empty') + '</div>';
                     } else {
-                        folderTags.forEach((tag, index) => {
-                            const isLast = index === folderTags.length - 1;
+                        // Sort filtered tags alphabetically
+                        const sortedFolderTags = [...folderTags].sort((a, b) => {
+                            const comparison = a.name.localeCompare(b.name);
+                            return tagsSortOrder === 'asc' ? comparison : -comparison;
+                        });
+                        sortedFolderTags.forEach((tag, index) => {
+                            const isLast = index === sortedFolderTags.length - 1;
                             tagsHtml += `
-                                <div class="tag-item" style="display: flex; align-items: center; gap: 10px; padding: 8px; background: #ffffff; border-radius: 6px; margin-bottom: ${isLast ? '0' : '6px'}; transition: background 0.2s ease;">
+                                <div class="tag-item" draggable="true" data-tag-id="${tag.id}" style="display: flex; align-items: center; gap: 10px; padding: 8px; background: #ffffff; border-radius: 6px; margin-bottom: ${isLast ? '0' : '6px'}; transition: background 0.2s ease;">
                                     <div style="width: 12px; height: 12px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
                                     <span style="flex: 1; color: #1e293b; font-size: 14px;">${escapeHtml(tag.name)}</span>
                                 </div>
@@ -2207,12 +2409,385 @@
                     }
                 }
             }
+            
+            // Setup drag and drop event listeners for tags
+            setupTagDragListeners();
+            
+            // Setup context menu for tags
+            setupTagContextMenu();
+        }
+
+        function setupDragAndDrop() {
+            const folderItems = document.querySelectorAll('.folder-item[data-folder-id]');
+            folderItems.forEach(folderItem => {
+                folderItem.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    folderItem.style.opacity = '0.7';
+                    folderItem.style.transform = 'scale(1.02)';
+                });
+                
+                folderItem.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    folderItem.style.opacity = '1';
+                    folderItem.style.transform = 'scale(1)';
+                });
+                
+                folderItem.addEventListener('drop', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    folderItem.style.opacity = '1';
+                    folderItem.style.transform = 'scale(1)';
+                    
+                    const tagId = e.dataTransfer.getData('text/plain');
+                    if (!tagId) return;
+                    
+                    const targetFolderId = folderItem.getAttribute('data-folder-id');
+                    const newFolderId = targetFolderId === 'none' ? null : parseInt(targetFolderId);
+                    
+                    await moveTagToFolder(parseInt(tagId), newFolderId);
+                });
+            });
+        }
+
+        function setupTagDragListeners() {
+            const tagItems = document.querySelectorAll('.tag-item[data-tag-id]');
+            tagItems.forEach(tagItem => {
+                // Track if right mouse button is pressed
+                let isRightClick = false;
+                let rightClickTimeout = null;
+                
+                tagItem.addEventListener('mousedown', (e) => {
+                    if (e.button === 2) {
+                        isRightClick = true;
+                        // Temporarily disable draggable
+                        tagItem.setAttribute('draggable', 'false');
+                        // Re-enable after a short delay
+                        rightClickTimeout = setTimeout(() => {
+                            tagItem.setAttribute('draggable', 'true');
+                            isRightClick = false;
+                        }, 100);
+                    }
+                });
+                
+                tagItem.addEventListener('contextmenu', (e) => {
+                    // Prevent drag when right clicking
+                    isRightClick = true;
+                    tagItem.setAttribute('draggable', 'false');
+                    setTimeout(() => {
+                        tagItem.setAttribute('draggable', 'true');
+                        isRightClick = false;
+                    }, 100);
+                });
+                
+                tagItem.addEventListener('dragstart', (e) => {
+                    // Prevent drag if it was triggered by right click
+                    if (isRightClick) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
+                    
+                    const tagId = tagItem.getAttribute('data-tag-id');
+                    e.dataTransfer.setData('text/plain', tagId);
+                    e.dataTransfer.effectAllowed = 'move';
+                    tagItem.style.opacity = '0.5';
+                });
+                
+                tagItem.addEventListener('dragend', (e) => {
+                    tagItem.style.opacity = '1';
+                    isRightClick = false;
+                    if (rightClickTimeout) {
+                        clearTimeout(rightClickTimeout);
+                        rightClickTimeout = null;
+                    }
+                    // Reset all folder styles in case drag was cancelled
+                    const folderItems = document.querySelectorAll('.folder-item[data-folder-id]');
+                    folderItems.forEach(folder => {
+                        folder.style.opacity = '1';
+                        folder.style.transform = 'scale(1)';
+                    });
+                });
+            });
+        }
+
+        // Context menu variables
+        let contextMenuTarget = null;
+        let contextMenuType = null; // 'folder' or 'tag'
+        let contextSelectedElement = null;
+
+        function showContextMenu(event, type, id) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            // Remove previous selection
+            if (contextSelectedElement) {
+                contextSelectedElement.classList.remove('context-selected');
+            }
+            
+            // Find and highlight the clicked element
+            let element = null;
+            if (type === 'folder') {
+                element = document.querySelector(`.folder-item[data-folder-id="${id}"]`);
+            } else if (type === 'tag') {
+                element = document.querySelector(`.tag-item[data-tag-id="${id}"]`);
+            }
+            
+            if (element) {
+                element.classList.add('context-selected');
+                contextSelectedElement = element;
+            }
+            
+            const contextMenu = document.getElementById('contextMenu');
+            contextMenuTarget = id;
+            contextMenuType = type;
+            
+            // Position menu at cursor
+            contextMenu.style.display = 'flex';
+            contextMenu.style.left = event.pageX + 'px';
+            contextMenu.style.top = event.pageY + 'px';
+            
+            // Ensure menu stays within viewport
+            setTimeout(() => {
+                const rect = contextMenu.getBoundingClientRect();
+                if (rect.right > window.innerWidth) {
+                    contextMenu.style.left = (event.pageX - rect.width) + 'px';
+                }
+                if (rect.bottom > window.innerHeight) {
+                    contextMenu.style.top = (event.pageY - rect.height) + 'px';
+                }
+            }, 0);
+        }
+
+        function hideContextMenu() {
+            const contextMenu = document.getElementById('contextMenu');
+            contextMenu.style.display = 'none';
+            
+            // Remove highlight from selected element
+            if (contextSelectedElement) {
+                contextSelectedElement.classList.remove('context-selected');
+                contextSelectedElement = null;
+            }
+            
+            contextMenuTarget = null;
+            contextMenuType = null;
+        }
+
+        function setupFolderContextMenu() {
+            const folderItems = document.querySelectorAll('.folder-item[data-folder-id]');
+            folderItems.forEach(folderItem => {
+                folderItem.addEventListener('contextmenu', (e) => {
+                    const folderId = folderItem.getAttribute('data-folder-id');
+                    // Treat "none" folder the same as other folders
+                    if (folderId === 'none') {
+                        showContextMenu(e, 'folder', 'none');
+                    } else {
+                        showContextMenu(e, 'folder', parseInt(folderId));
+                    }
+                });
+            });
+        }
+
+        function setupTagContextMenu() {
+            const tagItems = document.querySelectorAll('.tag-item[data-tag-id]');
+            tagItems.forEach(tagItem => {
+                tagItem.addEventListener('contextmenu', (e) => {
+                    const tagId = tagItem.getAttribute('data-tag-id');
+                    showContextMenu(e, 'tag', parseInt(tagId));
+                });
+            });
+        }
+
+        function handleContextMenuEdit() {
+            hideContextMenu();
+            
+            if (contextMenuType === 'folder') {
+                editFolder(contextMenuTarget);
+            } else if (contextMenuType === 'tag') {
+                editTag(contextMenuTarget);
+            }
+        }
+
+        function handleContextMenuDelete() {
+            hideContextMenu();
+            
+            if (contextMenuType === 'folder') {
+                // "TAGS WITHOUT FOLDER" is a special folder that cannot be deleted
+                if (contextMenuTarget === 'none') {
+                    showMessage('This folder cannot be deleted', 'error');
+                    return;
+                }
+                deleteFolder(contextMenuTarget);
+            } else if (contextMenuType === 'tag') {
+                deleteTag(contextMenuTarget);
+            }
+        }
+
+        async function editFolder(folderId) {
+            // "TAGS WITHOUT FOLDER" is a special folder that cannot be edited
+            if (folderId === 'none') {
+                showMessage('This folder cannot be edited', 'error');
+                return;
+            }
+
+            const folder = folders.find(f => f.id === folderId);
+            if (!folder) return;
+
+            const newName = prompt('Enter new folder name:', folder.name);
+            if (!newName || newName.trim() === '') return;
+
+            const newColor = prompt('Enter new folder color (hex):', folder.color || '#64748b');
+            if (!newColor) return;
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${FOLDERS_URL}/${folderId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        name: newName.trim().toUpperCase(),
+                        color: newColor
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to update folder');
+                }
+
+                await loadFolders();
+                renderTags();
+                showMessage('Folder updated', 'success');
+            } catch (error) {
+                console.error('Error updating folder:', error);
+                showMessage('Error updating folder: ' + error.message, 'error');
+            }
+        }
+
+        async function editTag(tagId) {
+            const tag = tags.find(t => t.id === tagId);
+            if (!tag) return;
+
+            const newName = prompt('Enter new tag name:', tag.name);
+            if (!newName || newName.trim() === '') return;
+            
+            if (newName.length > 20) {
+                showMessage('Tag name must be 20 characters or less', 'error');
+                return;
+            }
+
+            const newColor = prompt('Enter new tag color (hex):', tag.color || '#3b82f6');
+            if (!newColor) return;
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${TAGS_URL}/${tagId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        name: newName.trim(),
+                        color: newColor
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to update tag');
+                }
+
+                await loadTags();
+                renderTags();
+                showMessage('Tag updated', 'success');
+            } catch (error) {
+                console.error('Error updating tag:', error);
+                showMessage('Error updating tag: ' + error.message, 'error');
+            }
+        }
+
+        async function moveTagToFolder(tagId, newFolderId) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/tags/${tagId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ folderId: newFolderId })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to move tag');
+                }
+
+                const updatedTag = await response.json();
+                
+                // Update the tag in the local array
+                const tagIndex = tags.findIndex(t => t.id === tagId);
+                if (tagIndex !== -1) {
+                    tags[tagIndex] = updatedTag;
+                }
+                
+                // Reload folders to update counts
+                await loadFolders();
+                
+                // Re-render tags
+                renderTags();
+            } catch (error) {
+                console.error('Error moving tag:', error);
+                alert('Failed to move tag: ' + error.message);
+            }
         }
 
         function selectFolder(folderId) {
             if (viewMode === 'folders') {
                 selectedFolderId = folderId;
                 renderTags();
+            }
+        }
+
+        function navigateToFolder(folderId) {
+            // Switch to folders view
+            setViewMode('folders');
+            // Select the folder
+            selectedFolderId = folderId;
+            // Re-render to show the selected folder
+            renderTags();
+        }
+
+        function handleTagsSearch() {
+            const searchInput = document.getElementById('tagsSearchInput');
+            if (searchInput) {
+                tagsSearchTerm = searchInput.value;
+                renderTags();
+            }
+        }
+
+        function toggleSortOrder() {
+            tagsSortOrder = tagsSortOrder === 'asc' ? 'desc' : 'asc';
+            updateSortButtonIcon();
+            renderTags();
+        }
+
+        function updateSortButtonIcon() {
+            const sortAscIcon = document.getElementById('sortAscIcon');
+            const sortDescIcon = document.getElementById('sortDescIcon');
+            if (sortAscIcon && sortDescIcon) {
+                if (tagsSortOrder === 'asc') {
+                    sortAscIcon.style.display = 'block';
+                    sortDescIcon.style.display = 'none';
+                } else {
+                    sortAscIcon.style.display = 'none';
+                    sortDescIcon.style.display = 'block';
+                }
             }
         }
 
@@ -2919,6 +3494,23 @@
                 showMessage('Error deleting task', 'error');
             }
         }
+        // Close context menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const contextMenu = document.getElementById('contextMenu');
+            if (contextMenu && contextMenu.style.display !== 'none') {
+                // Check if click is outside the context menu
+                if (!contextMenu.contains(e.target)) {
+                    hideContextMenu();
+                }
+            }
+        }, true); // Use capture phase to catch clicks early
+
+        // Close context menu on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                hideContextMenu();
+            }
+        });
     </script>
 </body>
 </html>
