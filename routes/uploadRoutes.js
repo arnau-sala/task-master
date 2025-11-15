@@ -4,8 +4,8 @@ const path = require('path');
 const fs = require('fs');
 const router = express.Router();
 
-// Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, '..', 'public', 'uploads');
+// Create uploads directory if it doesn't exist (outside public folder for security)
+const uploadsDir = path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
@@ -45,7 +45,7 @@ router.post('/', upload.single('image'), (req, res) => {
     
     res.json({
         filename: req.file.filename,
-        path: `/uploads/${req.file.filename}`
+        path: `/api/uploads/${req.file.filename}`
     });
 });
 

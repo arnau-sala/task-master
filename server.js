@@ -6,7 +6,9 @@ const path = require('path');
 const fs = require('fs');
 
 const {drizzle} = require('drizzle-orm/better-sqlite3');
+const {eq} = require('drizzle-orm');
 const Database = require('better-sqlite3');
+const jwt = require('jsonwebtoken');
 const authRouter = require('./routes/authRoutes');
 const taskRouter = require('./routes/taskRoutes');
 const tagRouter = require('./routes/tagRoutes');
@@ -22,14 +24,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, 'public', 'uploads');
+// Create uploads directory if it doesn't exist (outside public folder for security)
+const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
-
-// Serve uploaded images
-app.use('/uploads', express.static(uploadsDir));
 
 function initializeDataBase(){
     const sqliteDB = new Database('./sqlite.db');
@@ -136,6 +135,54 @@ try {
     app.use('/api/tasks', authMiddleware, taskRouter); // Requires authentication
     app.use('/api/tags', authMiddleware, tagRouter); // Requires authentication
     app.use('/api/folders', authMiddleware, folderRouter); // Requires authentication
+    
+    // Protected route to serve images (only to authenticated users who own the task)
+    app.get('/api/uploads/:filename', async (req, res) => {
+        const db = req.db;
+        const filename = req.params.filename;
+        
+        // Support token from query parameter (for img tags) or Authorization header
+        let token = req.query.token || req.headers.authorization?.split(' ')[1];
+        
+        if (!token) {
+            return res.status(401).json({message: 'No token provided'});
+        }
+        
+        let userId;
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            userId = decoded.id;
+        } catch (error) {
+            return res.status(401).json({message: 'Invalid token'});
+        }
+        
+        try {
+            // Check if the image belongs to a task owned by the user
+            const userTasks = await db.select().from(tasks).where(eq(tasks.userId, userId));
+            // Check both new format (/api/uploads/) and old format (/uploads/) for backward compatibility
+            const newImagePath = `/api/uploads/${filename}`;
+            const oldImagePath = `/uploads/${filename}`;
+            const taskWithImage = userTasks.find(task => 
+                task.image === newImagePath || task.image === oldImagePath || 
+                (task.image && task.image.includes(filename))
+            );
+            
+            if (!taskWithImage) {
+                return res.status(403).json({message: 'Access denied'});
+            }
+            
+            // Serve the image file
+            const filePath = path.join(uploadsDir, filename);
+            if (!fs.existsSync(filePath)) {
+                return res.status(404).json({message: 'Image not found'});
+            }
+            
+            res.sendFile(filePath);
+        } catch (error) {
+            console.error('Error serving image:', error);
+            res.status(500).json({message: 'Internal server error'});
+        }
+    });
     
     // Redirect root to app
     app.get('/', (req, res) => {
