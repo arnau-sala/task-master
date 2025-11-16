@@ -29,7 +29,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
             margin: 0;
             padding: 0;
-            background: #f8fafc;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
             height: 100vh;
             overflow: hidden;
             color: #1e293b;
@@ -37,45 +37,181 @@
         }
 
         .container {
-            display: flex;
+            position: relative;
+            width: 100%;
             height: 100vh;
-            gap: 0;
-        }
-
-        .left-panel {
-            width: 45%;
-            padding: 0;
-            overflow-y: auto;
-            background: #ffffff;
-            border-right: 1px solid #e2e8f0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .left-panel-content {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 32px 40px;
-            width: 100%;
-        }
-
-        .right-panel {
-            width: 55%;
-            padding: 0;
-            overflow-y: auto;
-            background: #f8fafc;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .right-panel-content {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 32px 40px;
-            width: 100%;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             height: 100%;
+        }
+
+        /* App Header */
+        .app-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            box-sizing: border-box;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0;
+        }
+
+        .header-user {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .add-task-btn, .profile-btn {
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .add-task-btn:hover, .profile-btn:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .add-task-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Workspace */
+        .workspace {
+            display: grid;
+            grid-template-columns: 280px 1fr 1fr;
+            grid-template-rows: 1fr;
+            gap: 16px;
+            padding: 16px;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+            height: calc(100vh - 60px);
+            margin-top: 60px;
+        }
+
+        /* Left Column */
+        .left-column {
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            gap: 16px;
+            height: 100%;
+        }
+
+        /* Floating Window Styles */
+        .floating-window {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: box-shadow 0.2s ease;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            height: calc(100vh - 92px);
+            max-height: calc(100vh - 92px);
+        }
+
+        .floating-window:hover {
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .window-header {
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            padding: 14px 18px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            flex-shrink: 0;
+            height: 52px;
+            box-sizing: border-box;
+        }
+
+        .window-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .window-content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px;
+            min-height: 0;
+            height: calc(100vh - 92px - 52px);
+            max-height: calc(100vh - 92px - 52px);
+        }
+
+        /* Task Creation Window */
+        .task-creation-window {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 100;
+        }
+
+        /* Profile Window */
+        .profile-window {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        /* Calendar Window */
+        .calendar-window {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        /* Task List Window */
+        .task-list-window {
+            width: 100%;
+            height: 100%;
+            position: relative;
         }
 
         #taskList {
@@ -851,6 +987,168 @@
             cursor: text;
         }
 
+        /* Task Modal Styles */
+        .task-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.2s ease;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .task-modal-overlay.active {
+            display: flex;
+        }
+
+        .task-modal {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            animation: slideUpScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: center;
+        }
+
+        /* Tags modal specific styles - appears as auxiliary window */
+        #tagsModalOverlay {
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: none;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 0;
+        }
+
+        #tagsModalOverlay .task-modal {
+            max-width: 450px;
+            width: 450px;
+            height: 500px;
+            max-height: 500px;
+            margin: 0;
+            position: absolute;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2), 0 8px 10px -5px rgba(0,0,0,0.1);
+            animation: fadeInScale 0.2s ease;
+            transform-origin: top left;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        #tagsModalOverlay .task-modal-content {
+            flex: 1;
+            overflow: visible;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        
+        /* Hide scrollbars for tags modal columns but keep scroll functionality */
+        #tagsModalFoldersColumn::-webkit-scrollbar,
+        #tagsModalTagsColumn::-webkit-scrollbar,
+        #tagsModalAllTagsColumn::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+        
+        #tagsModalFoldersColumn,
+        #tagsModalTagsColumn,
+        #tagsModalAllTagsColumn {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        #tagsModalFoldersColumn::-webkit-scrollbar-track,
+        #tagsModalTagsColumn::-webkit-scrollbar-track,
+        #tagsModalAllTagsColumn::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        #tagsModalOverlay .task-modal-header {
+            padding: 16px 20px;
+        }
+        
+        /* Remove profile-section styling inside tags modal */
+        #tagsModalOverlay .profile-section {
+            border-radius: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            height: auto !important;
+            overflow: visible !important;
+        }
+        
+        #tagsModalOverlay .task-modal-header h2 {
+            font-size: 18px;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .task-modal-header {
+            padding: 24px 28px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            border-radius: 16px 16px 0 0;
+            z-index: 10;
+        }
+
+        .task-modal-header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .task-modal-close {
+            background: transparent;
+            border: none;
+            font-size: 28px;
+            color: #64748b;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .task-modal-close:hover {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .task-modal-content {
+            padding: 24px 28px;
+        }
+
         /* Tags Styles */
         .tag {
             display: inline-block;
@@ -1404,17 +1702,123 @@
 
     <!-- Main App Screen -->
     <div id="appScreen" class="container" style="display: none;">
-        <div class="left-panel">
-            <div class="left-panel-content">
-                <div class="top-bar">
-                    <div>
-                        <strong id="userEmail"></strong>
+        <header class="app-header">
+            <div class="header-left">
+                <h1 class="header-title">Task Master</h1>
+                <span class="header-user" id="userEmail"></span>
                     </div>
+            <div class="header-actions">
+                <button class="add-task-btn" onclick="openTaskModal()">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    New Task
+                </button>
                     <button class="profile-btn" onclick="openProfile()">Profile</button>
                 </div>
-                <h1>Task Master</h1>
-                <div class="form-container">
-                <h2>New Task</h2>
+        </header>
+
+        <div class="workspace">
+            <!-- Left Column: Main and Profile -->
+            <div class="left-column">
+                <!-- Main Empty Window -->
+                <div id="mainEmptyWindow" class="floating-window" style="display: flex;">
+                    <div class="window-header">
+                        <div class="window-title">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 4px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                            Main
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <!-- Content will be added here -->
+                    </div>
+                </div>
+
+                <!-- Profile Window -->
+                <div id="profileWindow" class="floating-window profile-window" style="display: flex;">
+                    <div class="window-header">
+                        <div class="window-title">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 4px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            Profile
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 20px;">
+                            <div style="width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: 600;" id="profileInitial">
+                                <!-- User initial will be populated here -->
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 4px;" id="profileWindowName">
+                                    <!-- User name will be populated here -->
+                                </div>
+                                <div style="font-size: 13px; color: #64748b;" id="profileWindowEmail">
+                                    <!-- User email will be populated here -->
+                                </div>
+                            </div>
+                            <button onclick="openProfile()" style="margin-top: 8px; padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Open Profile</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Column: Calendar -->
+            <div>
+                <div id="calendarWindow" class="floating-window calendar-window" style="display: flex;">
+                    <div class="window-header">
+                        <div class="window-title">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 4px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            Calendar
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div id="calendarContainer">
+                            <!-- Calendar will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Task List -->
+            <div>
+                <div id="taskListWindow" class="floating-window task-list-window" style="display: flex;">
+                    <div class="window-header">
+                        <div class="window-title">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 4px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                            <span id="tasksTitle">Pending Tasks</span>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div style="margin-bottom: 16px;">
+                            <input type="text" id="taskSearch" class="search-input" placeholder="Search tasks..." oninput="handleSearch()" style="width: 100%; margin-bottom: 12px;">
+                            <div class="filter-buttons" style="display: flex; gap: 6px;">
+                                <button class="filter-btn active" onclick="setFilter('pending')" id="filterPending" style="flex: 1; padding: 6px 12px; font-size: 12px;">Pending</button>
+                                <button class="filter-btn" onclick="setFilter('completed')" id="filterCompleted" style="flex: 1; padding: 6px 12px; font-size: 12px;">Completed</button>
+                                <button class="filter-btn" onclick="setFilter('all')" id="filterAll" style="flex: 1; padding: 6px 12px; font-size: 12px;">All</button>
+                            </div>
+                        </div>
+                        <div id="taskList" style="flex: 1; overflow-y: auto;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Creation Modal -->
+    <div id="taskModalOverlay" class="task-modal-overlay" onclick="closeTaskModalOnOverlay(event)">
+        <div class="task-modal" onclick="event.stopPropagation()">
+            <div class="task-modal-header">
+                <h2>Create New Task</h2>
+                <button class="task-modal-close" onclick="closeTaskModal()">×</button>
+            </div>
+            <div class="task-modal-content">
                 <form id="taskForm">
                     <div class="form-group">
                         <label for="taskTitle">Title *</label>
@@ -1422,7 +1826,7 @@
                     </div>
                     <div class="form-group">
                         <label for="taskDescription">Description</label>
-                        <textarea id="taskDescription"></textarea>
+                        <textarea id="taskDescription" style="min-height: 60px;"></textarea>
                     </div>
                     <div class="form-group">
                         <div class="date-time-row">
@@ -1452,25 +1856,11 @@
                         </div>
                         <small style="color: #666; font-size: 12px; display: block; margin-top: 5px;">Formats allowed: JPEG, JPG, PNG, GIF, WEBP (max 5MB)</small>
                     </div>
-                    <button type="submit">Add Task</button>
+                    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
+                        <button type="button" onclick="closeTaskModal()" style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
+                        <button type="submit" style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Create Task</button>
+                    </div>
                 </form>
-            </div>
-            
-            </div>
-        </div>
-
-        <div class="right-panel">
-            <div class="right-panel-content">
-                <h2 id="tasksTitle">Pending Tasks</h2>
-                <div class="search-container">
-                <input type="text" id="taskSearch" class="search-input" placeholder="Search tasks by title or description..." oninput="handleSearch()">
-            </div>
-            <div class="filter-buttons">
-                <button class="filter-btn active" onclick="setFilter('pending')" id="filterPending">Pending</button>
-                <button class="filter-btn" onclick="setFilter('completed')" id="filterCompleted">Completed</button>
-                <button class="filter-btn" onclick="setFilter('all')" id="filterAll">All</button>
-            </div>
-            <div id="taskList"></div>
             </div>
         </div>
     </div>
@@ -1605,6 +1995,73 @@
         </div>
     </div>
 
+    <!-- Tags Selection Modal -->
+    <div id="tagsModalOverlay" class="task-modal-overlay" onclick="closeTagsModalOnOverlay(event)">
+        <div class="task-modal" onclick="event.stopPropagation()">
+            <div class="task-modal-header">
+                <h2>Select Tags</h2>
+                <button class="task-modal-close" onclick="closeTagsModal()">×</button>
+            </div>
+            <div class="task-modal-content">
+                <div class="profile-section" style="margin-bottom: 0; box-shadow: none; border: none; padding: 0; border-radius: 0; background: transparent;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <div style="display: flex; gap: 8px;">
+                            <button id="tagsModalViewFoldersBtn" class="view-btn active" onclick="setTagsModalViewMode('folders')" title="View folders">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                            </button>
+                            <button id="tagsModalViewTagsBtn" class="view-btn" onclick="setTagsModalViewMode('tags')" title="View all tags">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                                    <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <input type="text" id="tagsModalSearchInput" placeholder="Search tags..." style="flex: 1; max-width: 250px; height: 36px; padding: 8px 12px; border-radius: 8px; border: 2px solid #e2e8f0; background: #ffffff; font-size: 14px; transition: all 0.2s ease; margin: 0 8px; outline: none;" oninput="handleTagsModalSearch()" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                        <button id="tagsModalSortOrderBtn" class="view-btn" onclick="toggleTagsModalSortOrder()" title="Toggle sort order">
+                            <svg id="tagsModalSortAscIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M15 5h4"></path>
+                                <path d="M12 9h7"></path>
+                                <path d="M12 13h7"></path>
+                                <path d="M12 17h7"></path>
+                                <path d="M3 5l3-3 3 3"></path>
+                                <path d="M6 2v20"></path>
+                            </svg>
+                            <svg id="tagsModalSortDescIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                                <path d="M12 5h7"></path>
+                                <path d="M12 9h7"></path>
+                                <path d="M12 13h7"></path>
+                                <path d="M15 17h4"></path>
+                                <path d="M3 19l3 3 3-3"></path>
+                                <path d="M6 22V2"></path>
+                            </svg>
+                        </button>
+                        <button id="tagsModalCreateTagBtn" class="view-btn" onclick="showTagsModalNewTagForm()" title="Create new tag">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="tagsModalTagsList" class="tags-list" style="display: flex; gap: 10px; margin-bottom: 0; flex: 1; min-height: 0; overflow: hidden; box-sizing: border-box; align-items: flex-start;">
+                        <div id="tagsModalFoldersColumn" style="flex: 1; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; padding-right: 6px; box-sizing: border-box; height: 100%; min-width: 0;"></div>
+                        <div id="tagsModalTagsColumn" style="flex: 1; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; min-height: 0; box-sizing: border-box; height: 100%; min-width: 0;"></div>
+                        <div id="tagsModalAllTagsColumn" style="flex: 1; display: none; flex-direction: column; gap: 6px; overflow-y: auto; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; min-height: 0; box-sizing: border-box; height: 100%;"></div>
+                    </div>
+                </div>
+                <div class="new-tag-form" style="margin-top: 10px; margin-bottom: 0; display: none; flex-shrink: 0;" id="tagsModalNewTagForm">
+                    <input type="text" id="tagsModalNewTagName" placeholder="Tag name" maxlength="20" style="flex: 1;">
+                    <input type="color" id="tagsModalNewTagColor" value="#3b82f6" style="width: 60px; height: 44px; border-radius: 8px; cursor: pointer;">
+                    <select id="tagsModalNewTagFolder" style="flex: 1; max-width: 150px; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <option value="">No folder</option>
+                    </select>
+                    <button type="button" onclick="createTagFromTagsModal()" style="white-space: nowrap;">Add Tag</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Context Menu -->
     <div id="contextMenu" class="context-menu" style="display: none;" onclick="event.stopPropagation()">
         <div class="context-menu-item" onclick="handleContextMenuEdit()">
@@ -1636,6 +2093,11 @@
         let selectedFolderId = null; // Currently selected folder
         let tagsSearchTerm = ''; // Search term for filtering tags
         let tagsSortOrder = 'asc'; // 'asc' for ascending (A-Z), 'desc' for descending (Z-A)
+        // Tags modal state
+        let tagsModalViewMode = 'folders'; // 'folders' or 'tags'
+        let tagsModalSelectedFolderId = null; // Currently selected folder in modal
+        let tagsModalSearchTerm = ''; // Search term for filtering tags in modal
+        let tagsModalSortOrder = 'asc'; // 'asc' for ascending (A-Z), 'desc' for descending (Z-A)
         let token = localStorage.getItem('token');
         let userName = localStorage.getItem('userName') || '';
         let userEmail = localStorage.getItem('userEmail') || '';
@@ -1660,6 +2122,9 @@
             document.getElementById('appScreen').style.display = 'none';
         }
 
+        // Calendar state
+        let currentCalendarDate = new Date();
+
         async function showApp() {
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('appScreen').style.display = 'flex';
@@ -1668,15 +2133,130 @@
             try {
                 await Promise.all([loadTasks(), loadTags(), loadFolders()]);
                 updateTagSelect();
+                renderCalendar();
             } catch (error) {
                 console.error('Error loading app data:', error);
                 showMessage('Error loading data', 'error');
             }
         }
 
+        // Task Modal Functions
+        function openTaskModal() {
+            const modal = document.getElementById('taskModalOverlay');
+            if (modal) {
+                modal.classList.add('active');
+                // Focus on title input
+                setTimeout(() => {
+                    const titleInput = document.getElementById('taskTitle');
+                    if (titleInput) {
+                        titleInput.focus();
+                    }
+                }, 100);
+            }
+        }
+
+        function closeTaskModal() {
+            const modal = document.getElementById('taskModalOverlay');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+
+        function closeTaskModalOnOverlay(event) {
+            if (event.target.id === 'taskModalOverlay') {
+                closeTaskModal();
+            }
+        }
+
+        function resetTaskForm() {
+            document.getElementById('taskForm').reset();
+            removeTaskImage();
+            // Clear tag checkboxes
+            document.querySelectorAll('#taskTags input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+                cb.closest('.tag-checkbox-item')?.classList.remove('selected');
+            });
+            document.getElementById('taskTitle').focus();
+        }
+
+        // Calendar Functions
+        function renderCalendar() {
+            const container = document.getElementById('calendarContainer');
+            if (!container) return;
+
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDayOfWeek = firstDay.getDay();
+
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+            let html = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <button onclick="previousMonth()" style="padding: 6px 12px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 6px; cursor: pointer; font-size: 14px;">←</button>
+                    <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: #0f172a;">${monthNames[month]} ${year}</h3>
+                    <button onclick="nextMonth()" style="padding: 6px 12px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 6px; cursor: pointer; font-size: 14px;">→</button>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 8px;">
+            `;
+
+            // Day names header
+            dayNames.forEach(day => {
+                html += `<div style="text-align: center; font-size: 12px; font-weight: 600; color: #64748b; padding: 8px;">${day}</div>`;
+            });
+
+            html += `</div><div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;">`;
+
+            // Empty cells for days before month starts
+            for (let i = 0; i < startingDayOfWeek; i++) {
+                html += `<div style="aspect-ratio: 1; background: #f8fafc; border-radius: 6px;"></div>`;
+            }
+
+            // Days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                html += `<div style="aspect-ratio: 1; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #1e293b; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.background='#f8fafc'; this.style.borderColor='#cbd5e1'" onmouseout="this.style.background='#ffffff'; this.style.borderColor='#e2e8f0'">${day}</div>`;
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function previousMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            renderCalendar();
+        }
+
         function updateUserDisplay() {
             const displayText = userName ? `${userName} (${userEmail})` : userEmail;
-            document.getElementById('userEmail').textContent = displayText;
+            const userEmailEl = document.getElementById('userEmail');
+            if (userEmailEl) {
+                userEmailEl.textContent = displayText;
+            }
+            
+            // Update profile window
+            const profileInitial = document.getElementById('profileInitial');
+            const profileWindowName = document.getElementById('profileWindowName');
+            const profileWindowEmail = document.getElementById('profileWindowEmail');
+            
+            if (profileInitial) {
+                const initial = userName ? userName.charAt(0).toUpperCase() : (userEmail ? userEmail.charAt(0).toUpperCase() : 'U');
+                profileInitial.textContent = initial;
+            }
+            if (profileWindowName) {
+                profileWindowName.textContent = userName || 'User';
+            }
+            if (profileWindowEmail) {
+                profileWindowEmail.textContent = userEmail || '';
+            }
         }
 
         function showMessage(text, type) {
@@ -2144,6 +2724,11 @@
                 folders = await res.json();
                 updateFolderSelect();
                 renderTags();
+                // Update tags modal if it's open
+                const tagsModal = document.getElementById('tagsModalOverlay');
+                if (tagsModal && tagsModal.classList.contains('active')) {
+                    renderTagsModal();
+                }
             } catch (error) {
                 showMessage('Error loading folders', 'error');
             }
@@ -2163,6 +2748,11 @@
                 tags = await res.json();
                 renderTags();
                 updateTagSelect();
+                // Update tags modal if it's open
+                const tagsModal = document.getElementById('tagsModalOverlay');
+                if (tagsModal && tagsModal.classList.contains('active')) {
+                    renderTagsModal();
+                }
             } catch (error) {
                 showMessage('Error loading tags', 'error');
             }
@@ -2854,7 +3444,80 @@
                 return;
             }
             
-            tags.forEach(tag => {
+            // Get recently used tags (tags used in tasks, sorted by most recent task)
+            const tagUsageMap = new Map(); // tagId -> { lastUsed: date, count: number }
+            
+            tasks.forEach(task => {
+                if (task.tagIds && Array.isArray(task.tagIds)) {
+                    const taskDate = new Date(task.updatedAt || task.createdAt || 0);
+                    task.tagIds.forEach(tagId => {
+                        const existing = tagUsageMap.get(tagId);
+                        if (!existing || taskDate > existing.lastUsed) {
+                            tagUsageMap.set(tagId, {
+                                lastUsed: taskDate,
+                                count: (existing?.count || 0) + 1
+                            });
+                        } else {
+                            existing.count++;
+                        }
+                    });
+                }
+            });
+            
+            // Sort tags by most used (count), prioritizing those that have been used
+            const sortedTags = [...tags].sort((a, b) => {
+                const aUsage = tagUsageMap.get(a.id);
+                const bUsage = tagUsageMap.get(b.id);
+                
+                // Tags that have been used come before tags that haven't
+                if (!aUsage && !bUsage) {
+                    // If neither has been used, sort alphabetically
+                    return a.name.localeCompare(b.name);
+                }
+                if (!aUsage) return 1; // Unused tags go to the end
+                if (!bUsage) return -1; // Used tags come first
+                
+                // Both have been used - sort by count (most used first)
+                if (aUsage.count !== bUsage.count) {
+                    return bUsage.count - aUsage.count;
+                }
+                // If same count, sort by most recent
+                return bUsage.lastUsed - aUsage.lastUsed;
+            });
+            
+            // Always show top 4 most used tags
+            const numTagsToShow = 4;
+            const visibleTags = sortedTags.slice(0, numTagsToShow);
+            const totalRemaining = tags.length - visibleTags.length;
+            
+            // Render visible tags
+            visibleTags.forEach(tag => {
+                const tagItem = createTagCheckboxItem(tag);
+                container.appendChild(tagItem);
+            });
+            
+            // Add "X more" button if there are remaining tags
+            if (totalRemaining > 0) {
+                const moreBtn = document.createElement('div');
+                moreBtn.className = 'tag-checkbox-item';
+                moreBtn.style.cssText = 'border: 2px dashed #cbd5e1; border-radius: 12px; background: #f8fafc; color: #64748b; font-weight: 500; cursor: pointer; white-space: nowrap; transition: all 0.3s ease;';
+                moreBtn.textContent = `${totalRemaining} more`;
+                moreBtn.onclick = function(event) {
+                    openTagsModal(event);
+                };
+                moreBtn.onmouseover = function() {
+                    this.style.borderColor = '#3b82f6';
+                    this.style.background = '#eff6ff';
+                };
+                moreBtn.onmouseout = function() {
+                    this.style.borderColor = '#cbd5e1';
+                    this.style.background = '#f8fafc';
+                };
+                container.appendChild(moreBtn);
+            }
+        }
+        
+        function createTagCheckboxItem(tag) {
                 const tagItem = document.createElement('div');
                 tagItem.className = 'tag-checkbox-item';
                 tagItem.dataset.tagId = tag.id;
@@ -2877,10 +3540,434 @@
                     tagItem.classList.toggle('selected', this.checked);
                 });
                 
-                container.appendChild(tagItem);
-            });
+            return tagItem;
         }
 
+        // Tags Modal Functions
+        function openTagsModal(event) {
+            const modal = document.getElementById('tagsModalOverlay');
+            const modalContent = modal ? modal.querySelector('.task-modal') : null;
+            
+            if (modal && modalContent) {
+                // Position relative to task creation modal
+                let targetX = 600;
+                let targetY = 120;
+                
+                const taskModal = document.getElementById('taskModalOverlay');
+                if (taskModal && taskModal.classList.contains('active')) {
+                    const taskModalContent = taskModal.querySelector('.task-modal');
+                    if (taskModalContent) {
+                        const taskModalRect = taskModalContent.getBoundingClientRect();
+                        // Position to the right of the task modal with 16px gap
+                        targetX = taskModalRect.right + 16;
+                        targetY = taskModalRect.top;
+                    }
+                }
+                
+                // Set position
+                modalContent.style.left = targetX + 'px';
+                modalContent.style.top = targetY + 'px';
+                
+                modal.classList.add('active');
+                // Reset modal state - default to showing all tags
+                tagsModalViewMode = 'tags';
+                tagsModalSelectedFolderId = null;
+                tagsModalSearchTerm = '';
+                tagsModalSortOrder = 'asc';
+                const searchInput = document.getElementById('tagsModalSearchInput');
+                if (searchInput) {
+                    searchInput.value = '';
+                }
+                
+                // Update button states
+                const foldersBtn = document.getElementById('tagsModalViewFoldersBtn');
+                const tagsBtn = document.getElementById('tagsModalViewTagsBtn');
+                if (foldersBtn) foldersBtn.classList.remove('active');
+                if (tagsBtn) tagsBtn.classList.add('active');
+                
+                renderTagsModal();
+                updateTagsModalFolderSelect();
+                
+                // Adjust position and height after content is rendered
+                setTimeout(() => {
+                    adjustTagsModalPosition();
+                }, 10);
+            }
+        }
+        
+        function showTagsModalNewTagForm() {
+            // Only show form when in tags view (all tags)
+            if (tagsModalViewMode !== 'tags') {
+                return;
+            }
+            
+            const tagForm = document.getElementById('tagsModalNewTagForm');
+            if (tagForm) {
+                if (tagForm.style.display === 'none' || tagForm.style.display === '') {
+                    tagForm.style.display = 'flex';
+                } else {
+                    tagForm.style.display = 'none';
+                }
+            }
+        }
+        
+        function updateTagsModalFolderSelect() {
+            const select = document.getElementById('tagsModalNewTagFolder');
+            if (!select) return;
+            
+            const currentValue = select.value;
+            select.innerHTML = '<option value="">No folder</option>';
+            
+            folders.forEach(folder => {
+                const option = document.createElement('option');
+                option.value = folder.id;
+                option.textContent = escapeHtml(folder.name.toUpperCase());
+                select.appendChild(option);
+            });
+            
+            if (currentValue) {
+                select.value = currentValue;
+            }
+        }
+        
+        function createTagFromTagsModal() {
+            // Placeholder function - not functional yet
+            console.log('Create tag from tags modal - not implemented yet');
+        }
+
+        function closeTagsModal() {
+            const modal = document.getElementById('tagsModalOverlay');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+
+        function closeTagsModalOnOverlay(event) {
+            if (event.target.id === 'tagsModalOverlay') {
+                closeTagsModal();
+            }
+        }
+
+        function setTagsModalViewMode(mode) {
+            tagsModalViewMode = mode;
+            
+            // Reset selected folder when switching to tags view
+            if (mode === 'tags') {
+                tagsModalSelectedFolderId = null;
+            }
+            
+            // Update button states
+            const foldersBtn = document.getElementById('tagsModalViewFoldersBtn');
+            const tagsBtn = document.getElementById('tagsModalViewTagsBtn');
+            if (foldersBtn) foldersBtn.classList.toggle('active', mode === 'folders');
+            if (tagsBtn) tagsBtn.classList.toggle('active', mode === 'tags');
+            
+            // Hide new tag form when switching to folders view
+            const newTagForm = document.getElementById('tagsModalNewTagForm');
+            if (newTagForm) {
+                if (mode === 'folders') {
+                    newTagForm.style.display = 'none';
+                }
+            }
+            
+            // Re-render
+            renderTagsModal();
+            // Adjust position after rendering
+            setTimeout(() => {
+                adjustTagsModalPosition();
+            }, 10);
+        }
+
+        function handleTagsModalSearch() {
+            const searchInput = document.getElementById('tagsModalSearchInput');
+            if (searchInput) {
+                tagsModalSearchTerm = searchInput.value;
+                renderTagsModal();
+                // Adjust position after rendering
+                setTimeout(() => {
+                    adjustTagsModalPosition();
+                }, 10);
+            }
+        }
+
+        function toggleTagsModalSortOrder() {
+            tagsModalSortOrder = tagsModalSortOrder === 'asc' ? 'desc' : 'asc';
+            updateTagsModalSortButtonIcon();
+            renderTagsModal();
+            // Adjust position after rendering
+            setTimeout(() => {
+                adjustTagsModalPosition();
+            }, 10);
+        }
+
+        function updateTagsModalSortButtonIcon() {
+            const sortAscIcon = document.getElementById('tagsModalSortAscIcon');
+            const sortDescIcon = document.getElementById('tagsModalSortDescIcon');
+            if (sortAscIcon && sortDescIcon) {
+                if (tagsModalSortOrder === 'asc') {
+                    sortAscIcon.style.display = 'block';
+                    sortDescIcon.style.display = 'none';
+                } else {
+                    sortAscIcon.style.display = 'none';
+                    sortDescIcon.style.display = 'block';
+                }
+            }
+        }
+
+        function selectTagsModalFolder(folderId) {
+            tagsModalSelectedFolderId = folderId === 'none' ? 'none' : folderId;
+            renderTagsModal();
+            // Adjust position after rendering
+            setTimeout(() => {
+                adjustTagsModalPosition();
+            }, 10);
+        }
+
+        function renderTagsModal() {
+            // Render in tags modal
+            const foldersColumn = document.getElementById('tagsModalFoldersColumn');
+            const tagsColumn = document.getElementById('tagsModalTagsColumn');
+            const allTagsColumn = document.getElementById('tagsModalAllTagsColumn');
+            
+            if (!foldersColumn || !tagsColumn || !allTagsColumn) {
+                return;
+            }
+            
+            // Update sort button icon
+            updateTagsModalSortButtonIcon();
+            
+            if (tagsModalViewMode === 'tags') {
+                // Show all tags in a flat list
+                foldersColumn.style.display = 'none';
+                tagsColumn.style.display = 'none';
+                allTagsColumn.style.display = 'flex';
+                
+                if (tags.length === 0) {
+                    allTagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 13px; padding: 12px; text-align: center;">No tags yet. Create your first tag in the profile!</div>';
+                    return;
+                }
+
+                let html = '';
+                // Filter and sort tags alphabetically
+                let filteredTags = tags;
+                if (tagsModalSearchTerm.trim()) {
+                    const searchLower = tagsModalSearchTerm.toLowerCase().trim();
+                    filteredTags = tags.filter(tag => tag.name.toLowerCase().includes(searchLower));
+                }
+                const sortedTags = [...filteredTags].sort((a, b) => {
+                    const comparison = a.name.localeCompare(b.name);
+                    return tagsModalSortOrder === 'asc' ? comparison : -comparison;
+                });
+                
+                if (sortedTags.length === 0) {
+                    allTagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 13px; padding: 12px; text-align: center;">No tags found</div>';
+                    return;
+                }
+                
+                sortedTags.forEach((tag, index) => {
+                    const folder = folders.find(f => f.id === tag.folderId);
+                    const isLast = index === sortedTags.length - 1;
+                    html += `
+                        <div class="tag-item" data-tag-id="${tag.id}" style="display: flex; align-items: center; gap: 8px; padding: 6px; background: #ffffff; border-radius: 4px; margin-bottom: ${isLast ? '0' : '4px'}; transition: background 0.2s ease;">
+                            <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
+                            <span style="flex: 1; color: #1e293b; font-size: 13px;">${escapeHtml(tag.name)}</span>
+                            ${folder ? `<span onclick="selectTagsModalFolder(${folder.id})" style="font-size: 11px; color: ${folder.color || '#64748b'}; padding: 2px 6px; background: ${folder.color || '#64748b'}20; border-radius: 3px; border: 1px solid ${folder.color || '#64748b'}; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.color='${folder.color || '#64748b'}'; this.style.borderColor='${folder.color || '#64748b'}'; this.style.filter='brightness(1.2) saturate(1.3)'" onmouseout="this.style.color='${folder.color || '#64748b'}'; this.style.borderColor='${folder.color || '#64748b'}'; this.style.filter='none'">${escapeHtml(folder.name.toUpperCase())}</span>` : ''}
+                        </div>
+                    `;
+                });
+                allTagsColumn.innerHTML = html;
+                // Adjust modal height after rendering
+                setTimeout(() => {
+                    adjustTagsModalPosition();
+                }, 10);
+                return;
+            }
+            
+            // View mode: folders
+            foldersColumn.style.display = 'flex';
+            tagsColumn.style.display = 'flex';
+            allTagsColumn.style.display = 'none';
+            
+            if (tags.length === 0 && folders.length === 0) {
+                foldersColumn.innerHTML = '';
+                tagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 13px; padding: 12px; text-align: center;">No tags or folders yet. Create your first folder or tag in the profile!</div>';
+                return;
+            }
+
+            // Render folders in left column
+            const tagsWithoutFolder = tags.filter(tag => !tag.folderId);
+            const allFoldersForSorting = [...folders];
+            
+            if (tagsWithoutFolder.length > 0) {
+                allFoldersForSorting.push({
+                    id: 'none',
+                    name: 'TAGS WITHOUT FOLDER',
+                    color: '#000000',
+                    userId: null
+                });
+            }
+            
+            const sortedFolders = allFoldersForSorting.sort((a, b) => {
+                const aTagsCount = a.id === 'none' 
+                    ? tagsWithoutFolder.length 
+                    : tags.filter(tag => tag.folderId === a.id).length;
+                const bTagsCount = b.id === 'none' 
+                    ? tagsWithoutFolder.length 
+                    : tags.filter(tag => tag.folderId === b.id).length;
+                
+                if (aTagsCount !== bTagsCount) {
+                    return bTagsCount - aTagsCount;
+                }
+                
+                return a.name.localeCompare(b.name);
+            });
+            
+            let foldersHtml = '';
+            sortedFolders.forEach(folder => {
+                const isNoneFolder = folder.id === 'none';
+                const folderTags = isNoneFolder 
+                    ? tagsWithoutFolder 
+                    : tags.filter(tag => tag.folderId === folder.id).sort((a, b) => a.name.localeCompare(b.name));
+                const folderColor = folder.color || '#64748b';
+                const isSelected = isNoneFolder ? tagsModalSelectedFolderId === 'none' : tagsModalSelectedFolderId === folder.id;
+                
+                foldersHtml += `
+                    <div class="folder-item" data-folder-id="${folder.id}" onclick="selectTagsModalFolder(${isNoneFolder ? "'none'" : folder.id})" style="
+                        padding: 10px 12px;
+                        background: ${isSelected ? folderColor + '25' : folderColor + '15'};
+                        border-radius: 6px;
+                        border-left: 3px solid ${folderColor};
+                        border-right: 1px solid ${isSelected ? folderColor : '#e2e8f0'};
+                        border-top: 1px solid ${isSelected ? folderColor : '#e2e8f0'};
+                        border-bottom: 1px solid ${isSelected ? folderColor : '#e2e8f0'};
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        width: 100%;
+                        box-sizing: border-box;
+                        min-height: 60px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        position: relative;
+                    ">
+                        <div style="font-weight: 600; color: ${folderColor}; font-size: 13px; margin-bottom: 3px; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.3;">${escapeHtml(folder.name.toUpperCase())}</div>
+                        <div style="font-size: 10px; color: #64748b; font-weight: 500;">${folderTags.length} ${folderTags.length === 1 ? 'tag' : 'tags'}</div>
+                    </div>
+                `;
+            });
+            
+            foldersColumn.innerHTML = foldersHtml;
+            
+            // Render tags in right column based on selection
+            let tagsHtml = '';
+            if (!tagsModalSelectedFolderId) {
+                tagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 13px; padding: 12px; text-align: center;">Select a folder to view its tags</div>';
+            } else if (tagsModalSelectedFolderId === 'none') {
+                let filteredTagsWithoutFolder = tagsWithoutFolder;
+                if (tagsModalSearchTerm.trim()) {
+                    const searchLower = tagsModalSearchTerm.toLowerCase().trim();
+                    filteredTagsWithoutFolder = tagsWithoutFolder.filter(tag => tag.name.toLowerCase().includes(searchLower));
+                }
+                
+                if (filteredTagsWithoutFolder.length === 0) {
+                    tagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 13px; padding: 12px; text-align: center;">' + (tagsModalSearchTerm.trim() ? 'No tags found' : 'NO TAGS WITHOUT FOLDER') + '</div>';
+                } else {
+                    const sortedTagsWithoutFolder = [...filteredTagsWithoutFolder].sort((a, b) => {
+                        const comparison = a.name.localeCompare(b.name);
+                        return tagsModalSortOrder === 'asc' ? comparison : -comparison;
+                    });
+                    
+                    sortedTagsWithoutFolder.forEach((tag, index) => {
+                        const isLast = index === sortedTagsWithoutFolder.length - 1;
+                        tagsHtml += `
+                            <div class="tag-item" data-tag-id="${tag.id}" style="display: flex; align-items: center; gap: 8px; padding: 6px; background: #ffffff; border-radius: 4px; margin-bottom: ${isLast ? '0' : '4px'}; transition: background 0.2s ease;">
+                                <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
+                                <span style="flex: 1; color: #1e293b; font-size: 13px;">${escapeHtml(tag.name)}</span>
+                            </div>
+                        `;
+                    });
+                    tagsColumn.innerHTML = tagsHtml;
+                }
+            } else {
+                const selectedFolder = folders.find(f => f.id === tagsModalSelectedFolderId);
+                if (selectedFolder) {
+                    let folderTags = tags.filter(tag => tag.folderId === tagsModalSelectedFolderId);
+                    if (tagsModalSearchTerm.trim()) {
+                        const searchLower = tagsModalSearchTerm.toLowerCase().trim();
+                        folderTags = folderTags.filter(tag => tag.name.toLowerCase().includes(searchLower));
+                    }
+                    
+                    if (folderTags.length === 0) {
+                        tagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 13px; padding: 12px; text-align: center;">' + (tagsModalSearchTerm.trim() ? 'No tags found' : 'This folder is empty') + '</div>';
+                    } else {
+                        const sortedFolderTags = [...folderTags].sort((a, b) => {
+                            const comparison = a.name.localeCompare(b.name);
+                            return tagsModalSortOrder === 'asc' ? comparison : -comparison;
+                        });
+                        
+                        sortedFolderTags.forEach((tag, index) => {
+                            const isLast = index === sortedFolderTags.length - 1;
+                            tagsHtml += `
+                                <div class="tag-item" data-tag-id="${tag.id}" style="display: flex; align-items: center; gap: 8px; padding: 6px; background: #ffffff; border-radius: 4px; margin-bottom: ${isLast ? '0' : '4px'}; transition: background 0.2s ease;">
+                                    <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
+                                    <span style="flex: 1; color: #1e293b; font-size: 13px;">${escapeHtml(tag.name)}</span>
+                                </div>
+                            `;
+                        });
+                        tagsColumn.innerHTML = tagsHtml;
+                    }
+                }
+            }
+            
+            // Update folder select in new tag form
+            updateTagsModalFolderSelect();
+            
+            // Adjust modal height after rendering
+            setTimeout(() => {
+                adjustTagsModalPosition();
+            }, 10);
+        }
+        
+        function adjustTagsModalPosition() {
+            const modal = document.getElementById('tagsModalOverlay');
+            const modalContent = modal ? modal.querySelector('.task-modal') : null;
+            
+            if (!modal || !modalContent || !modal.classList.contains('active')) {
+                return;
+            }
+            
+            // Fixed height: 500px
+            const fixedHeight = 500;
+            modalContent.style.height = fixedHeight + 'px';
+            modalContent.style.maxHeight = fixedHeight + 'px';
+            
+            // Position relative to task creation modal
+            const modalWidth = 450;
+            let targetX = 600;
+            let targetY = 80;
+            
+            const taskModal = document.getElementById('taskModalOverlay');
+            if (taskModal && taskModal.classList.contains('active')) {
+                const taskModalContent = taskModal.querySelector('.task-modal');
+                if (taskModalContent) {
+                    const taskModalRect = taskModalContent.getBoundingClientRect();
+                    // Position to the right of the task modal with 16px gap
+                    targetX = taskModalRect.right + 16;
+                    // Align bottom of tags modal with bottom of task modal
+                    targetY = taskModalRect.bottom - fixedHeight;
+                }
+            }
+            
+            // Ensure modal doesn't go off screen
+            const maxX = window.innerWidth - modalWidth - 20;
+            const maxY = window.innerHeight - fixedHeight - 20;
+            
+            const finalX = Math.min(targetX, maxX);
+            const finalY = Math.min(targetY, maxY);
+            
+            modalContent.style.left = Math.max(finalX, 20) + 'px';
+            modalContent.style.top = Math.max(finalY, 20) + 'px';
+        }
 
         async function deleteFolder(folderId) {
             if (!confirm('Delete this folder? Tags in this folder will be moved out of the folder.')) return;
@@ -2942,6 +4029,7 @@
                 
                 tasks = await res.json();
                 renderTasks();
+                updateTagSelect(); // Update tag select to show recently used tags
             } catch (error) {
                 showMessage('Error loading tasks', 'error');
             }
@@ -3137,7 +4225,7 @@
             const file = e.target.files[0];
             if (file) {
                 if (isValidImageFormat(file)) {
-                    handleImageFile(file, 'taskImagePreview', 'imagePreviewText', 'removeImageBtn');
+                handleImageFile(file, 'taskImagePreview', 'imagePreviewText', 'removeImageBtn');
                 } else {
                     const fileName = file.name;
                     const fileExtension = fileName.substring(fileName.lastIndexOf('.')).toUpperCase() || 'unknown';
@@ -3213,7 +4301,7 @@
             const file = document.getElementById(`editImage-${taskId}`).files[0];
             if (file) {
                 if (isValidImageFormat(file)) {
-                    handleEditImageFile(file, taskId);
+                handleEditImageFile(file, taskId);
                 } else {
                     const fileName = file.name;
                     const fileExtension = fileName.substring(fileName.lastIndexOf('.')).toUpperCase() || 'unknown';
@@ -3361,13 +4449,8 @@
 
                 if (!res.ok) throw new Error();
                 showMessage('Task created', 'success');
-                document.getElementById('taskForm').reset();
-                removeTaskImage();
-                // Clear tag checkboxes
-                document.querySelectorAll('#taskTags input[type="checkbox"]').forEach(cb => {
-                    cb.checked = false;
-                    cb.closest('.tag-checkbox-item').classList.remove('selected');
-                });
+                resetTaskForm();
+                closeTaskModal();
                 await loadTasks();
             } catch (error) {
                 showMessage('Error creating task', 'error');
