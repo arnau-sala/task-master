@@ -784,24 +784,36 @@
         }
 
         .close-profile {
-            background: none;
-            border: none;
+            background: none !important;
+            border: none !important;
             font-size: 24px;
             color: #64748b;
             cursor: pointer;
             padding: 0;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            transition: all 0.2s ease;
+            margin: 0;
+            width: auto;
+            height: auto;
+            display: inline-block;
+            line-height: 1;
+            outline: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            transition: color 0.2s ease;
         }
 
         .close-profile:hover {
-            background: #f1f5f9;
-            color: #1e293b;
+            color: #ef4444;
+            background: none !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .close-profile:focus {
+            outline: none !important;
+            box-shadow: none !important;
+            background: none !important;
+            border: none !important;
         }
 
         .profile-content {
@@ -1046,7 +1058,7 @@
         
         #tagsModalOverlay .task-modal-content {
             flex: 1;
-            overflow: visible;
+            overflow: hidden;
             padding: 16px 20px;
             display: flex;
             flex-direction: column;
@@ -1126,23 +1138,36 @@
         }
 
         .task-modal-close {
-            background: transparent;
-            border: none;
+            background: none !important;
+            border: none !important;
             font-size: 28px;
             color: #64748b;
             cursor: pointer;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            transition: all 0.2s ease;
+            width: auto;
+            height: auto;
+            display: inline-block;
+            line-height: 1;
+            padding: 0;
+            margin: 0;
+            outline: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            transition: color 0.2s ease;
         }
 
         .task-modal-close:hover {
-            background: #f1f5f9;
-            color: #475569;
+            color: #ef4444;
+            background: none !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .task-modal-close:focus {
+            outline: none !important;
+            box-shadow: none !important;
+            background: none !important;
+            border: none !important;
         }
 
         .task-modal-content {
@@ -1190,9 +1215,6 @@
             color: white;
         }
 
-        .tag-checkbox-item input[type="checkbox"] {
-            display: none;
-        }
 
         .tag-checkbox-item .tag-color-indicator {
             width: 12px;
@@ -1364,9 +1386,7 @@
 
         #sortOrderBtn svg {
             display: block;
-            margin: 0;
-            vertical-align: middle;
-        }
+            margin: 0;        }
 
         /* Drag and drop styles */
         .tag-item[draggable="true"] {
@@ -2018,36 +2038,38 @@
                                 </svg>
                             </button>
                         </div>
-                        <input type="text" id="tagsModalSearchInput" placeholder="Search tags..." style="flex: 1; max-width: 250px; height: 36px; padding: 8px 12px; border-radius: 8px; border: 2px solid #e2e8f0; background: #ffffff; font-size: 14px; transition: all 0.2s ease; margin: 0 8px; outline: none;" oninput="handleTagsModalSearch()" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
-                        <button id="tagsModalSortOrderBtn" class="view-btn" onclick="toggleTagsModalSortOrder()" title="Toggle sort order">
-                            <svg id="tagsModalSortAscIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M15 5h4"></path>
-                                <path d="M12 9h7"></path>
-                                <path d="M12 13h7"></path>
-                                <path d="M12 17h7"></path>
-                                <path d="M3 5l3-3 3 3"></path>
-                                <path d="M6 2v20"></path>
-                            </svg>
-                            <svg id="tagsModalSortDescIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                                <path d="M12 5h7"></path>
-                                <path d="M12 9h7"></path>
-                                <path d="M12 13h7"></path>
-                                <path d="M15 17h4"></path>
-                                <path d="M3 19l3 3 3-3"></path>
-                                <path d="M6 22V2"></path>
-                            </svg>
-                        </button>
-                        <button id="tagsModalCreateTagBtn" class="view-btn" onclick="showTagsModalNewTagForm()" title="Create new tag">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                            </svg>
-                        </button>
+                        <input type="text" id="tagsModalSearchInput" placeholder="Search tags..." style="flex: 1; max-width: 220px; height: 36px; padding: 8px 12px; border-radius: 8px; border: 2px solid #e2e8f0; background: #ffffff; font-size: 14px; transition: all 0.2s ease; margin: 0 8px; outline: none;" oninput="handleTagsModalSearch()" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                        <div style="display: flex; gap: 8px;">
+                            <button id="tagsModalSortOrderBtn" class="view-btn" onclick="toggleTagsModalSortOrder()" title="Toggle sort order">
+                                <svg id="tagsModalSortAscIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M15 5h4"></path>
+                                    <path d="M12 9h7"></path>
+                                    <path d="M12 13h7"></path>
+                                    <path d="M12 17h7"></path>
+                                    <path d="M3 5l3-3 3 3"></path>
+                                    <path d="M6 2v20"></path>
+                                </svg>
+                                <svg id="tagsModalSortDescIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                                    <path d="M12 5h7"></path>
+                                    <path d="M12 9h7"></path>
+                                    <path d="M12 13h7"></path>
+                                    <path d="M15 17h4"></path>
+                                    <path d="M3 19l3 3 3-3"></path>
+                                    <path d="M6 22V2"></path>
+                                </svg>
+                            </button>
+                            <button id="tagsModalCreateTagBtn" class="create-btn" onclick="showTagsModalNewTagForm()" title="Create new tag">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                    <div id="tagsModalTagsList" class="tags-list" style="display: flex; gap: 10px; margin-bottom: 0; flex: 1; min-height: 0; overflow: hidden; box-sizing: border-box; align-items: flex-start;">
-                        <div id="tagsModalFoldersColumn" style="flex: 1; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; padding-right: 6px; box-sizing: border-box; height: 100%; min-width: 0;"></div>
-                        <div id="tagsModalTagsColumn" style="flex: 1; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; min-height: 0; box-sizing: border-box; height: 100%; min-width: 0;"></div>
-                        <div id="tagsModalAllTagsColumn" style="flex: 1; display: none; flex-direction: column; gap: 6px; overflow-y: auto; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; min-height: 0; box-sizing: border-box; height: 100%;"></div>
+                    <div id="tagsModalTagsList" class="tags-list" style="display: flex; gap: 10px; margin-bottom: 0; flex: 1; min-height: 0; overflow: hidden; box-sizing: border-box; align-items: flex-start; height: 350px; max-height: 350px;">
+                        <div id="tagsModalFoldersColumn" style="flex: 1; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; padding-right: 6px; box-sizing: border-box; height: 350px; max-height: 350px; min-width: 0;"></div>
+                        <div id="tagsModalTagsColumn" style="flex: 1; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; min-height: 0; box-sizing: border-box; height: 350px; max-height: 350px; min-width: 0;"></div>
+                        <div id="tagsModalAllTagsColumn" style="flex: 1; display: none; flex-direction: column; gap: 6px; overflow-y: auto; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; min-height: 0; box-sizing: border-box; height: 350px; max-height: 350px;"></div>
                     </div>
                 </div>
                 <div class="new-tag-form" style="margin-top: 10px; margin-bottom: 0; display: none; flex-shrink: 0;" id="tagsModalNewTagForm">
@@ -2098,6 +2120,8 @@
         let tagsModalSelectedFolderId = null; // Currently selected folder in modal
         let tagsModalSearchTerm = ''; // Search term for filtering tags in modal
         let tagsModalSortOrder = 'asc'; // 'asc' for ascending (A-Z), 'desc' for descending (Z-A)
+        let selectedTagsForTask = []; // Array of tag IDs selected for the current task (max 3)
+        let tagsModalOpened = false; // Flag to track if tags modal has been opened
         let token = localStorage.getItem('token');
         let userName = localStorage.getItem('userName') || '';
         let userEmail = localStorage.getItem('userEmail') || '';
@@ -2171,11 +2195,19 @@
         function resetTaskForm() {
             document.getElementById('taskForm').reset();
             removeTaskImage();
-            // Clear tag checkboxes
-            document.querySelectorAll('#taskTags input[type="checkbox"]').forEach(cb => {
-                cb.checked = false;
-                cb.closest('.tag-checkbox-item')?.classList.remove('selected');
+            // Clear tag selections
+            document.querySelectorAll('#taskTags .tag-checkbox-item').forEach(item => {
+                item.classList.remove('selected');
             });
+            // Clear selected tags from modal
+            selectedTagsForTask = [];
+            tagsModalOpened = false; // Reset modal opened flag
+            updateTagSelect();
+            // Re-render tags modal if it's open
+            const tagsModal = document.getElementById('tagsModalOverlay');
+            if (tagsModal && tagsModal.classList.contains('active')) {
+                renderTagsModal();
+            }
             document.getElementById('taskTitle').focus();
         }
 
@@ -3444,6 +3476,40 @@
                 return;
             }
             
+            // If modal has been opened, show only selected tags
+            if (tagsModalOpened && selectedTagsForTask.length > 0) {
+                selectedTagsForTask.forEach(tagId => {
+                    const tag = tags.find(t => t.id === tagId);
+                    if (tag) {
+                        const tagItem = createTagCheckboxItem(tag, true);
+                        container.appendChild(tagItem);
+                    }
+                });
+                
+                // Always show "X more" button if there are remaining tags
+                if (tags.length > selectedTagsForTask.length) {
+                    const remainingCount = tags.length - selectedTagsForTask.length;
+                    const moreBtn = document.createElement('div');
+                    moreBtn.className = 'tag-checkbox-item';
+                    moreBtn.style.cssText = 'border: 2px dashed #cbd5e1; border-radius: 12px; background: #f8fafc; color: #64748b; font-weight: 500; cursor: pointer; white-space: nowrap; transition: all 0.3s ease;';
+                    moreBtn.textContent = `${remainingCount} more`;
+                    moreBtn.onclick = function(event) {
+                        openTagsModal(event);
+                    };
+                    moreBtn.onmouseover = function() {
+                        this.style.borderColor = '#3b82f6';
+                        this.style.background = '#eff6ff';
+                    };
+                    moreBtn.onmouseout = function() {
+                        this.style.borderColor = '#cbd5e1';
+                        this.style.background = '#f8fafc';
+                    };
+                    container.appendChild(moreBtn);
+                }
+                return;
+            }
+            
+            // If modal hasn't been opened, show recommended tags + selected tags
             // Get recently used tags (tags used in tasks, sorted by most recent task)
             const tagUsageMap = new Map(); // tagId -> { lastUsed: date, count: number }
             
@@ -3490,9 +3556,10 @@
             const visibleTags = sortedTags.slice(0, numTagsToShow);
             const totalRemaining = tags.length - visibleTags.length;
             
-            // Render visible tags
+            // Render visible tags (highlight selected ones)
             visibleTags.forEach(tag => {
-                const tagItem = createTagCheckboxItem(tag);
+                const isSelected = selectedTagsForTask.includes(tag.id);
+                const tagItem = createTagCheckboxItem(tag, isSelected);
                 container.appendChild(tagItem);
             });
             
@@ -3517,34 +3584,167 @@
             }
         }
         
-        function createTagCheckboxItem(tag) {
+        function createTagCheckboxItem(tag, isSelectedFromModal = false) {
                 const tagItem = document.createElement('div');
                 tagItem.className = 'tag-checkbox-item';
                 tagItem.dataset.tagId = tag.id;
+            const isSelected = isSelectedFromModal || selectedTagsForTask.includes(tag.id);
+            const tagColor = tag.color || '#3b82f6';
+            
+            // Create close button for selected tags
+            const closeBtn = isSelected ? `
+                <span class="tag-remove-btn" onclick="removeTagFromSelection(${tag.id}); event.stopPropagation();" style="
+                    position: absolute;
+                    top: -6px;
+                    right: -6px;
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 50%;
+                    background: #ef4444;
+                    color: white;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 12px;
+                    cursor: pointer;
+                    opacity: 0;
+                    transition: opacity 0.2s ease;
+                    z-index: 10;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                ">×</span>
+            ` : '';
+            
+            tagItem.style.position = 'relative';
+            
+            // If selected, use tag color as background with white text, no color indicator
+            if (isSelected) {
+                tagItem.style.backgroundColor = tagColor;
+                tagItem.style.borderColor = tagColor;
+                tagItem.style.color = 'white';
+                tagItem.style.textAlign = 'center';
+                tagItem.style.justifyContent = 'center';
                 tagItem.innerHTML = `
-                    <span class="tag-color-indicator" style="background-color: ${tag.color || '#007bff'}"></span>
-                    <span>${escapeHtml(tag.name)}</span>
-                    <input type="checkbox" value="${tag.id}" id="tagCheck-${tag.id}">
+                    <span style="color: white;">${escapeHtml(tag.name)}</span>
+                    ${closeBtn}
                 `;
+            } else {
+                // Not selected: show color indicator and normal styling
+                tagItem.innerHTML = `
+                    <span class="tag-color-indicator" style="background-color: ${tagColor}"></span>
+                    <span>${escapeHtml(tag.name)}</span>
+                `;
+            }
+            
+            if (isSelected) {
+                tagItem.classList.add('selected');
+            }
+            
+            // Show/hide close button on hover
+            if (isSelected) {
+                tagItem.addEventListener('mouseenter', function() {
+                    const closeBtn = this.querySelector('.tag-remove-btn');
+                    if (closeBtn) closeBtn.style.opacity = '1';
+                });
+                tagItem.addEventListener('mouseleave', function() {
+                    const closeBtn = this.querySelector('.tag-remove-btn');
+                    if (closeBtn) closeBtn.style.opacity = '0';
+                });
+            }
                 
                 tagItem.addEventListener('click', function(e) {
-                    if (e.target.tagName !== 'INPUT') {
-                        const checkbox = this.querySelector('input[type="checkbox"]');
-                        checkbox.checked = !checkbox.checked;
-                        this.classList.toggle('selected', checkbox.checked);
+                if (e.target.className !== 'tag-remove-btn') {
+                    const wasSelected = selectedTagsForTask.includes(tag.id);
+                    
+                    if (wasSelected) {
+                        // Deselect
+                        selectedTagsForTask = selectedTagsForTask.filter(id => id !== tag.id);
+                        this.classList.remove('selected');
+                        // Restore normal styling
+                        this.style.backgroundColor = '';
+                        this.style.borderColor = '';
+                        this.style.color = '';
+                        this.style.textAlign = '';
+                        this.style.justifyContent = '';
+                        this.innerHTML = `
+                            <span class="tag-color-indicator" style="background-color: ${tagColor}"></span>
+                            <span>${escapeHtml(tag.name)}</span>
+                        `;
+                    } else {
+                        // Select (with max 3 limit)
+                        if (selectedTagsForTask.length >= 3) {
+                            // Remove the first (oldest) selected tag
+                            selectedTagsForTask.shift();
+                        }
+                        selectedTagsForTask.push(tag.id);
+                        this.classList.add('selected');
+                        // Apply selected styling
+                        this.style.backgroundColor = tagColor;
+                        this.style.borderColor = tagColor;
+                        this.style.color = 'white';
+                        this.style.textAlign = 'center';
+                        this.style.justifyContent = 'center';
+                        this.innerHTML = `
+                            <span style="color: white;">${escapeHtml(tag.name)}</span>
+                            ${closeBtn}
+                        `;
+                        // Re-attach hover listeners for close button
+                        this.addEventListener('mouseenter', function() {
+                            const closeBtn = this.querySelector('.tag-remove-btn');
+                            if (closeBtn) closeBtn.style.opacity = '1';
+                        });
+                        this.addEventListener('mouseleave', function() {
+                            const closeBtn = this.querySelector('.tag-remove-btn');
+                            if (closeBtn) closeBtn.style.opacity = '0';
+                        });
+                    }
+                    
+                    updateTagSelect();
+                    // Re-render tags modal if it's open
+                    const tagsModal = document.getElementById('tagsModalOverlay');
+                    if (tagsModal && tagsModal.classList.contains('active')) {
+                        renderTagsModal();
+                    }
                     }
                 });
-                
-                const checkbox = tagItem.querySelector('input[type="checkbox"]');
-                checkbox.addEventListener('change', function() {
-                    tagItem.classList.toggle('selected', this.checked);
-                });
-                
+            
             return tagItem;
+        }
+        
+        function toggleTagSelection(tagId) {
+            const index = selectedTagsForTask.indexOf(tagId);
+            
+            if (index > -1) {
+                // Deselect
+                selectedTagsForTask.splice(index, 1);
+            } else {
+                // Select (with max 3 limit)
+                if (selectedTagsForTask.length >= 3) {
+                    // Remove the first (oldest) selected tag
+                    selectedTagsForTask.shift();
+                }
+                selectedTagsForTask.push(tagId);
+            }
+            
+            // Update the tag select display
+            updateTagSelect();
+            // Re-render tags modal to show updated selection state
+            renderTagsModal();
+        }
+        
+        function removeTagFromSelection(tagId) {
+            selectedTagsForTask = selectedTagsForTask.filter(id => id !== tagId);
+            updateTagSelect();
+            // Re-render tags modal if it's open
+            const tagsModal = document.getElementById('tagsModalOverlay');
+            if (tagsModal && tagsModal.classList.contains('active')) {
+                renderTagsModal();
+            }
         }
 
         // Tags Modal Functions
         function openTagsModal(event) {
+            // Mark that modal has been opened
+            tagsModalOpened = true;
             const modal = document.getElementById('tagsModalOverlay');
             const modalContent = modal ? modal.querySelector('.task-modal') : null;
             
@@ -3592,7 +3792,7 @@
                 setTimeout(() => {
                     adjustTagsModalPosition();
                 }, 10);
-            }
+        }
         }
         
         function showTagsModalNewTagForm() {
@@ -3722,6 +3922,58 @@
                 adjustTagsModalPosition();
             }, 10);
         }
+        
+        function navigateToTagsModalFolder(folderId) {
+            // Change to folders view mode
+            tagsModalViewMode = 'folders';
+            const foldersBtn = document.getElementById('tagsModalViewFoldersBtn');
+            const tagsBtn = document.getElementById('tagsModalViewTagsBtn');
+            if (foldersBtn) foldersBtn.classList.add('active');
+            if (tagsBtn) tagsBtn.classList.remove('active');
+            
+            // Select the folder
+            selectTagsModalFolder(folderId);
+            
+            // Scroll to make the folder visible in the left column
+            setTimeout(() => {
+                const foldersColumn = document.getElementById('tagsModalFoldersColumn');
+                const folderElement = foldersColumn ? foldersColumn.querySelector(`[data-folder-id="${folderId === 'none' ? 'none' : folderId}"]`) : null;
+                
+                if (folderElement && foldersColumn) {
+                    // Calculate the position of the folder relative to the scrollable container
+                    // We need to account for all parent elements up to the foldersColumn
+                    let totalOffsetTop = 0;
+                    let currentElement = folderElement;
+                    
+                    // Traverse up to calculate the total offset from the top of foldersColumn
+                    while (currentElement && currentElement !== foldersColumn) {
+                        totalOffsetTop += currentElement.offsetTop;
+                        currentElement = currentElement.offsetParent;
+                        
+                        // If we've gone outside the foldersColumn, we need to stop
+                        if (currentElement && !foldersColumn.contains(currentElement)) {
+                            // We've reached a parent outside foldersColumn, so we need to subtract
+                            // the offset of foldersColumn itself
+                            const foldersColumnOffset = foldersColumn.offsetTop;
+                            totalOffsetTop = totalOffsetTop - foldersColumnOffset;
+                            break;
+                        }
+                    }
+                    
+                    // Alternative simpler approach: use getBoundingClientRect
+                    const folderRect = folderElement.getBoundingClientRect();
+                    const columnRect = foldersColumn.getBoundingClientRect();
+                    
+                    // Calculate how much we need to scroll
+                    // The difference between where the folder is and where we want it (top of visible area)
+                    const currentScrollTop = foldersColumn.scrollTop;
+                    const folderTopInColumn = folderRect.top - columnRect.top + currentScrollTop;
+                    
+                    // Scroll to position the folder at the very top of the visible area
+                    foldersColumn.scrollTop = Math.max(0, folderTopInColumn);
+                }
+            }, 100);
+        }
 
         function renderTagsModal() {
             // Render in tags modal
@@ -3767,11 +4019,13 @@
                 sortedTags.forEach((tag, index) => {
                     const folder = folders.find(f => f.id === tag.folderId);
                     const isLast = index === sortedTags.length - 1;
+                    const isSelected = selectedTagsForTask.includes(tag.id);
+                    const selectedStyle = isSelected ? 'background: #dbeafe; border: 1px solid #3b82f6;' : 'background: #ffffff;';
                     html += `
-                        <div class="tag-item" data-tag-id="${tag.id}" style="display: flex; align-items: center; gap: 8px; padding: 6px; background: #ffffff; border-radius: 4px; margin-bottom: ${isLast ? '0' : '4px'}; transition: background 0.2s ease;">
+                        <div class="tag-item" data-tag-id="${tag.id}" onclick="toggleTagSelection(${tag.id})" style="display: flex; align-items: center; gap: 8px; padding: 6px; ${selectedStyle} border-radius: 4px; margin-bottom: ${isLast ? '0' : '4px'}; transition: background 0.2s ease; cursor: pointer; position: relative;">
                             <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
                             <span style="flex: 1; color: #1e293b; font-size: 13px;">${escapeHtml(tag.name)}</span>
-                            ${folder ? `<span onclick="selectTagsModalFolder(${folder.id})" style="font-size: 11px; color: ${folder.color || '#64748b'}; padding: 2px 6px; background: ${folder.color || '#64748b'}20; border-radius: 3px; border: 1px solid ${folder.color || '#64748b'}; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.color='${folder.color || '#64748b'}'; this.style.borderColor='${folder.color || '#64748b'}'; this.style.filter='brightness(1.2) saturate(1.3)'" onmouseout="this.style.color='${folder.color || '#64748b'}'; this.style.borderColor='${folder.color || '#64748b'}'; this.style.filter='none'">${escapeHtml(folder.name.toUpperCase())}</span>` : ''}
+                            ${folder ? `<span onclick="navigateToTagsModalFolder(${folder.id}); event.stopPropagation();" style="font-size: 11px; color: ${folder.color || '#64748b'}; padding: 2px 6px; background: ${folder.color || '#64748b'}20; border-radius: 3px; border: 1px solid ${folder.color || '#64748b'}; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.color='${folder.color || '#64748b'}'; this.style.borderColor='${folder.color || '#64748b'}'; this.style.filter='brightness(1.2) saturate(1.3)'" onmouseout="this.style.color='${folder.color || '#64748b'}'; this.style.borderColor='${folder.color || '#64748b'}'; this.style.filter='none'">${escapeHtml(folder.name.toUpperCase())}</span>` : ''}
                         </div>
                     `;
                 });
@@ -3879,8 +4133,10 @@
                     
                     sortedTagsWithoutFolder.forEach((tag, index) => {
                         const isLast = index === sortedTagsWithoutFolder.length - 1;
+                        const isSelected = selectedTagsForTask.includes(tag.id);
+                        const selectedStyle = isSelected ? 'background: #dbeafe; border: 1px solid #3b82f6;' : 'background: #ffffff;';
                         tagsHtml += `
-                            <div class="tag-item" data-tag-id="${tag.id}" style="display: flex; align-items: center; gap: 8px; padding: 6px; background: #ffffff; border-radius: 4px; margin-bottom: ${isLast ? '0' : '4px'}; transition: background 0.2s ease;">
+                            <div class="tag-item" data-tag-id="${tag.id}" onclick="toggleTagSelection(${tag.id})" style="display: flex; align-items: center; gap: 8px; padding: 6px; ${selectedStyle} border-radius: 4px; margin-bottom: ${isLast ? '0' : '4px'}; transition: background 0.2s ease; cursor: pointer; position: relative;">
                                 <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
                                 <span style="flex: 1; color: #1e293b; font-size: 13px;">${escapeHtml(tag.name)}</span>
                             </div>
@@ -3907,8 +4163,10 @@
                         
                         sortedFolderTags.forEach((tag, index) => {
                             const isLast = index === sortedFolderTags.length - 1;
+                            const isSelected = selectedTagsForTask.includes(tag.id);
+                            const selectedStyle = isSelected ? 'background: #dbeafe; border: 1px solid #3b82f6;' : 'background: #ffffff;';
                             tagsHtml += `
-                                <div class="tag-item" data-tag-id="${tag.id}" style="display: flex; align-items: center; gap: 8px; padding: 6px; background: #ffffff; border-radius: 4px; margin-bottom: ${isLast ? '0' : '4px'}; transition: background 0.2s ease;">
+                                <div class="tag-item" data-tag-id="${tag.id}" onclick="toggleTagSelection(${tag.id})" style="display: flex; align-items: center; gap: 8px; padding: 6px; ${selectedStyle} border-radius: 4px; margin-bottom: ${isLast ? '0' : '4px'}; transition: background 0.2s ease; cursor: pointer; position: relative;">
                                     <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
                                     <span style="flex: 1; color: #1e293b; font-size: 13px;">${escapeHtml(tag.name)}</span>
                                 </div>
@@ -4416,9 +4674,8 @@
             const dueTime = document.getElementById('taskTime').value;
             
             // Get selected tag IDs
-            const selectedTags = Array.from(document.querySelectorAll('#taskTags input[type="checkbox"]:checked'))
-                .map(cb => parseInt(cb.value));
-            const tagIds = selectedTags.length > 0 ? selectedTags : [];
+            // Use selectedTagsForTask
+            const tagIds = selectedTagsForTask;
             
             const imageFile = document.getElementById('taskImage').files[0];
 
