@@ -457,6 +457,12 @@
             border: 1px solid #fecaca;
         }
 
+        .message.info {
+            background: #dbeafe;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+
         .empty {
             text-align: center;
             padding: 60px 40px;
@@ -466,20 +472,23 @@
 
         #message {
             position: fixed;
-            top: 24px;
+            bottom: 24px;
             right: 24px;
-            z-index: 1000;
+            z-index: 100000;
             max-width: 360px;
             animation: slideIn 0.3s ease;
+            pointer-events: none;
+            filter: none !important;
+            mix-blend-mode: normal;
         }
 
         @keyframes slideIn {
             from {
-                transform: translateX(100%);
+                transform: translateY(100%);
                 opacity: 0;
             }
             to {
-                transform: translateX(0);
+                transform: translateY(0);
                 opacity: 1;
             }
         }
@@ -1412,16 +1421,18 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             padding: 4px;
             z-index: 10000;
-            min-width: 150px;
+            min-width: 160px;
+            max-width: 260px;
             display: flex;
             flex-direction: column;
+            box-sizing: border-box;
         }
 
         .context-menu-item {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 12px;
+            padding: 10px 12px;
             cursor: pointer;
             border-radius: 4px;
             color: #1e293b;
@@ -1443,6 +1454,73 @@
 
         .context-menu-item svg {
             flex-shrink: 0;
+        }
+
+        .context-menu-item + .context-menu-item {
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .context-menu-confirm {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            min-height: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
+            word-break: break-word;
+            justify-content: center;
+            align-items: center;
+            padding: 8px 12px;
+            background: #ffffff;
+            font-family: inherit;
+        }
+
+        .context-menu-confirm-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1e293b;
+            text-align: center;
+            width: 100%;
+        }
+
+        .context-menu-confirm-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .context-menu-btn {
+            border: none;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1 1 100px;
+            text-align: center;
+        }
+
+        .context-menu-btn-cancel {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .context-menu-btn-cancel:hover {
+            background: #e2e8f0;
+        }
+
+        .context-menu-btn-delete {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .context-menu-btn-delete:hover {
+            background: #dc2626;
         }
 
         /* Highlight styles for context menu selection */
@@ -2086,19 +2164,36 @@
 
     <!-- Context Menu -->
     <div id="contextMenu" class="context-menu" style="display: none;" onclick="event.stopPropagation()">
-        <div class="context-menu-item" onclick="handleContextMenuEdit()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
-            <span>Edit</span>
+        <div id="contextMenuOptions" style="display: flex; flex-direction: column; gap: 4px;">
+            <div class="context-menu-item" onclick="handleContextMenuPin()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="5" r="3"></circle>
+                    <line x1="12" y1="22" x2="12" y2="8"></line>
+                    <path d="M5 12H2a10 10 0 0 0 20 0h-3"></path>
+                </svg>
+                <span>Pin</span>
+            </div>
+            <div class="context-menu-item" onclick="handleContextMenuEdit()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                <span>Edit</span>
+            </div>
+            <div class="context-menu-item context-menu-item-danger" onclick="handleContextMenuDelete()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                <span>Delete</span>
+            </div>
         </div>
-        <div class="context-menu-item context-menu-item-danger" onclick="handleContextMenuDelete()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="3 6 5 6 21 6"></polyline>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-            </svg>
-            <span>Delete</span>
+        <div id="contextMenuConfirm" class="context-menu-confirm">
+            <div class="context-menu-confirm-title" id="contextMenuConfirmTitle">Are you sure?</div>
+            <div class="context-menu-confirm-buttons">
+                <button class="context-menu-btn context-menu-btn-cancel" onclick="cancelContextMenuDelete()">Cancel</button>
+                <button class="context-menu-btn context-menu-btn-delete" onclick="confirmContextMenuDelete()">Delete</button>
+            </div>
         </div>
     </div>
 
@@ -3139,10 +3234,28 @@
         let contextMenuTarget = null;
         let contextMenuType = null; // 'folder' or 'tag'
         let contextSelectedElement = null;
+        let contextMenuMode = 'options'; // 'options' or 'confirm'
+
+        function setContextMenuMode(mode) {
+            const options = document.getElementById('contextMenuOptions');
+            const confirm = document.getElementById('contextMenuConfirm');
+            if (!options || !confirm) return;
+
+            contextMenuMode = mode;
+            if (mode === 'options') {
+                options.style.display = 'flex';
+                confirm.style.display = 'none';
+            } else {
+                options.style.display = 'none';
+                confirm.style.display = 'flex';
+            }
+        }
 
         function showContextMenu(event, type, id) {
             event.preventDefault();
             event.stopPropagation();
+
+            setContextMenuMode('options');
             
             // Remove previous selection
             if (contextSelectedElement) {
@@ -3186,6 +3299,8 @@
         function hideContextMenu() {
             const contextMenu = document.getElementById('contextMenu');
             contextMenu.style.display = 'none';
+
+            setContextMenuMode('options');
             
             // Remove highlight from selected element
             if (contextSelectedElement) {
@@ -3224,26 +3339,43 @@
 
         function handleContextMenuEdit() {
             hideContextMenu();
-            
-            if (contextMenuType === 'folder') {
-                editFolder(contextMenuTarget);
-            } else if (contextMenuType === 'tag') {
-                editTag(contextMenuTarget);
-            }
+
+            showMessage('Editing from this menu will be available soon.', 'info');
+        }
+
+        function handleContextMenuPin() {
+            hideContextMenu();
+
+            showMessage('Pinning will be available soon. This will keep the item at the top.', 'info');
         }
 
         function handleContextMenuDelete() {
+            if (contextMenuType === 'folder' && contextMenuTarget === 'none') {
+                showMessage('This folder cannot be deleted', 'error');
+                hideContextMenu();
+                return;
+            }
+
+            const confirmTitle = document.getElementById('contextMenuConfirmTitle');
+            confirmTitle.textContent = 'Are you sure?';
+
+            setContextMenuMode('confirm');
+        }
+
+        function cancelContextMenuDelete() {
+            setContextMenuMode('options');
+        }
+
+        function confirmContextMenuDelete() {
+            const targetId = contextMenuTarget;
+            const targetType = contextMenuType;
+
             hideContextMenu();
-            
-            if (contextMenuType === 'folder') {
-                // "TAGS WITHOUT FOLDER" is a special folder that cannot be deleted
-                if (contextMenuTarget === 'none') {
-                    showMessage('This folder cannot be deleted', 'error');
-                    return;
-                }
-                deleteFolder(contextMenuTarget);
-            } else if (contextMenuType === 'tag') {
-                deleteTag(contextMenuTarget);
+
+            if (targetType === 'folder' && targetId !== null) {
+                deleteFolder(targetId);
+            } else if (targetType === 'tag' && targetId !== null) {
+                deleteTag(targetId);
             }
         }
 
@@ -4228,8 +4360,6 @@
         }
 
         async function deleteFolder(folderId) {
-            if (!confirm('Delete this folder? Tags in this folder will be moved out of the folder.')) return;
-
             try {
                 const res = await fetch(`${FOLDERS_URL}/${folderId}`, {
                     method: 'DELETE',
@@ -4251,8 +4381,6 @@
         }
 
         async function deleteTag(tagId) {
-            if (!confirm('Delete this tag? Tasks using this tag will have it removed.')) return;
-
             try {
                 const res = await fetch(`${TAGS_URL}/${tagId}`, {
                     method: 'DELETE',
