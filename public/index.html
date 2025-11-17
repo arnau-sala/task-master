@@ -1115,6 +1115,49 @@
             font-size: 18px;
         }
 
+        /* Create tag modal specific styles - appears as auxiliary window */
+        #createTagModalOverlay {
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: none;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 0;
+        }
+
+        #createTagModalOverlay .task-modal {
+            max-width: 450px;
+            width: 450px;
+            height: 380px;
+            max-height: 380px;
+            margin: 0;
+            position: absolute;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2), 0 8px 10px -5px rgba(0,0,0,0.1);
+            animation: fadeInScale 0.2s ease;
+            transform-origin: top left;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #createTagModalOverlay .task-modal-content {
+            flex: 1;
+            overflow: hidden;
+            padding: 16px 20px;
+        }
+
+        #createTagModalOverlay .task-modal-header {
+            padding: 12px 20px;
+        }
+
+        #createTagModalOverlay .task-modal-header h2 {
+            font-size: 16px;
+        }
+
+        #createTagModalOverlay label {
+            margin-bottom: 0 !important;
+            line-height: 1 !important;
+        }
+
         @keyframes fadeInScale {
             from {
                 transform: scale(0.95);
@@ -2136,7 +2179,7 @@
                                     <path d="M6 22V2"></path>
                                 </svg>
                             </button>
-                            <button id="tagsModalCreateTagBtn" class="create-btn" onclick="showTagsModalNewTagForm()" title="Create new tag">
+                            <button id="tagsModalCreateTagBtn" class="create-btn" onclick="openCreateTagModal()" title="Create new tag">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="12" y1="5" x2="12" y2="19"></line>
                                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -2158,6 +2201,60 @@
                     </select>
                     <button type="button" onclick="createTagFromTagsModal()" style="white-space: nowrap;">Add Tag</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Tag Modal -->
+    <div id="createTagModalOverlay" class="task-modal-overlay" onclick="closeCreateTagModalOnOverlay(event)">
+        <div class="task-modal" onclick="event.stopPropagation()">
+            <div class="task-modal-header">
+                <h2>Create Tag</h2>
+                <button class="task-modal-close" onclick="closeCreateTagModal()">×</button>
+            </div>
+            <div class="task-modal-content">
+                <form id="createTagForm" onsubmit="handleCreateTagSubmit(event)">
+                    <div style="display: flex; gap: 16px; align-items: flex-end; margin-bottom: 16px;">
+                        <div style="flex: 0 1 auto; min-width: 200px; max-width: 250px; display: flex; flex-direction: column; gap: 4px;">
+                            <label for="createTagName" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0;">Title</label>
+                            <input type="text" id="createTagName" required maxlength="20" placeholder="Enter tag name" style="height: 36px; padding: 8px 12px; border-radius: 8px; border: 2px solid #e2e8f0; background: #ffffff; font-size: 14px; outline: none; transition: all 0.2s ease; width: 100%; box-sizing: border-box;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
+                            <label for="createTagColorBtn" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0; text-align: center;">Color</label>
+                            <button type="button" id="createTagColorBtn" class="view-btn" title="Select color" onclick="showCreateTagColorMenu(event)" style="width: 50px; height: 36px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                                    <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <input type="hidden" id="createTagColor" value="#3b82f6">
+                        <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
+                            <label for="createTagFolderBtn" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0; text-align: center;">Folder</label>
+                            <button type="button" id="createTagFolderBtn" class="view-btn" title="Select folder" onclick="showCreateTagFolderMenu(event)" style="width: 50px; height: 36px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
+                            <label for="createTagPinnedBtn" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0; text-align: center;">Pin</label>
+                            <button type="button" id="createTagPinnedBtn" class="view-btn" title="Pin to top" onclick="toggleCreateTagPin()" style="width: 50px; height: 36px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="5" r="3"></circle>
+                                    <line x1="12" y1="22" x2="12" y2="8"></line>
+                                    <path d="M5 12H2a10 10 0 0 0 20 0h-3"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 0;">
+                        <button type="button" onclick="closeCreateTagModal()" style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
+                        <button type="submit" style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Create Tag</button>
+                    </div>
+                    <input type="hidden" id="createTagFolderHidden" value="">
+                    <input type="hidden" id="createTagPinnedHidden" value="false">
+                </form>
             </div>
         </div>
     </div>
@@ -3963,8 +4060,407 @@
         }
         
         function createTagFromTagsModal() {
-            // Placeholder function - not functional yet
-            console.log('Create tag from tags modal - not implemented yet');
+            // Open the create tag modal instead
+            openCreateTagModal();
+        }
+
+        // Create Tag Modal Functions
+        function openCreateTagModal() {
+            const modal = document.getElementById('createTagModalOverlay');
+            const modalContent = modal ? modal.querySelector('.task-modal') : null;
+            
+            if (modal && modalContent) {
+                // Position relative to task creation modal
+                let targetX = 600;
+                let targetY = 120;
+                
+                const taskModal = document.getElementById('taskModalOverlay');
+                const tagsModal = document.getElementById('tagsModalOverlay');
+                const createTagModalHeight = 380;
+                const createTagModalWidth = 450;
+                
+                if (taskModal && taskModal.classList.contains('active')) {
+                    const taskModalContent = taskModal.querySelector('.task-modal');
+                    if (taskModalContent) {
+                        const taskModalRect = taskModalContent.getBoundingClientRect();
+                        // Position to the right of the task modal with 16px gap (same as tags modal)
+                        targetX = taskModalRect.right + 16;
+                        
+                        // Always align top with task modal
+                        targetY = taskModalRect.top;
+                        
+                        // If tags modal is open, adjust height to leave margin
+                        if (tagsModal && tagsModal.classList.contains('active')) {
+                            const tagsModalContent = tagsModal.querySelector('.task-modal');
+                            if (tagsModalContent) {
+                                const tagsModalRect = tagsModalContent.getBoundingClientRect();
+                                // Calculate available space above tags modal
+                                const availableHeight = tagsModalRect.top - targetY - 16; // 16px margin
+                                // Adjust height if needed, but keep minimum
+                                if (availableHeight < createTagModalHeight) {
+                                    modalContent.style.height = Math.max(availableHeight, 200) + 'px';
+                                    modalContent.style.maxHeight = Math.max(availableHeight, 200) + 'px';
+                                } else {
+                                    modalContent.style.height = createTagModalHeight + 'px';
+                                    modalContent.style.maxHeight = createTagModalHeight + 'px';
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // If task modal is not open, center it on screen
+                    targetX = (window.innerWidth - createTagModalWidth) / 2;
+                    targetY = (window.innerHeight - createTagModalHeight) / 2;
+                }
+                
+                // Ensure modal doesn't go off screen
+                const maxX = window.innerWidth - createTagModalWidth - 20;
+                const maxY = window.innerHeight - createTagModalHeight - 20;
+                
+                const finalX = Math.min(targetX, maxX);
+                const finalY = Math.min(targetY, maxY);
+                
+                // Set position
+                modalContent.style.left = Math.max(finalX, 20) + 'px';
+                modalContent.style.top = Math.max(finalY, 20) + 'px';
+                
+                modal.classList.add('active');
+                
+                // Reset form state
+                document.getElementById('createTagFolderHidden').value = '';
+                document.getElementById('createTagPinnedHidden').value = 'false';
+                document.getElementById('createTagColor').value = '#3b82f6';
+                updateCreateTagFolderBtnVisual(document.getElementById('createTagFolderBtn'));
+                updateCreateTagColorBtnVisual(document.getElementById('createTagColorBtn'));
+                updateCreateTagPinBtnVisual(document.getElementById('createTagPinnedBtn'));
+                
+                // Focus on name input
+                setTimeout(() => {
+                    const nameInput = document.getElementById('createTagName');
+                    if (nameInput) {
+                        nameInput.focus();
+                    }
+                }, 100);
+            }
+        }
+
+        function closeCreateTagModal() {
+            const modal = document.getElementById('createTagModalOverlay');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+            // Reset form
+            const form = document.getElementById('createTagForm');
+            if (form) {
+                form.reset();
+                document.getElementById('createTagColor').value = '#3b82f6';
+                document.getElementById('createTagFolderHidden').value = '';
+                document.getElementById('createTagPinnedHidden').value = 'false';
+                updateCreateTagFolderBtnVisual(document.getElementById('createTagFolderBtn'));
+                updateCreateTagColorBtnVisual(document.getElementById('createTagColorBtn'));
+                updateCreateTagPinBtnVisual(document.getElementById('createTagPinnedBtn'));
+            }
+        }
+
+        function closeCreateTagModalOnOverlay(event) {
+            if (event.target.id === 'createTagModalOverlay') {
+                closeCreateTagModal();
+            }
+        }
+
+        function updateCreateTagModalFolderSelect() {
+            // No longer needed - using button instead of select
+        }
+
+        function updateCreateTagFolderBtnVisual(btnElement) {
+            if (!btnElement) return;
+            const folderId = document.getElementById('createTagFolderHidden').value;
+            if (folderId) {
+                const folder = folders.find(f => f.id === parseInt(folderId));
+                if (folder) {
+                    btnElement.style.borderColor = folder.color || '#3b82f6';
+                    btnElement.style.background = folder.color || '#3b82f6';
+                    btnElement.style.color = '#ffffff';
+                    const svg = btnElement.querySelector('svg');
+                    if (svg) {
+                        svg.setAttribute('stroke', '#ffffff');
+                    }
+                }
+            } else {
+                btnElement.style.borderColor = '#e2e8f0';
+                btnElement.style.background = '#ffffff';
+                btnElement.style.color = '#64748b';
+                const svg = btnElement.querySelector('svg');
+                if (svg) {
+                    svg.setAttribute('stroke', 'currentColor');
+                }
+            }
+        }
+
+        function showCreateTagFolderMenu(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            // Create a simple dropdown menu
+            const existingMenu = document.getElementById('createTagFolderMenu');
+            if (existingMenu) {
+                existingMenu.remove();
+                return;
+            }
+            
+            const menu = document.createElement('div');
+            menu.id = 'createTagFolderMenu';
+            menu.style.cssText = 'position: absolute; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10001; max-height: 200px; overflow-y: auto; overflow-x: hidden; min-width: 200px;';
+            
+            // Hide scrollbar but keep scroll functionality
+            const style = document.createElement('style');
+            style.textContent = `
+                #createTagFolderMenu::-webkit-scrollbar {
+                    display: none;
+                }
+                #createTagFolderMenu {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            const btnRect = event.target.closest('button').getBoundingClientRect();
+            menu.style.left = btnRect.left + 'px';
+            menu.style.top = (btnRect.bottom + 4) + 'px';
+            
+            // Add "No folder" option
+            const noFolderItem = document.createElement('div');
+            noFolderItem.style.cssText = 'padding: 8px 12px; cursor: pointer; font-size: 14px; color: #1e293b; transition: background 0.2s ease;';
+            noFolderItem.textContent = 'No folder';
+            noFolderItem.onmouseover = () => noFolderItem.style.background = '#f8fafc';
+            noFolderItem.onmouseout = () => noFolderItem.style.background = 'transparent';
+            noFolderItem.onclick = () => {
+                document.getElementById('createTagFolderHidden').value = '';
+                updateCreateTagFolderBtnVisual(document.getElementById('createTagFolderBtn'));
+                menu.remove();
+            };
+            menu.appendChild(noFolderItem);
+            
+            // Add folder options
+            folders.forEach(folder => {
+                const folderItem = document.createElement('div');
+                folderItem.style.cssText = 'padding: 8px 12px; cursor: pointer; font-size: 14px; color: #1e293b; transition: background 0.2s ease; display: flex; align-items: center; gap: 8px;';
+                folderItem.innerHTML = `<span style="width: 12px; height: 12px; border-radius: 50%; background: ${folder.color || '#64748b'};"></span>${escapeHtml(folder.name.toUpperCase())}`;
+                folderItem.onmouseover = () => folderItem.style.background = '#f8fafc';
+                folderItem.onmouseout = () => folderItem.style.background = 'transparent';
+                folderItem.onclick = () => {
+                    document.getElementById('createTagFolderHidden').value = folder.id;
+                    updateCreateTagFolderBtnVisual(document.getElementById('createTagFolderBtn'));
+                    menu.remove();
+                };
+                menu.appendChild(folderItem);
+            });
+            
+            document.body.appendChild(menu);
+            
+            // Close menu when clicking outside
+            setTimeout(() => {
+                const closeMenu = (e) => {
+                    if (!menu.contains(e.target) && !event.target.closest('button').contains(e.target)) {
+                        menu.remove();
+                        document.removeEventListener('click', closeMenu);
+                    }
+                };
+                document.addEventListener('click', closeMenu);
+            }, 0);
+        }
+
+        function showCreateTagColorMenu(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            // Create a simple dropdown menu
+            const existingMenu = document.getElementById('createTagColorMenu');
+            if (existingMenu) {
+                existingMenu.remove();
+                return;
+            }
+            
+            const menu = document.createElement('div');
+            menu.id = 'createTagColorMenu';
+            menu.style.cssText = 'position: absolute; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10001; padding: 8px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; min-width: 180px;';
+            
+            const btnRect = event.target.closest('button').getBoundingClientRect();
+            menu.style.left = btnRect.left + 'px';
+            menu.style.top = (btnRect.bottom + 4) + 'px';
+            
+            // After menu is rendered, align right edge of menu with right edge of button
+            setTimeout(() => {
+                const menuRect = menu.getBoundingClientRect();
+                const menuWidth = menuRect.width;
+                const leftPosition = btnRect.right - menuWidth;
+                menu.style.left = leftPosition + 'px';
+                
+                // Ensure menu doesn't go off-screen to the left
+                const finalMenuRect = menu.getBoundingClientRect();
+                if (finalMenuRect.left < 20) {
+                    menu.style.left = '20px';
+                }
+            }, 0);
+            
+            // Predefined colors
+            const colors = [
+                '#3b82f6', // Blue
+                '#ef4444', // Red
+                '#10b981', // Green
+                '#fbbf24', // Amber/Yellow (lighter)
+                '#f97316', // Orange
+                '#8b5cf6', // Purple
+                '#ec4899', // Pink
+                '#a16207', // Brown
+                '#84cc16', // Lime
+                '#64748b'  // Gray
+            ];
+            
+            colors.forEach(color => {
+                const colorItem = document.createElement('div');
+                colorItem.style.cssText = `width: 28px; height: 28px; border-radius: 6px; background: ${color}; cursor: pointer; border: 2px solid transparent; transition: all 0.2s ease;`;
+                colorItem.onmouseover = () => {
+                    colorItem.style.borderColor = '#3b82f6';
+                    colorItem.style.transform = 'scale(1.1)';
+                };
+                colorItem.onmouseout = () => {
+                    colorItem.style.borderColor = 'transparent';
+                    colorItem.style.transform = 'scale(1)';
+                };
+                colorItem.onclick = () => {
+                    document.getElementById('createTagColor').value = color;
+                    updateCreateTagColorBtnVisual(document.getElementById('createTagColorBtn'));
+                    menu.remove();
+                };
+                menu.appendChild(colorItem);
+            });
+            
+            document.body.appendChild(menu);
+            
+            // Close menu when clicking outside (but not the modal)
+            setTimeout(() => {
+                const closeMenu = (e) => {
+                    const clickedButton = e.target.closest('#createTagColorBtn');
+                    if (!menu.contains(e.target) && !clickedButton) {
+                        menu.remove();
+                        document.removeEventListener('click', closeMenu, true);
+                    }
+                };
+                // Use capture phase to catch clicks before they reach other handlers
+                document.addEventListener('click', closeMenu, true);
+            }, 0);
+        }
+
+        function updateCreateTagColorBtnVisual(btnElement) {
+            if (!btnElement) return;
+            const color = document.getElementById('createTagColor').value;
+            if (color) {
+                btnElement.style.borderColor = color;
+                btnElement.style.background = color;
+                btnElement.style.color = '#ffffff';
+                const svg = btnElement.querySelector('svg');
+                if (svg) {
+                    svg.setAttribute('stroke', '#ffffff');
+                }
+            } else {
+                btnElement.style.borderColor = '#e2e8f0';
+                btnElement.style.background = '#ffffff';
+                btnElement.style.color = '#64748b';
+                const svg = btnElement.querySelector('svg');
+                if (svg) {
+                    svg.setAttribute('stroke', 'currentColor');
+                }
+            }
+        }
+
+        function toggleCreateTagPin() {
+            const hiddenInput = document.getElementById('createTagPinnedHidden');
+            const btn = document.getElementById('createTagPinnedBtn');
+            const isPinned = hiddenInput.value === 'true';
+            hiddenInput.value = isPinned ? 'false' : 'true';
+            updateCreateTagPinBtnVisual(btn);
+        }
+
+        function updateCreateTagPinBtnVisual(btnElement) {
+            if (!btnElement) return;
+            const isPinned = document.getElementById('createTagPinnedHidden').value === 'true';
+            const svg = btnElement.querySelector('svg');
+            
+            if (isPinned) {
+                btnElement.classList.add('active');
+                btnElement.style.background = '#3b82f6';
+                btnElement.style.borderColor = '#3b82f6';
+                btnElement.style.color = '#ffffff';
+                if (svg) {
+                    svg.setAttribute('stroke', 'currentColor');
+                }
+            } else {
+                btnElement.classList.remove('active');
+                btnElement.style.background = '#ffffff';
+                btnElement.style.borderColor = '#e2e8f0';
+                btnElement.style.color = '#64748b';
+                if (svg) {
+                    svg.setAttribute('stroke', 'currentColor');
+                }
+            }
+        }
+
+        async function handleCreateTagSubmit(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('createTagName').value.trim();
+            const color = document.getElementById('createTagColor').value;
+            const folderId = document.getElementById('createTagFolderHidden').value || null;
+            const pinned = document.getElementById('createTagPinnedHidden').value === 'true';
+
+            if (!name) {
+                showMessage('Tag name is required', 'error');
+                return;
+            }
+
+            if (name.length > 20) {
+                showMessage('Tag name must be 20 characters or less', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(TAGS_URL, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ 
+                        name, 
+                        color, 
+                        folderId: folderId ? parseInt(folderId) : null,
+                        pinned: pinned || false
+                    })
+                });
+
+                if (res.status === 401) {
+                    logout();
+                    return;
+                }
+
+                const data = await res.json();
+                if (!res.ok) {
+                    showMessage(data.message || 'Error creating tag', 'error');
+                    return;
+                }
+
+                showMessage('Tag created', 'success');
+                closeCreateTagModal();
+                await loadTags();
+                renderTags();
+                // If tags modal is open, refresh it
+                const tagsModal = document.getElementById('tagsModalOverlay');
+                if (tagsModal && tagsModal.classList.contains('active')) {
+                    renderTagsModal();
+                }
+            } catch (error) {
+                console.error('Error creating tag:', error);
+                showMessage('Error creating tag', 'error');
+            }
         }
 
         function closeTagsModal() {
