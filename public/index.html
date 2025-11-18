@@ -2091,7 +2091,7 @@
                                     <path d="M6 22V2"></path>
                                 </svg>
                             </button>
-                            <button id="createTagFolderBtn" class="create-btn" onclick="showCreateMenu()" title="Create">
+                            <button id="openCreateTagMenuBtn" class="create-btn" onclick="showCreateMenu()" title="Create">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="12" y1="5" x2="12" y2="19"></line>
                                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -2214,43 +2214,57 @@
             </div>
             <div class="task-modal-content">
                 <form id="createTagForm" onsubmit="handleCreateTagSubmit(event)">
-                    <div style="display: flex; gap: 16px; align-items: flex-end; margin-bottom: 16px;">
-                        <div style="flex: 0 1 auto; min-width: 200px; max-width: 250px; display: flex; flex-direction: column; gap: 4px;">
+                    <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
+                        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px; max-width: 260px;">
                             <label for="createTagName" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0;">Title</label>
-                            <input type="text" id="createTagName" required maxlength="20" placeholder="Enter tag name" style="height: 36px; padding: 8px 12px; border-radius: 8px; border: 2px solid #e2e8f0; background: #ffffff; font-size: 14px; outline: none; transition: all 0.2s ease; width: 100%; box-sizing: border-box;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                            <input type="text" id="createTagName" required maxlength="20" placeholder="Enter tag name" style="height: 36px; padding: 8px 12px; border-radius: 8px; border: 2px solid #e2e8f0; background: #ffffff; font-size: 14px; outline: none; transition: all 0.2s ease; width: 100%; box-sizing: border-box;" oninput="updateCreateTagPreview()" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
                         </div>
-                        <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
-                            <label for="createTagColorBtn" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0; text-align: center;">Color</label>
-                            <button type="button" id="createTagColorBtn" class="view-btn" title="Select color" onclick="showCreateTagColorMenu(event)" style="width: 50px; height: 36px;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
-                                    <line x1="7" y1="7" x2="7.01" y2="7"></line>
-                                </svg>
-                            </button>
+                        <div style="display: flex; gap: 16px; align-items: flex-end;">
+                            <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
+                                <label for="createTagColorBtn" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0; text-align: center;">Color</label>
+                                <button type="button" id="createTagColorBtn" class="view-btn" title="Select color" onclick="showCreateTagColorMenu(event)" style="width: 50px; height: 36px;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                                        <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
+                                <label for="createTagFolderBtn" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0; text-align: center;">Folder</label>
+                                <button type="button" id="createTagFolderBtn" class="view-btn" title="Select folder" onclick="showCreateTagFolderMenu(event)" style="width: 50px; height: 36px;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
+                                <label for="createTagPinnedBtn" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0; text-align: center;">Pin</label>
+                                <button type="button" id="createTagPinnedBtn" class="view-btn" title="Pin to top" onclick="toggleCreateTagPin()" style="width: 50px; height: 36px;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="5" r="3"></circle>
+                                        <line x1="12" y1="22" x2="12" y2="8"></line>
+                                        <path d="M5 12H2a10 10 0 0 0 20 0h-3"></path>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                         <input type="hidden" id="createTagColor" value="#3b82f6">
-                        <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
-                            <label for="createTagFolderBtn" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0; text-align: center;">Folder</label>
-                            <button type="button" id="createTagFolderBtn" class="view-btn" title="Select folder" onclick="showCreateTagFolderMenu(event)" style="width: 50px; height: 36px;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                                </svg>
-                            </button>
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
-                            <label for="createTagPinnedBtn" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0; text-align: center;">Pin</label>
-                            <button type="button" id="createTagPinnedBtn" class="view-btn" title="Pin to top" onclick="toggleCreateTagPin()" style="width: 50px; height: 36px;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="5" r="3"></circle>
-                                    <line x1="12" y1="22" x2="12" y2="8"></line>
-                                    <path d="M5 12H2a10 10 0 0 0 20 0h-3"></path>
-                                </svg>
-                            </button>
+                    </div>
+                    <div id="createTagPreviewContainer" style="margin: 12px 0; display: flex; align-items: center; justify-content: center;">
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; width: 100%;">
+                            <div id="createTagPreviewList" style="display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; min-width: 160px; max-width: 220px; box-sizing: border-box; height: 32px;">
+                                <div style="width: 10px; height: 10px; border-radius: 50%; background: #94a3b8; flex-shrink: 0;"></div>
+                                <span id="createTagPreviewText" style="flex: 1; font-size: 13px; color: #0f172a;">Sample Tag</span>
+                                <span id="createTagPreviewFolder" style="font-size: 11px; color: #c026d3; padding: 2px 6px; border-radius: 999px; border: 1px solid #f0abfc; background: #fdf4ff; text-transform: uppercase; font-weight: 600; white-space: nowrap;">Inbox</span>
+                            </div>
+                            <div id="createTagPreviewSelected" style="padding: 6px 12px; border-radius: 999px; background: #94a3b8; border: 1px solid #94a3b8; color: #ffffff; font-weight: 600; font-size: 12px; letter-spacing: 0.3px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; min-width: 110px; height: 32px;">
+                                <span id="createTagPreviewSelectedText">Sample Tag</span>
+                            </div>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 0;">
-                        <button type="button" onclick="closeCreateTagModal()" style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
-                        <button type="submit" style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Create Tag</button>
+                    <div style="display: flex; gap: 12px; justify-content: center; margin-top: 8px;">
+                        <button type="button" onclick="closeCreateTagModal()" style="min-width: 110px; text-align: center; background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
+                        <button type="submit" style="min-width: 110px; text-align: center; background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Create Tag</button>
                     </div>
                     <input type="hidden" id="createTagFolderHidden" value="">
                     <input type="hidden" id="createTagPinnedHidden" value="false">
@@ -2270,19 +2284,19 @@
                 </svg>
                 <span>Pin</span>
             </div>
-            <div class="context-menu-item" onclick="handleContextMenuEdit()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                </svg>
-                <span>Edit</span>
-            </div>
-            <div class="context-menu-item context-menu-item-danger" onclick="handleContextMenuDelete()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                </svg>
-                <span>Delete</span>
+        <div class="context-menu-item" onclick="handleContextMenuEdit()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            <span>Edit</span>
+        </div>
+        <div class="context-menu-item context-menu-item-danger" onclick="handleContextMenuDelete()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            <span>Delete</span>
             </div>
         </div>
         <div id="contextMenuConfirm" class="context-menu-confirm">
@@ -3333,6 +3347,33 @@
         let contextSelectedElement = null;
         let contextMenuMode = 'options'; // 'options' or 'confirm'
 
+        let activeTagModalDropdown = null;
+
+        function darkenColor(hexColor, amount = 0.2) {
+            if (!hexColor || typeof hexColor !== 'string') return '#000000';
+            let hex = hexColor.replace('#', '');
+            if (hex.length === 3) {
+                hex = hex.split('').map(ch => ch + ch).join('');
+            }
+            const num = parseInt(hex, 16);
+            if (Number.isNaN(num)) return hexColor;
+            let r = (num >> 16) & 255;
+            let g = (num >> 8) & 255;
+            let b = num & 255;
+            r = Math.max(0, Math.min(255, Math.floor(r * (1 - amount))));
+            g = Math.max(0, Math.min(255, Math.floor(g * (1 - amount))));
+            b = Math.max(0, Math.min(255, Math.floor(b * (1 - amount))));
+            const toHex = (value) => value.toString(16).padStart(2, '0');
+            return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+        }
+
+        function closeActiveTagModalDropdown() {
+            if (activeTagModalDropdown && typeof activeTagModalDropdown.cleanup === 'function') {
+                activeTagModalDropdown.cleanup();
+            }
+            activeTagModalDropdown = null;
+        }
+
         function setContextMenuMode(mode) {
             const options = document.getElementById('contextMenuOptions');
             const confirm = document.getElementById('contextMenuConfirm');
@@ -3436,22 +3477,22 @@
 
         function handleContextMenuEdit() {
             hideContextMenu();
-
+            
             showMessage('Editing from this menu will be available soon.', 'info');
         }
 
         function handleContextMenuPin() {
             hideContextMenu();
-
+            
             showMessage('Pinning will be available soon. This will keep the item at the top.', 'info');
         }
 
         function handleContextMenuDelete() {
             if (contextMenuType === 'folder' && contextMenuTarget === 'none') {
-                showMessage('This folder cannot be deleted', 'error');
+                    showMessage('This folder cannot be deleted', 'error');
                 hideContextMenu();
-                return;
-            }
+                    return;
+                }
 
             const confirmTitle = document.getElementById('contextMenuConfirmTitle');
             confirmTitle.textContent = 'Are you sure?';
@@ -4175,24 +4216,30 @@
         function updateCreateTagFolderBtnVisual(btnElement) {
             if (!btnElement) return;
             const folderId = document.getElementById('createTagFolderHidden').value;
+            const defaultBorder = '#e2e8f0';
+            const defaultColor = '#64748b';
+            const svg = btnElement.querySelector('svg');
+            const folderPath = svg ? svg.querySelector('path') : null;
             if (folderId) {
                 const folder = folders.find(f => f.id === parseInt(folderId));
                 if (folder) {
-                    btnElement.style.borderColor = folder.color || '#3b82f6';
-                    btnElement.style.background = folder.color || '#3b82f6';
-                    btnElement.style.color = '#ffffff';
-                    const svg = btnElement.querySelector('svg');
-                    if (svg) {
-                        svg.setAttribute('stroke', '#ffffff');
+                    const baseColor = folder.color || '#3b82f6';
+                    const borderColor = darkenColor(baseColor, 0.25);
+                    btnElement.style.borderColor = defaultBorder;
+                    btnElement.style.background = '#ffffff';
+                    btnElement.style.color = defaultColor;
+                    if (folderPath) {
+                        folderPath.setAttribute('stroke', borderColor);
+                        folderPath.setAttribute('fill', baseColor);
                     }
                 }
             } else {
-                btnElement.style.borderColor = '#e2e8f0';
+                btnElement.style.borderColor = defaultBorder;
                 btnElement.style.background = '#ffffff';
-                btnElement.style.color = '#64748b';
-                const svg = btnElement.querySelector('svg');
-                if (svg) {
-                    svg.setAttribute('stroke', 'currentColor');
+                btnElement.style.color = defaultColor;
+                if (folderPath) {
+                    folderPath.setAttribute('stroke', 'currentColor');
+                    folderPath.setAttribute('fill', 'none');
                 }
             }
         }
@@ -4200,34 +4247,60 @@
         function showCreateTagFolderMenu(event) {
             event.preventDefault();
             event.stopPropagation();
+            const folderBtn = document.getElementById('createTagFolderBtn');
+            if (!folderBtn) return;
             
-            // Create a simple dropdown menu
-            const existingMenu = document.getElementById('createTagFolderMenu');
-            if (existingMenu) {
-                existingMenu.remove();
+            if (activeTagModalDropdown && activeTagModalDropdown.type === 'folder') {
+                closeActiveTagModalDropdown();
                 return;
+            }
+            closeActiveTagModalDropdown();
+            
+            const existingMenu = document.getElementById('createTagFolderMenu');
+            if (existingMenu) existingMenu.remove();
+            
+            let folderMenuStyles = document.getElementById('createTagFolderMenuStyles');
+            if (!folderMenuStyles) {
+                folderMenuStyles = document.createElement('style');
+                folderMenuStyles.id = 'createTagFolderMenuStyles';
+                folderMenuStyles.textContent = `
+                    #createTagFolderMenu::-webkit-scrollbar {
+                        display: none;
+                    }
+                    #createTagFolderMenu {
+                        -ms-overflow-style: none;
+                        scrollbar-width: none;
+                    }
+                `;
+                document.head.appendChild(folderMenuStyles);
             }
             
             const menu = document.createElement('div');
             menu.id = 'createTagFolderMenu';
             menu.style.cssText = 'position: absolute; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10001; max-height: 200px; overflow-y: auto; overflow-x: hidden; min-width: 200px;';
             
-            // Hide scrollbar but keep scroll functionality
-            const style = document.createElement('style');
-            style.textContent = `
-                #createTagFolderMenu::-webkit-scrollbar {
-                    display: none;
-                }
-                #createTagFolderMenu {
-                    -ms-overflow-style: none;
-                    scrollbar-width: none;
-                }
-            `;
-            document.head.appendChild(style);
-            
-            const btnRect = event.target.closest('button').getBoundingClientRect();
+            const btnRect = folderBtn.getBoundingClientRect();
             menu.style.left = btnRect.left + 'px';
             menu.style.top = (btnRect.bottom + 4) + 'px';
+            
+            folderBtn.classList.add('active');
+            
+            const cleanupFolderMenu = () => {
+                if (menu && menu.parentNode) {
+                    menu.remove();
+                }
+                folderBtn.classList.remove('active');
+                document.removeEventListener('click', closeMenu, true);
+                if (activeTagModalDropdown && activeTagModalDropdown.type === 'folder') {
+                    activeTagModalDropdown = null;
+                }
+            };
+            
+            const closeMenu = (e) => {
+                if (!menu.contains(e.target) && !folderBtn.contains(e.target)) {
+                    cleanupFolderMenu();
+                }
+            };
             
             // Add "No folder" option
             const noFolderItem = document.createElement('div');
@@ -4238,7 +4311,7 @@
             noFolderItem.onclick = () => {
                 document.getElementById('createTagFolderHidden').value = '';
                 updateCreateTagFolderBtnVisual(document.getElementById('createTagFolderBtn'));
-                menu.remove();
+                cleanupFolderMenu();
             };
             menu.appendChild(noFolderItem);
             
@@ -4252,57 +4325,66 @@
                 folderItem.onclick = () => {
                     document.getElementById('createTagFolderHidden').value = folder.id;
                     updateCreateTagFolderBtnVisual(document.getElementById('createTagFolderBtn'));
-                    menu.remove();
+                    cleanupFolderMenu();
                 };
                 menu.appendChild(folderItem);
             });
             
             document.body.appendChild(menu);
             
-            // Close menu when clicking outside
             setTimeout(() => {
-                const closeMenu = (e) => {
-                    if (!menu.contains(e.target) && !event.target.closest('button').contains(e.target)) {
-                        menu.remove();
-                        document.removeEventListener('click', closeMenu);
-                    }
-                };
-                document.addEventListener('click', closeMenu);
+                document.addEventListener('click', closeMenu, true);
             }, 0);
+            
+            activeTagModalDropdown = {
+                type: 'folder',
+                cleanup: cleanupFolderMenu
+            };
         }
 
         function showCreateTagColorMenu(event) {
             event.preventDefault();
             event.stopPropagation();
+            const colorBtn = document.getElementById('createTagColorBtn');
+            if (!colorBtn) return;
             
-            // Create a simple dropdown menu
-            const existingMenu = document.getElementById('createTagColorMenu');
-            if (existingMenu) {
-                existingMenu.remove();
+            if (activeTagModalDropdown && activeTagModalDropdown.type === 'color') {
+                closeActiveTagModalDropdown();
                 return;
             }
+            closeActiveTagModalDropdown();
+            
+            const existingMenu = document.getElementById('createTagColorMenu');
+            if (existingMenu) existingMenu.remove();
             
             const menu = document.createElement('div');
             menu.id = 'createTagColorMenu';
-            menu.style.cssText = 'position: absolute; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10001; padding: 8px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; min-width: 180px;';
+            const menuWidth = 200;
+            menu.style.cssText = `position: absolute; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10001; padding: 8px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: ${menuWidth}px;`;
             
-            const btnRect = event.target.closest('button').getBoundingClientRect();
-            menu.style.left = btnRect.left + 'px';
+            const btnRect = colorBtn.getBoundingClientRect();
+            let leftPosition = btnRect.right - menuWidth;
+            if (leftPosition < 20) {
+                leftPosition = 20;
+            }
+            menu.style.left = leftPosition + 'px';
             menu.style.top = (btnRect.bottom + 4) + 'px';
             
-            // After menu is rendered, align right edge of menu with right edge of button
-            setTimeout(() => {
-                const menuRect = menu.getBoundingClientRect();
-                const menuWidth = menuRect.width;
-                const leftPosition = btnRect.right - menuWidth;
-                menu.style.left = leftPosition + 'px';
-                
-                // Ensure menu doesn't go off-screen to the left
-                const finalMenuRect = menu.getBoundingClientRect();
-                if (finalMenuRect.left < 20) {
-                    menu.style.left = '20px';
+            const cleanupColorMenu = () => {
+                if (menu && menu.parentNode) {
+                    menu.remove();
                 }
-            }, 0);
+                document.removeEventListener('click', closeMenu, true);
+                if (activeTagModalDropdown && activeTagModalDropdown.type === 'color') {
+                    activeTagModalDropdown = null;
+                }
+            };
+            
+            const closeMenu = (e) => {
+                if (!menu.contains(e.target) && !colorBtn.contains(e.target)) {
+                    cleanupColorMenu();
+                }
+            };
             
             // Predefined colors
             const colors = [
@@ -4332,47 +4414,54 @@
                 colorItem.onclick = () => {
                     document.getElementById('createTagColor').value = color;
                     updateCreateTagColorBtnVisual(document.getElementById('createTagColorBtn'));
-                    menu.remove();
+                    cleanupColorMenu();
                 };
                 menu.appendChild(colorItem);
             });
             
             document.body.appendChild(menu);
             
-            // Close menu when clicking outside (but not the modal)
             setTimeout(() => {
-                const closeMenu = (e) => {
-                    const clickedButton = e.target.closest('#createTagColorBtn');
-                    if (!menu.contains(e.target) && !clickedButton) {
-                        menu.remove();
-                        document.removeEventListener('click', closeMenu, true);
-                    }
-                };
-                // Use capture phase to catch clicks before they reach other handlers
                 document.addEventListener('click', closeMenu, true);
             }, 0);
+            
+            activeTagModalDropdown = {
+                type: 'color',
+                cleanup: cleanupColorMenu
+            };
         }
 
         function updateCreateTagColorBtnVisual(btnElement) {
             if (!btnElement) return;
             const color = document.getElementById('createTagColor').value;
+            const tagPath = btnElement.querySelector('path');
+            const tagDot = btnElement.querySelector('line');
+            const defaultBorder = '#e2e8f0';
             if (color) {
-                btnElement.style.borderColor = color;
-                btnElement.style.background = color;
-                btnElement.style.color = '#ffffff';
-                const svg = btnElement.querySelector('svg');
-                if (svg) {
-                    svg.setAttribute('stroke', '#ffffff');
+                const strokeColor = darkenColor(color, 0.25);
+                btnElement.style.borderColor = defaultBorder;
+                btnElement.style.background = '#ffffff';
+                btnElement.style.color = strokeColor;
+                if (tagPath) {
+                    tagPath.setAttribute('stroke', strokeColor);
+                    tagPath.setAttribute('fill', color);
+                }
+                if (tagDot) {
+                    tagDot.setAttribute('stroke', '#ffffff');
                 }
             } else {
-                btnElement.style.borderColor = '#e2e8f0';
+                btnElement.style.borderColor = defaultBorder;
                 btnElement.style.background = '#ffffff';
                 btnElement.style.color = '#64748b';
-                const svg = btnElement.querySelector('svg');
-                if (svg) {
-                    svg.setAttribute('stroke', 'currentColor');
+                if (tagPath) {
+                    tagPath.setAttribute('stroke', 'currentColor');
+                    tagPath.setAttribute('fill', 'none');
+                }
+                if (tagDot) {
+                    tagDot.setAttribute('stroke', 'currentColor');
                 }
             }
+            updateCreateTagPreview();
         }
 
         function toggleCreateTagPin() {
@@ -4405,6 +4494,43 @@
                     svg.setAttribute('stroke', 'currentColor');
                 }
             }
+        }
+        
+        function updateCreateTagPreview() {
+            const nameInput = document.getElementById('createTagName');
+            const previewText = document.getElementById('createTagPreviewText');
+            const previewSelectedText = document.getElementById('createTagPreviewSelectedText');
+            const dot = document.getElementById('createTagPreviewDot');
+            const folderBadge = document.getElementById('createTagPreviewFolder');
+            const selectedPreview = document.getElementById('createTagPreviewSelected');
+            
+            if (!previewText || !previewSelectedText || !dot || !folderBadge || !selectedPreview) return;
+            
+            const name = (nameInput ? nameInput.value.trim() : '') || 'Sample Tag';
+            previewText.textContent = name;
+            previewSelectedText.textContent = name;
+            
+            const colorValue = document.getElementById('createTagColor') ? document.getElementById('createTagColor').value : '#94a3b8';
+            const tagColor = colorValue || '#94a3b8';
+            const darkerColor = darkenColor(tagColor, 0.25);
+            dot.style.background = tagColor;
+            selectedPreview.style.background = tagColor;
+            selectedPreview.style.borderColor = darkerColor;
+            
+            const folderId = document.getElementById('createTagFolderHidden') ? document.getElementById('createTagFolderHidden').value : '';
+            let folderName = 'NO FOLDER';
+            let folderColor = '#94a3b8';
+            if (folderId) {
+                const folder = folders.find(f => f.id === parseInt(folderId));
+                if (folder) {
+                    folderName = folder.name.toUpperCase();
+                    folderColor = folder.color || '#64748b';
+                }
+            }
+            folderBadge.textContent = folderName;
+            folderBadge.style.borderColor = folderColor;
+            folderBadge.style.color = folderColor;
+            folderBadge.style.background = folderColor ? folderColor + '20' : '#f8fafc';
         }
 
         async function handleCreateTagSubmit(event) {
