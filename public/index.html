@@ -1157,6 +1157,63 @@
             margin-bottom: 0 !important;
             line-height: 1 !important;
         }
+        
+        /* Create folder modal specific styles - appears as auxiliary window */
+        #createFolderModalOverlay {
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: none;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 0;
+        }
+        
+        #createFolderModalOverlay .task-modal {
+            max-width: 450px;
+            width: 450px;
+            height: 380px;
+            max-height: 380px;
+            margin: 0;
+            position: absolute;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2), 0 8px 10px -5px rgba(0,0,0,0.1);
+            animation: fadeInScale 0.2s ease;
+            transform-origin: top left;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        /* Create choice modal styles */
+        #createChoiceModalOverlay {
+            background: transparent;
+            backdrop-filter: none;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 0;
+        }
+        
+        #createChoiceMenu {
+            position: fixed;
+            z-index: 10001;
+        }
+        
+        #createFolderModalOverlay .task-modal-content {
+            flex: 1;
+            overflow: hidden;
+            padding: 16px 20px;
+        }
+        
+        #createFolderModalOverlay .task-modal-header {
+            padding: 12px 20px;
+        }
+        
+        #createFolderModalOverlay .task-modal-header h2 {
+            font-size: 16px;
+        }
+        
+        #createFolderModalOverlay label {
+            margin-bottom: 0 !important;
+            line-height: 1 !important;
+        }
 
         @keyframes fadeInScale {
             from {
@@ -1962,7 +2019,7 @@
             <div class="task-modal-content">
                 <form id="taskForm">
                     <div class="form-group">
-                        <label for="taskTitle">Title *</label>
+                        <label for="taskTitle">Title</label>
                         <input type="text" id="taskTitle" required>
                     </div>
                     <div class="form-group">
@@ -2179,7 +2236,7 @@
                                     <path d="M6 22V2"></path>
                                 </svg>
                             </button>
-                            <button id="tagsModalCreateTagBtn" class="create-btn" onclick="openCreateTagModal()" title="Create new tag">
+                            <button id="tagsModalCreateTagBtn" class="create-btn" onclick="openCreateChoiceModalFromTagsModal()" title="Create">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="12" y1="5" x2="12" y2="19"></line>
                                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -2214,16 +2271,16 @@
             </div>
             <div class="task-modal-content">
                 <form id="createTagForm" onsubmit="handleCreateTagSubmit(event)">
-                    <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
-                        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px; max-width: 260px;">
-                            <label for="createTagName" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0;">Title</label>
-                            <input type="text" id="createTagName" required maxlength="20" placeholder="Enter tag name" style="height: 36px; padding: 8px 12px; border-radius: 8px; border: 2px solid #e2e8f0; background: #ffffff; font-size: 14px; outline: none; transition: all 0.2s ease; width: 100%; box-sizing: border-box;" oninput="updateCreateTagPreview()" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                    <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px; justify-content: space-between;">
+                        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+                            <label for="createTagName" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0;">Name</label>
+                            <input type="text" id="createTagName" required maxlength="15" placeholder="Enter tag name" title="Please fill in this field" style="height: 36px; padding: 8px 12px; border-radius: 8px; border: 2px solid #e2e8f0; background: #ffffff; font-size: 14px; outline: none; transition: all 0.2s ease; width: 100%; box-sizing: border-box;" oninput="updateCreateTagPreview(); this.setCustomValidity(''); if (this.value.length > 15) this.value = this.value.slice(0, 15); toggleCreateTagButton();" oninvalid="this.setCustomValidity('Please enter a tag name (max 15 characters)'); this.title='Please fill in this field';" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
                         </div>
-                        <div style="display: flex; gap: 16px; align-items: flex-end;">
+                        <div style="display: flex; gap: 16px; align-items: flex-end; flex-shrink: 0;">
                             <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
                                 <label for="createTagColorBtn" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0; text-align: center;">Color</label>
                                 <button type="button" id="createTagColorBtn" class="view-btn" title="Select color" onclick="showCreateTagColorMenu(event)" style="width: 50px; height: 36px;">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
                                         <line x1="7" y1="7" x2="7.01" y2="7"></line>
                                     </svg>
@@ -2232,7 +2289,7 @@
                             <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
                                 <label for="createTagFolderBtn" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0; text-align: center;">Folder</label>
                                 <button type="button" id="createTagFolderBtn" class="view-btn" title="Select folder" onclick="showCreateTagFolderMenu(event)" style="width: 50px; height: 36px;">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                                     </svg>
                                 </button>
@@ -2240,34 +2297,100 @@
                             <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
                                 <label for="createTagPinnedBtn" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0; text-align: center;">Pin</label>
                                 <button type="button" id="createTagPinnedBtn" class="view-btn" title="Pin to top" onclick="toggleCreateTagPin()" style="width: 50px; height: 36px;">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <circle cx="12" cy="5" r="3"></circle>
-                                        <line x1="12" y1="22" x2="12" y2="8"></line>
-                                        <path d="M5 12H2a10 10 0 0 0 20 0h-3"></path>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17 12l4.5-2.5-7-7-2.5 4.5L3.5 10.5l10 10Z"></path>
+                                        <path d="m1.5 22.5 7-7"></path>
                                     </svg>
                                 </button>
                             </div>
                         </div>
                         <input type="hidden" id="createTagColor" value="#3b82f6">
                     </div>
-                    <div id="createTagPreviewContainer" style="margin: 12px 0; display: flex; align-items: center; justify-content: center;">
-                        <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; width: 100%;">
-                            <div id="createTagPreviewList" style="display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; min-width: 160px; max-width: 220px; box-sizing: border-box; height: 32px;">
-                                <div style="width: 10px; height: 10px; border-radius: 50%; background: #94a3b8; flex-shrink: 0;"></div>
-                                <span id="createTagPreviewText" style="flex: 1; font-size: 13px; color: #0f172a;">Sample Tag</span>
-                                <span id="createTagPreviewFolder" style="font-size: 11px; color: #c026d3; padding: 2px 6px; border-radius: 999px; border: 1px solid #f0abfc; background: #fdf4ff; text-transform: uppercase; font-weight: 600; white-space: nowrap;">Inbox</span>
-                            </div>
-                            <div id="createTagPreviewSelected" style="padding: 6px 12px; border-radius: 999px; background: #94a3b8; border: 1px solid #94a3b8; color: #ffffff; font-weight: 600; font-size: 12px; letter-spacing: 0.3px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; min-width: 110px; height: 32px;">
-                                <span id="createTagPreviewSelectedText">Sample Tag</span>
-                            </div>
+                    <div id="createTagPreviewContainer" style="margin: 12px 0; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 12px;">
+                        <div id="createTagPreviewBox" class="tag-item" style="display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: #ffffff; border-radius: 6px; margin-bottom: 0; border: 1px solid #e2e8f0; width: 280px; max-width: 280px; height: 36px; min-height: 36px; max-height: 36px; box-sizing: border-box; box-shadow: inset 0 -1px 0 rgba(15, 23, 42, 0.05); cursor: default; overflow: hidden; pointer-events: none; user-select: none;">
+                            <div id="createTagPreviewDot" style="width: 12px; height: 12px; border-radius: 50%; background-color: #3b82f6; flex-shrink: 0;"></div>
+                            <svg id="createTagPreviewPin" style="width: 14px; height: 14px; display: none; flex-shrink: 0; color: #64748b;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 12l4.5-2.5-7-7-2.5 4.5L3.5 10.5l10 10Z"></path>
+                                <path d="m1.5 22.5 7-7"></path>
+                            </svg>
+                            <span id="createTagPreviewText" style="flex: 1; min-width: 0; color: #1e293b; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 400;">Sample Tag</span>
+                            <span id="createTagPreviewFolder" style="font-size: 12px; color: #64748b; padding: 2px 8px; background: rgba(100, 116, 139, 0.125); border-radius: 4px; border: 1px solid #64748b; font-weight: 400; text-transform: uppercase; display: none; flex-shrink: 0; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-left: 0;">Folder</span>
+                        </div>
+                        <div id="createTagTaskPreviewBox" class="tag-checkbox-item selected" style="position: relative; display: flex; align-items: center; justify-content: center; padding: 6px 18px; border: 2px solid #3b82f6; border-radius: 999px; background: #3b82f6; color: #ffffff; font-weight: 500; min-width: 100px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; user-select: none;">
+                            <span id="createTagTaskPreviewText" style="color: #ffffff; font-weight: 500;">Sample Tag</span>
                         </div>
                     </div>
                     <div style="display: flex; gap: 12px; justify-content: center; margin-top: 8px;">
                         <button type="button" onclick="closeCreateTagModal()" style="min-width: 110px; text-align: center; background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
-                        <button type="submit" style="min-width: 110px; text-align: center; background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Create Tag</button>
+                        <button type="submit" id="createTagSubmitBtn" disabled style="min-width: 110px; text-align: center; background: #93c5fd; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: not-allowed; opacity: 0.7;">Create Tag</button>
                     </div>
                     <input type="hidden" id="createTagFolderHidden" value="">
                     <input type="hidden" id="createTagPinnedHidden" value="false">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Choice Modal (New Tag or New Folder) -->
+    <div id="createChoiceModalOverlay" class="task-modal-overlay" onclick="closeCreateChoiceModalOnOverlay(event)" style="background: transparent; backdrop-filter: none;">
+        <div id="createChoiceMenu" class="context-menu" onclick="event.stopPropagation()" style="display: flex;">
+            <div class="context-menu-item" onclick="openCreateTagFromChoice()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                    <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                </svg>
+                <span>New Tag</span>
+            </div>
+            <div class="context-menu-item" onclick="openCreateFolderFromChoice()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span>New Folder</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Folder Modal -->
+    <div id="createFolderModalOverlay" class="task-modal-overlay" onclick="closeCreateFolderModalOnOverlay(event)">
+        <div class="task-modal" onclick="event.stopPropagation()">
+            <div class="task-modal-header">
+                <h2>New Folder</h2>
+                <button class="task-modal-close" onclick="closeCreateFolderModal()">×</button>
+            </div>
+            <div class="task-modal-content">
+                <form id="createFolderForm" onsubmit="handleCreateFolderSubmit(event)">
+                    <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
+                        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px; max-width: 260px;">
+                            <label for="createFolderName" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0;">Name</label>
+                            <input type="text" id="createFolderName" required maxlength="15" placeholder="Enter folder name" title="Please fill in this field" style="height: 36px; padding: 8px 12px; border-radius: 8px; border: 2px solid #e2e8f0; background: #ffffff; font-size: 14px; outline: none; transition: all 0.2s ease; width: 100%; box-sizing: border-box;" oninput="this.setCustomValidity(''); if (this.value.length > 15) this.value = this.value.slice(0, 15); toggleCreateFolderButton();" oninvalid="this.setCustomValidity('Please enter a folder name (max 15 characters)'); this.title='Please fill in this field';" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                        </div>
+                        <div style="display: flex; gap: 16px; align-items: flex-end;">
+                            <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
+                                <label for="createFolderColorBtn" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0; text-align: center;">Color</label>
+                                <button type="button" id="createFolderColorBtn" class="view-btn" title="Select color" onclick="showCreateFolderColorMenu(event)" style="width: 50px; height: 36px;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                                        <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
+                                <label for="createFolderPinnedBtn" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0; text-align: center;">Pin</label>
+                                <button type="button" id="createFolderPinnedBtn" class="view-btn" title="Pin to top" onclick="toggleCreateFolderPin()" style="width: 50px; height: 36px;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17 12l4.5-2.5-7-7-2.5 4.5L3.5 10.5l10 10Z"></path>
+                                        <path d="m1.5 22.5 7-7"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <input type="hidden" id="createFolderColor" value="#64748b">
+                        <input type="hidden" id="createFolderPinnedHidden" value="false">
+                    </div>
+                    <div style="display: flex; gap: 12px; justify-content: center; margin-top: 8px;">
+                        <button type="button" onclick="closeCreateFolderModal()" style="min-width: 110px; text-align: center; background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
+                        <button type="submit" id="createFolderSubmitBtn" disabled style="min-width: 110px; text-align: center; background: #93c5fd; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: not-allowed; opacity: 0.7;">Create Folder</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -2278,9 +2401,8 @@
         <div id="contextMenuOptions" style="display: flex; flex-direction: column; gap: 4px;">
             <div class="context-menu-item" onclick="handleContextMenuPin()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="5" r="3"></circle>
-                    <line x1="12" y1="22" x2="12" y2="8"></line>
-                    <path d="M5 12H2a10 10 0 0 0 20 0h-3"></path>
+                    <path d="M17 12l4.5-2.5-7-7-2.5 4.5L3.5 10.5l10 10Z"></path>
+                    <path d="m1.5 22.5 7-7"></path>
                 </svg>
                 <span>Pin</span>
             </div>
@@ -2845,17 +2967,92 @@
         }
 
         function showCreateMenu() {
-            // For now, just toggle the forms (design only)
-            const folderForm = document.getElementById('newFolderForm');
-            const tagForm = document.getElementById('newTagForm');
-            
-            if (folderForm.style.display === 'none' || folderForm.style.display === '') {
-                folderForm.style.display = 'flex';
-                tagForm.style.display = 'flex';
+            // Open the choice modal
+            openCreateChoiceModal();
+        }
+        
+        // Create Choice Modal Functions
+        function openCreateChoiceModal() {
+            const modal = document.getElementById('createChoiceModalOverlay');
+            const menu = document.getElementById('createChoiceMenu');
+            if (modal && menu) {
+                // Get the button that triggered this
+                const createBtn = document.getElementById('openCreateTagMenuBtn');
+                if (createBtn) {
+                    const btnRect = createBtn.getBoundingClientRect();
+                    // Position menu below the button
+                    menu.style.left = btnRect.left + 'px';
+                    menu.style.top = (btnRect.bottom + 8) + 'px';
+                    
+                    // Ensure menu doesn't go off screen
+                    const menuRect = menu.getBoundingClientRect();
+                    if (menuRect.right > window.innerWidth) {
+                        menu.style.left = (window.innerWidth - menuRect.width - 20) + 'px';
+                    }
+                    if (menuRect.bottom > window.innerHeight) {
+                        menu.style.top = (btnRect.top - menuRect.height - 8) + 'px';
+                    }
             } else {
-                folderForm.style.display = 'none';
-                tagForm.style.display = 'none';
+                    // Fallback: center on screen
+                    menu.style.left = ((window.innerWidth - 180) / 2) + 'px';
+                    menu.style.top = ((window.innerHeight - 100) / 2) + 'px';
+                }
+                modal.classList.add('active');
             }
+        }
+        
+        function openCreateChoiceModalFromTagsModal() {
+            const modal = document.getElementById('createChoiceModalOverlay');
+            const menu = document.getElementById('createChoiceMenu');
+            if (modal && menu) {
+                // Get the button that triggered this (from tags modal)
+                const createBtn = document.getElementById('tagsModalCreateTagBtn');
+                if (createBtn) {
+                    const btnRect = createBtn.getBoundingClientRect();
+                    // Position menu below the button
+                    menu.style.left = btnRect.left + 'px';
+                    menu.style.top = (btnRect.bottom + 8) + 'px';
+                    
+                    // Ensure menu doesn't go off screen
+                    setTimeout(() => {
+                        const menuRect = menu.getBoundingClientRect();
+                        if (menuRect.right > window.innerWidth) {
+                            menu.style.left = (window.innerWidth - menuRect.width - 20) + 'px';
+                        }
+                        if (menuRect.bottom > window.innerHeight) {
+                            menu.style.top = (btnRect.top - menuRect.height - 8) + 'px';
+                        }
+                    }, 0);
+                } else {
+                    // Fallback: center on screen
+                    menu.style.left = ((window.innerWidth - 180) / 2) + 'px';
+                    menu.style.top = ((window.innerHeight - 100) / 2) + 'px';
+                }
+                modal.classList.add('active');
+            }
+        }
+        
+        function closeCreateChoiceModal() {
+            const modal = document.getElementById('createChoiceModalOverlay');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+        
+        function closeCreateChoiceModalOnOverlay(event) {
+            if (event.target.id === 'createChoiceModalOverlay') {
+                closeCreateChoiceModal();
+            }
+        }
+        
+        function openCreateTagFromChoice() {
+            closeCreateChoiceModal();
+            openCreateTagModal();
+        }
+        
+        function openCreateFolderFromChoice() {
+            closeCreateChoiceModal();
+            openCreateFolderModal();
         }
 
         function toggleFolder(folderId) {
@@ -2912,9 +3109,8 @@
                 showMessage('Tag name is required', 'error');
                 return;
             }
-
-            if (name.length > 20) {
-                showMessage('Tag name must be 20 characters or less', 'error');
+            if (name.length > 15) {
+                showMessage('Tag name must be 15 characters or less', 'error');
                 return;
             }
 
@@ -4106,6 +4302,27 @@
         }
 
         // Create Tag Modal Functions
+        function toggleCreateTagButton() {
+            const nameInput = document.getElementById('createTagName');
+            const submitBtn = document.getElementById('createTagSubmitBtn');
+            
+            if (!nameInput || !submitBtn) return;
+            
+            const hasValue = nameInput.value.trim().length > 0;
+            
+            if (hasValue) {
+                submitBtn.disabled = false;
+                submitBtn.style.background = '#3b82f6';
+                submitBtn.style.cursor = 'pointer';
+                submitBtn.style.opacity = '1';
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.style.background = '#93c5fd';
+                submitBtn.style.cursor = 'not-allowed';
+                submitBtn.style.opacity = '0.7';
+            }
+        }
+        
         function openCreateTagModal() {
             const modal = document.getElementById('createTagModalOverlay');
             const modalContent = modal ? modal.querySelector('.task-modal') : null;
@@ -4174,6 +4391,8 @@
                 updateCreateTagFolderBtnVisual(document.getElementById('createTagFolderBtn'));
                 updateCreateTagColorBtnVisual(document.getElementById('createTagColorBtn'));
                 updateCreateTagPinBtnVisual(document.getElementById('createTagPinnedBtn'));
+                updateCreateTagPreview();
+                toggleCreateTagButton();
                 
                 // Focus on name input
                 setTimeout(() => {
@@ -4200,12 +4419,322 @@
                 updateCreateTagFolderBtnVisual(document.getElementById('createTagFolderBtn'));
                 updateCreateTagColorBtnVisual(document.getElementById('createTagColorBtn'));
                 updateCreateTagPinBtnVisual(document.getElementById('createTagPinnedBtn'));
+                updateCreateTagPreview();
+                toggleCreateTagButton();
             }
         }
 
         function closeCreateTagModalOnOverlay(event) {
             if (event.target.id === 'createTagModalOverlay') {
                 closeCreateTagModal();
+            }
+        }
+        
+        // Create Folder Modal Functions
+        function openCreateFolderModal() {
+            const modal = document.getElementById('createFolderModalOverlay');
+            const modalContent = modal ? modal.querySelector('.task-modal') : null;
+            
+            if (modal && modalContent) {
+                // Position relative to task creation modal
+                let targetX = 600;
+                let targetY = 120;
+                
+                const taskModal = document.getElementById('taskModalOverlay');
+                const tagsModal = document.getElementById('tagsModalOverlay');
+                const createTagModal = document.getElementById('createTagModalOverlay');
+                const createFolderModalHeight = 380;
+                const createFolderModalWidth = 450;
+                
+                if (taskModal && taskModal.classList.contains('active')) {
+                    const taskModalContent = taskModal.querySelector('.task-modal');
+                    if (taskModalContent) {
+                        const taskModalRect = taskModalContent.getBoundingClientRect();
+                        // Position to the right of the task modal with 16px gap (same as tags modal)
+                        targetX = taskModalRect.right + 16;
+                        
+                        // Always align top with task modal
+                        targetY = taskModalRect.top;
+                        
+                        // If tags modal is open, adjust position to leave margin
+                        if (tagsModal && tagsModal.classList.contains('active')) {
+                            const tagsModalContent = tagsModal.querySelector('.task-modal');
+                            if (tagsModalContent) {
+                                const tagsModalRect = tagsModalContent.getBoundingClientRect();
+                                // Calculate available space above tags modal
+                                const availableHeight = tagsModalRect.top - targetY - 16; // 16px margin
+                                // Adjust height if needed, but keep minimum
+                                if (availableHeight < createFolderModalHeight) {
+                                    modalContent.style.height = Math.max(availableHeight, 200) + 'px';
+                                    modalContent.style.maxHeight = Math.max(availableHeight, 200) + 'px';
+                                } else {
+                                    modalContent.style.height = createFolderModalHeight + 'px';
+                                    modalContent.style.maxHeight = createFolderModalHeight + 'px';
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // If task modal is not open, center it on screen
+                    targetX = (window.innerWidth - createFolderModalWidth) / 2;
+                    targetY = (window.innerHeight - createFolderModalHeight) / 2;
+                }
+                
+                // Ensure modal doesn't go off screen
+                const maxX = window.innerWidth - createFolderModalWidth - 20;
+                const maxY = window.innerHeight - createFolderModalHeight - 20;
+                
+                const finalX = Math.min(targetX, maxX);
+                const finalY = Math.min(targetY, maxY);
+                
+                // Set position
+                modalContent.style.left = Math.max(finalX, 20) + 'px';
+                modalContent.style.top = Math.max(finalY, 20) + 'px';
+                
+                // Force fixed height only if tags modal is not open (otherwise it was already adjusted above)
+                if (!tagsModal || !tagsModal.classList.contains('active')) {
+                    modalContent.style.height = createFolderModalHeight + 'px';
+                    modalContent.style.maxHeight = createFolderModalHeight + 'px';
+                }
+                
+                modal.classList.add('active');
+                
+                // Reset form state
+                document.getElementById('createFolderColor').value = '#64748b';
+                document.getElementById('createFolderPinnedHidden').value = 'false';
+                updateCreateFolderColorBtnVisual(document.getElementById('createFolderColorBtn'));
+                updateCreateFolderPinBtnVisual(document.getElementById('createFolderPinnedBtn'));
+                toggleCreateFolderButton();
+                
+                // Focus on name input
+                setTimeout(() => {
+                    const nameInput = document.getElementById('createFolderName');
+                    if (nameInput) {
+                        nameInput.focus();
+                    }
+                }, 100);
+            }
+        }
+        
+        function closeCreateFolderModal() {
+            const modal = document.getElementById('createFolderModalOverlay');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+            // Reset form
+            const form = document.getElementById('createFolderForm');
+            if (form) {
+                form.reset();
+                document.getElementById('createFolderColor').value = '#64748b';
+                document.getElementById('createFolderPinnedHidden').value = 'false';
+                updateCreateFolderColorBtnVisual(document.getElementById('createFolderColorBtn'));
+                updateCreateFolderPinBtnVisual(document.getElementById('createFolderPinnedBtn'));
+                toggleCreateFolderButton();
+            }
+        }
+        
+        function closeCreateFolderModalOnOverlay(event) {
+            if (event.target.id === 'createFolderModalOverlay') {
+                closeCreateFolderModal();
+            }
+        }
+        
+        function toggleCreateFolderButton() {
+            const nameInput = document.getElementById('createFolderName');
+            const submitBtn = document.getElementById('createFolderSubmitBtn');
+            
+            if (!nameInput || !submitBtn) return;
+            
+            const hasValue = nameInput.value.trim().length > 0;
+            
+            if (hasValue) {
+                submitBtn.disabled = false;
+                submitBtn.style.background = '#3b82f6';
+                submitBtn.style.cursor = 'pointer';
+                submitBtn.style.opacity = '1';
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.style.background = '#93c5fd';
+                submitBtn.style.cursor = 'not-allowed';
+                submitBtn.style.opacity = '0.7';
+            }
+        }
+        
+        function showCreateFolderColorMenu(event) {
+            event.stopPropagation();
+            
+            // Close any other open dropdowns
+            if (activeTagModalDropdown) {
+                activeTagModalDropdown.remove();
+                activeTagModalDropdown = null;
+            }
+            
+            const btn = event.currentTarget;
+            const btnRect = btn.getBoundingClientRect();
+            
+            // Remove existing menu if any
+            const existingMenu = document.getElementById('createFolderColorMenu');
+            if (existingMenu) {
+                existingMenu.remove();
+            }
+            
+            // Create color menu
+            const colorMenu = document.createElement('div');
+            colorMenu.id = 'createFolderColorMenu';
+            colorMenu.style.cssText = `
+                position: fixed;
+                top: ${btnRect.bottom + 8}px;
+                left: ${btnRect.left}px;
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                padding: 12px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                z-index: 10000;
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 6px;
+                min-width: 180px;
+                width: 200px;
+            `;
+            
+            const colors = ['#ef4444', '#f59e0b', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6', '#a855f7', '#d97706'];
+            
+            colors.forEach(color => {
+                const colorBtn = document.createElement('button');
+                colorBtn.type = 'button';
+                colorBtn.style.cssText = `
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 6px;
+                    border: 2px solid ${color};
+                    background: ${color};
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                `;
+                colorBtn.onmouseover = function() {
+                    this.style.transform = 'scale(1.1)';
+                    this.style.boxShadow = `0 0 0 3px ${color}40`;
+                };
+                colorBtn.onmouseout = function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = 'none';
+                };
+                colorBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    document.getElementById('createFolderColor').value = color;
+                    updateCreateFolderColorBtnVisual(btn);
+                    colorMenu.remove();
+                    activeTagModalDropdown = null;
+                };
+                colorMenu.appendChild(colorBtn);
+            });
+            
+            document.body.appendChild(colorMenu);
+            activeTagModalDropdown = colorMenu;
+            
+            // Close menu when clicking outside
+            const closeMenu = (e) => {
+                if (!colorMenu.contains(e.target) && e.target !== btn) {
+                    colorMenu.remove();
+                    activeTagModalDropdown = null;
+                    document.removeEventListener('click', closeMenu);
+                }
+            };
+            setTimeout(() => {
+                document.addEventListener('click', closeMenu);
+            }, 0);
+        }
+        
+        function updateCreateFolderColorBtnVisual(btnElement) {
+            if (!btnElement) return;
+            const color = document.getElementById('createFolderColor').value || '#64748b';
+            const darkerColor = darkenColor(color, 20);
+            const svg = btnElement.querySelector('svg');
+            
+            if (svg) {
+                svg.setAttribute('fill', color);
+                svg.setAttribute('stroke', '#000000');
+            }
+        }
+        
+        function toggleCreateFolderPin() {
+            const hiddenInput = document.getElementById('createFolderPinnedHidden');
+            const btn = document.getElementById('createFolderPinnedBtn');
+            const isPinned = hiddenInput.value === 'true';
+            hiddenInput.value = isPinned ? 'false' : 'true';
+            updateCreateFolderPinBtnVisual(btn);
+        }
+        
+        function updateCreateFolderPinBtnVisual(btnElement) {
+            if (!btnElement) return;
+            const isPinned = document.getElementById('createFolderPinnedHidden').value === 'true';
+            const svg = btnElement.querySelector('svg');
+            
+            if (isPinned) {
+                btnElement.classList.add('active');
+                btnElement.style.background = '#3b82f6';
+                btnElement.style.borderColor = '#3b82f6';
+                btnElement.style.color = '#ffffff';
+                if (svg) {
+                    svg.setAttribute('stroke', '#000000');
+                }
+            } else {
+                btnElement.classList.remove('active');
+                btnElement.style.background = '#ffffff';
+                btnElement.style.borderColor = '#e2e8f0';
+                btnElement.style.color = '#64748b';
+                if (svg) {
+                    svg.setAttribute('stroke', '#000000');
+                }
+            }
+        }
+        
+        async function handleCreateFolderSubmit(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('createFolderName').value.trim();
+            const color = document.getElementById('createFolderColor').value;
+            
+            if (!name) {
+                showMessage('Folder name is required', 'error');
+                return;
+            }
+            if (name.length > 15) {
+                showMessage('Folder name must be 15 characters or less', 'error');
+                return;
+            }
+            
+            try {
+                const res = await fetch(FOLDERS_URL, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ name, color })
+                });
+                
+                if (res.status === 401) {
+                    logout();
+                    return;
+                }
+                
+                const data = await res.json();
+                if (!res.ok) {
+                    showMessage(data.message || 'Error creating folder', 'error');
+                    return;
+                }
+                
+                showMessage('Folder created', 'success');
+                closeCreateFolderModal();
+                await loadFolders();
+                renderTags();
+                // If tags modal is open, refresh it
+                const tagsModal = document.getElementById('tagsModalOverlay');
+                if (tagsModal && tagsModal.classList.contains('active')) {
+                    renderTagsModal();
+                }
+            } catch (error) {
+                console.error('Error creating folder:', error);
+                showMessage('Error creating folder', 'error');
             }
         }
 
@@ -4229,7 +4758,7 @@
                     btnElement.style.background = '#ffffff';
                     btnElement.style.color = defaultColor;
                     if (folderPath) {
-                        folderPath.setAttribute('stroke', borderColor);
+                        folderPath.setAttribute('stroke', '#000000');
                         folderPath.setAttribute('fill', baseColor);
                     }
                 }
@@ -4238,7 +4767,7 @@
                 btnElement.style.background = '#ffffff';
                 btnElement.style.color = defaultColor;
                 if (folderPath) {
-                    folderPath.setAttribute('stroke', 'currentColor');
+                    folderPath.setAttribute('stroke', '#000000');
                     folderPath.setAttribute('fill', 'none');
                 }
             }
@@ -4311,6 +4840,7 @@
             noFolderItem.onclick = () => {
                 document.getElementById('createTagFolderHidden').value = '';
                 updateCreateTagFolderBtnVisual(document.getElementById('createTagFolderBtn'));
+                updateCreateTagPreview();
                 cleanupFolderMenu();
             };
             menu.appendChild(noFolderItem);
@@ -4325,6 +4855,7 @@
                 folderItem.onclick = () => {
                     document.getElementById('createTagFolderHidden').value = folder.id;
                     updateCreateTagFolderBtnVisual(document.getElementById('createTagFolderBtn'));
+                    updateCreateTagPreview();
                     cleanupFolderMenu();
                 };
                 menu.appendChild(folderItem);
@@ -4414,6 +4945,7 @@
                 colorItem.onclick = () => {
                     document.getElementById('createTagColor').value = color;
                     updateCreateTagColorBtnVisual(document.getElementById('createTagColorBtn'));
+                    updateCreateTagPreview();
                     cleanupColorMenu();
                 };
                 menu.appendChild(colorItem);
@@ -4438,16 +4970,15 @@
             const tagDot = btnElement.querySelector('line');
             const defaultBorder = '#e2e8f0';
             if (color) {
-                const strokeColor = darkenColor(color, 0.25);
                 btnElement.style.borderColor = defaultBorder;
                 btnElement.style.background = '#ffffff';
-                btnElement.style.color = strokeColor;
+                btnElement.style.color = '#000000';
                 if (tagPath) {
-                    tagPath.setAttribute('stroke', strokeColor);
+                    tagPath.setAttribute('stroke', '#000000');
                     tagPath.setAttribute('fill', color);
                 }
                 if (tagDot) {
-                    tagDot.setAttribute('stroke', '#ffffff');
+                    tagDot.setAttribute('stroke', '#000000');
                 }
             } else {
                 btnElement.style.borderColor = defaultBorder;
@@ -4461,7 +4992,6 @@
                     tagDot.setAttribute('stroke', 'currentColor');
                 }
             }
-            updateCreateTagPreview();
         }
 
         function toggleCreateTagPin() {
@@ -4470,6 +5000,7 @@
             const isPinned = hiddenInput.value === 'true';
             hiddenInput.value = isPinned ? 'false' : 'true';
             updateCreateTagPinBtnVisual(btn);
+            updateCreateTagPreview();
         }
 
         function updateCreateTagPinBtnVisual(btnElement) {
@@ -4483,7 +5014,7 @@
                 btnElement.style.borderColor = '#3b82f6';
                 btnElement.style.color = '#ffffff';
                 if (svg) {
-                    svg.setAttribute('stroke', 'currentColor');
+                    svg.setAttribute('stroke', '#000000');
                 }
             } else {
                 btnElement.classList.remove('active');
@@ -4491,47 +5022,60 @@
                 btnElement.style.borderColor = '#e2e8f0';
                 btnElement.style.color = '#64748b';
                 if (svg) {
-                    svg.setAttribute('stroke', 'currentColor');
+                    svg.setAttribute('stroke', '#000000');
                 }
             }
         }
-        
+
         function updateCreateTagPreview() {
             const nameInput = document.getElementById('createTagName');
             const previewText = document.getElementById('createTagPreviewText');
-            const previewSelectedText = document.getElementById('createTagPreviewSelectedText');
-            const dot = document.getElementById('createTagPreviewDot');
+            const previewDot = document.getElementById('createTagPreviewDot');
+            const previewPin = document.getElementById('createTagPreviewPin');
             const folderBadge = document.getElementById('createTagPreviewFolder');
-            const selectedPreview = document.getElementById('createTagPreviewSelected');
+            const taskPreviewBox = document.getElementById('createTagTaskPreviewBox');
+            const taskPreviewText = document.getElementById('createTagTaskPreviewText');
+            const colorInput = document.getElementById('createTagColor');
+            const folderHidden = document.getElementById('createTagFolderHidden');
+            const pinnedHidden = document.getElementById('createTagPinnedHidden');
             
-            if (!previewText || !previewSelectedText || !dot || !folderBadge || !selectedPreview) return;
+            if (!previewText || !previewDot || !folderBadge || !nameInput || !colorInput || !folderHidden || !taskPreviewBox || !taskPreviewText || !previewPin || !pinnedHidden) return;
             
-            const name = (nameInput ? nameInput.value.trim() : '') || 'Sample Tag';
+            const name = nameInput.value.trim() || 'Sample Tag';
             previewText.textContent = name;
-            previewSelectedText.textContent = name;
             
-            const colorValue = document.getElementById('createTagColor') ? document.getElementById('createTagColor').value : '#94a3b8';
-            const tagColor = colorValue || '#94a3b8';
-            const darkerColor = darkenColor(tagColor, 0.25);
-            dot.style.background = tagColor;
-            selectedPreview.style.background = tagColor;
-            selectedPreview.style.borderColor = darkerColor;
+            const tagColor = colorInput.value || '#3b82f6';
+            previewDot.style.backgroundColor = tagColor;
+            taskPreviewText.textContent = name;
+            taskPreviewText.style.color = '#ffffff';
+            taskPreviewBox.style.backgroundColor = tagColor;
+            taskPreviewBox.style.borderColor = tagColor;
             
-            const folderId = document.getElementById('createTagFolderHidden') ? document.getElementById('createTagFolderHidden').value : '';
-            let folderName = 'NO FOLDER';
-            let folderColor = '#94a3b8';
+            // Show/hide pin icon
+            const isPinned = pinnedHidden.value === 'true';
+            if (isPinned) {
+                previewPin.style.display = 'block';
+            } else {
+                previewPin.style.display = 'none';
+            }
+            
+            const folderId = folderHidden.value;
             if (folderId) {
                 const folder = folders.find(f => f.id === parseInt(folderId));
                 if (folder) {
-                    folderName = folder.name.toUpperCase();
-                    folderColor = folder.color || '#64748b';
+                    folderBadge.textContent = folder.name.toUpperCase();
+                    folderBadge.style.display = 'inline-flex';
+                    folderBadge.style.borderColor = folder.color || '#64748b';
+                    folderBadge.style.color = folder.color || '#64748b';
+                    folderBadge.style.background = (folder.color || '#64748b') + '20';
+                } else {
+                    folderBadge.style.display = 'none';
                 }
+            } else {
+                folderBadge.style.display = 'none';
             }
-            folderBadge.textContent = folderName;
-            folderBadge.style.borderColor = folderColor;
-            folderBadge.style.color = folderColor;
-            folderBadge.style.background = folderColor ? folderColor + '20' : '#f8fafc';
         }
+        
 
         async function handleCreateTagSubmit(event) {
             event.preventDefault();
@@ -4545,9 +5089,8 @@
                 showMessage('Tag name is required', 'error');
                 return;
             }
-
-            if (name.length > 20) {
-                showMessage('Tag name must be 20 characters or less', 'error');
+            if (name.length > 15) {
+                showMessage('Tag name must be 15 characters or less', 'error');
                 return;
             }
 
@@ -5416,6 +5959,10 @@
             }
         }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCreateTagPreview();
+        });
+
         document.getElementById('taskForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const title = document.getElementById('taskTitle').value.trim();
@@ -5430,7 +5977,7 @@
             const imageFile = document.getElementById('taskImage').files[0];
 
             if (!title) {
-                showMessage('Title is required', 'error');
+                showMessage('Please enter a task title', 'error');
                 return;
             }
 
