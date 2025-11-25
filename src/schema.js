@@ -14,6 +14,7 @@ const folders = sqliteTable('folders', {
     id: integer('id').primaryKey({autoIncrement: true}),
     name: text('name').notNull(),
     color: text('color'),
+    pinned: integer('pinned').default(0),
     userId: integer('userId').references(() => users.id),
 });
 
@@ -22,6 +23,7 @@ const tags = sqliteTable('tags', {
     id: integer('id').primaryKey({autoIncrement: true}),
     name: text('name').notNull(),
     color: text('color'),
+    pinned: integer('pinned').default(0),
     userId: integer('userId').references(() => users.id),
     folderId: integer('folderId').references(() => folders.id),
 });

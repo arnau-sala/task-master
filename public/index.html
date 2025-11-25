@@ -306,6 +306,35 @@
             font-family: inherit;
         }
 
+        #taskDescription {
+            resize: none;
+            line-height: 1.5;
+            overflow-y: auto;
+            box-sizing: border-box;
+            padding-right: 24px; /* Extra padding to accommodate scrollbar */
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: #cbd5e1 transparent; /* Firefox */
+        }
+
+        /* Custom scrollbar for task description to maintain padding and rounded corners */
+        #taskDescription::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #taskDescription::-webkit-scrollbar-track {
+            background: transparent;
+            margin: 12px 0;
+        }
+
+        #taskDescription::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        #taskDescription::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
         .date-time-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -1033,7 +1062,7 @@
             background: white;
             border-radius: 16px;
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
@@ -2024,7 +2053,7 @@
                     </div>
                     <div class="form-group">
                         <label for="taskDescription">Description</label>
-                        <textarea id="taskDescription" style="min-height: 60px;"></textarea>
+                        <textarea id="taskDescription" rows="5"></textarea>
                     </div>
                     <div class="form-group">
                         <div class="date-time-row">
@@ -2117,12 +2146,12 @@
                         <h3>My Tags</h3>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                             <div style="display: flex; gap: 8px;">
-                                <button id="viewFoldersBtn" class="view-btn active" onclick="setViewMode('folders')" title="View folders">
+                                <button id="viewFoldersBtn" class="view-btn active" onclick="handleViewFoldersClick()" title="View folders">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                                     </svg>
                                 </button>
-                                <button id="viewTagsBtn" class="view-btn" onclick="setViewMode('tags')" title="View all tags">
+                                <button id="viewTagsBtn" class="view-btn" onclick="handleViewTagsClick()" title="View all tags">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
                                         <line x1="7" y1="7" x2="7.01" y2="7"></line>
@@ -2204,12 +2233,12 @@
                 <div class="profile-section" style="margin-bottom: 0; box-shadow: none; border: none; padding: 0; border-radius: 0; background: transparent;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <div style="display: flex; gap: 8px;">
-                            <button id="tagsModalViewFoldersBtn" class="view-btn active" onclick="setTagsModalViewMode('folders')" title="View folders">
+                            <button id="tagsModalViewFoldersBtn" class="view-btn active" onclick="handleTagsModalViewFoldersClick()" title="View folders">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                                 </svg>
                             </button>
-                            <button id="tagsModalViewTagsBtn" class="view-btn" onclick="setTagsModalViewMode('tags')" title="View all tags">
+                            <button id="tagsModalViewTagsBtn" class="view-btn" onclick="handleTagsModalViewTagsClick()" title="View all tags">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
                                     <line x1="7" y1="7" x2="7.01" y2="7"></line>
@@ -2359,12 +2388,12 @@
             </div>
             <div class="task-modal-content">
                 <form id="createFolderForm" onsubmit="handleCreateFolderSubmit(event)">
-                    <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 12px;">
-                        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px; max-width: 260px;">
+                    <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px; justify-content: space-between;">
+                        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0;">
                             <label for="createFolderName" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0;">Name</label>
                             <input type="text" id="createFolderName" required maxlength="15" placeholder="Enter folder name" title="Please fill in this field" style="height: 36px; padding: 8px 12px; border-radius: 8px; border: 2px solid #e2e8f0; background: #ffffff; font-size: 14px; outline: none; transition: all 0.2s ease; width: 100%; box-sizing: border-box;" oninput="this.setCustomValidity(''); if (this.value.length > 15) this.value = this.value.slice(0, 15); toggleCreateFolderButton(); updateCreateFolderPreview();" oninvalid="this.setCustomValidity('Please enter a folder name (max 15 characters)'); this.title='Please fill in this field';" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
                         </div>
-                        <div style="display: flex; gap: 16px; align-items: flex-end;">
+                        <div style="display: flex; gap: 16px; align-items: flex-end; flex-shrink: 0;">
                             <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
                                 <label for="createFolderColorBtn" style="font-size: 13px; font-weight: 500; color: #1e293b; margin: 0; text-align: center;">Color</label>
                                 <button type="button" id="createFolderColorBtn" class="view-btn" title="Select color" onclick="showCreateFolderColorMenu(event)" style="width: 50px; height: 36px;">
@@ -2407,14 +2436,15 @@
     <!-- Context Menu -->
     <div id="contextMenu" class="context-menu" style="display: none;" onclick="event.stopPropagation()">
         <div id="contextMenuOptions" style="display: flex; flex-direction: column; gap: 4px;">
-            <div class="context-menu-item" onclick="handleContextMenuPin()">
+            <div id="contextMenuPinOption" class="context-menu-item" onclick="handleContextMenuPin()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M17 12l4.5-2.5-7-7-2.5 4.5L3.5 10.5l10 10Z"></path>
                     <path d="m1.5 22.5 7-7"></path>
+                    <line id="contextMenuPinSlash" x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="2" style="display: none;"></line>
                 </svg>
-                <span>Pin</span>
+                <span id="contextMenuPinOptionLabel">Pin</span>
             </div>
-        <div class="context-menu-item" onclick="handleContextMenuEdit()">
+        <div id="contextMenuEditOption" class="context-menu-item" onclick="handleContextMenuEdit()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
@@ -2489,6 +2519,12 @@
         let currentTaskImage = null;
         let currentFilter = 'pending'; // 'pending', 'completed', 'all'
         let searchQuery = ''; // Current search query
+        let tagFormMode = 'create';
+        let editingTagId = null;
+        let tagOriginalData = null;
+        let folderFormMode = 'create';
+        let editingFolderId = null;
+        let folderOriginalData = null;
 
         // Check if user is logged in
         if (token) {
@@ -2713,6 +2749,7 @@
                 localStorage.setItem('token', token);
                 localStorage.setItem('userName', userName);
                 localStorage.setItem('userEmail', userEmail);
+                loadNoFolderPinnedState();
                 showMessage('Login successful', 'success');
                 await showApp();
             } catch (error) {
@@ -2988,6 +3025,7 @@
         }
 
         function logout() {
+            const previousPinKey = getNoFolderPinStorageKey();
             token = null;
             userName = null;
             userEmail = null;
@@ -2995,6 +3033,8 @@
             localStorage.removeItem('userName');
             localStorage.removeItem('userEmail');
             localStorage.removeItem('userPasswordPlain');
+            localStorage.removeItem(previousPinKey);
+            noFolderPinned = false;
             closeProfile();
             showAuth();
         }
@@ -3188,7 +3228,11 @@
                     return;
                 }
                 
-                folders = await res.json();
+                const data = await res.json();
+                folders = data.map(folder => ({
+                    ...folder,
+                    pinned: !!folder.pinned
+                }));
                 updateFolderSelect();
                 renderTags();
                 // Update tags modal if it's open
@@ -3212,7 +3256,11 @@
                     return;
                 }
                 
-                tags = await res.json();
+                const data = await res.json();
+                tags = data.map(tag => ({
+                    ...tag,
+                    pinned: !!tag.pinned
+                }));
                 renderTags();
                 updateTagSelect();
                 // Update tags modal if it's open
@@ -3240,20 +3288,62 @@
             }
         }
 
-        function setViewMode(mode) {
+        function setViewMode(mode, reset = false) {
+            const wasMode = viewMode;
+            const isSameMode = wasMode === mode;
             viewMode = mode;
             
             // Reset selected folder when switching to tags view
+            const switchingMode = !isSameMode;
             if (mode === 'tags') {
                 selectedFolderId = null;
             }
+            if ((reset && isSameMode) || switchingMode) {
+                if (mode === 'folders') {
+                    // keep selectedFolderId unless reset requested
+                    if (reset && isSameMode) selectedFolderId = null;
+                } else {
+                    selectedFolderId = null;
+                }
+                tagsSearchTerm = '';
+                const searchInput = document.getElementById('tagsSearchInput');
+                if (searchInput) {
+                    searchInput.value = '';
+                }
+            }
             
             // Update button states
-            document.getElementById('viewFoldersBtn').classList.toggle('active', mode === 'folders');
-            document.getElementById('viewTagsBtn').classList.toggle('active', mode === 'tags');
+            const viewFoldersBtn = document.getElementById('viewFoldersBtn');
+            const viewTagsBtn = document.getElementById('viewTagsBtn');
+            if (viewFoldersBtn) viewFoldersBtn.classList.toggle('active', mode === 'folders');
+            if (viewTagsBtn) viewTagsBtn.classList.toggle('active', mode === 'tags');
             
             // Re-render
             renderTags();
+        }
+
+        function handleViewFoldersClick() {
+            const reset = viewMode === 'folders';
+            setViewMode('folders', reset);
+            if (reset) {
+                setTimeout(() => {
+                    const foldersColumn = document.getElementById('foldersColumn');
+                    const tagsColumn = document.getElementById('tagsColumn');
+                    if (foldersColumn) foldersColumn.scrollTop = 0;
+                    if (tagsColumn) tagsColumn.scrollTop = 0;
+                }, 0);
+            }
+        }
+
+        function handleViewTagsClick() {
+            const reset = viewMode === 'tags';
+            setViewMode('tags', reset);
+            if (reset) {
+                setTimeout(() => {
+                    const allTagsColumn = document.getElementById('allTagsColumn');
+                    if (allTagsColumn) allTagsColumn.scrollTop = 0;
+                }, 0);
+            }
         }
 
         function renderTags() {
@@ -3269,6 +3359,8 @@
             // Update sort button icon
             updateSortButtonIcon();
             
+            const searchLower = tagsSearchTerm.trim().toLowerCase();
+
             if (viewMode === 'tags') {
                 // Show all tags in a flat list
                 // Hide folders column and tags column, show allTagsColumn
@@ -3310,12 +3402,7 @@
                     const isLast = index === sortedTags.length - 1;
                     html += `
                         <div class="tag-item" data-tag-id="${tag.id}" style="display: flex; align-items: center; gap: 10px; padding: 8px; background: #ffffff; border-radius: 6px; margin-bottom: ${isLast ? '0' : '6px'}; transition: background 0.2s ease;">
-                            <div style="width: 12px; height: 12px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
-                            <span style="flex: 1; color: #1e293b; font-size: 14px;">${escapeHtml(tag.name)}</span>
-                            ${tag.pinned ? `<svg style="width: 14px; height: 14px; flex-shrink: 0; color: ${tag.color || '#3b82f6'};" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M17 12l4.5-2.5-7-7-2.5 4.5L3.5 10.5l10 10Z"></path>
-                                <path d="m1.5 22.5 7-7"></path>
-                            </svg>` : ''}
+                            ${renderTagNameWithPin(tag)}
                             ${folder ? `<span onclick="navigateToFolder(${folder.id})" style="font-size: 12px; color: ${folder.color || '#64748b'}; padding: 2px 8px; background: ${folder.color || '#64748b'}20; border-radius: 4px; border: 1px solid ${folder.color || '#64748b'}; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.color='${folder.color || '#64748b'}'; this.style.borderColor='${folder.color || '#64748b'}'; this.style.filter='brightness(1.2) saturate(1.3)'" onmouseout="this.style.color='${folder.color || '#64748b'}'; this.style.borderColor='${folder.color || '#64748b'}'; this.style.filter='none'">${escapeHtml(folder.name.toUpperCase())}</span>` : ''}
                         </div>
                     `;
@@ -3352,14 +3439,23 @@
             if (tagsWithoutFolder.length > 0) {
                 allFoldersForSorting.push({
                     id: 'none',
-                    name: 'TAGS WITHOUT FOLDER',
+                    name: 'NO FOLDER',
                     color: '#000000',
+                    pinned: isNoFolderPinned(),
                     userId: null
                 });
             }
+
+            const searchingFolders = !selectedFolderId && searchLower.length > 0;
+            const filteredFolders = searchingFolders
+                ? allFoldersForSorting.filter(folder => {
+                    const folderName = folder.id === 'none' ? 'TAGS WITHOUT FOLDER' : folder.name || '';
+                    return folderName.toLowerCase().includes(searchLower);
+                })
+                : allFoldersForSorting;
             
             // Sort folders: pinned first, then by number of tags (descending), then alphabetically
-            const sortedFolders = allFoldersForSorting.sort((a, b) => {
+            const sortedFolders = filteredFolders.sort((a, b) => {
                 // First, sort by pinned status (pinned items first)
                 const aPinned = (a.pinned ? 1 : 0);
                 const bPinned = (b.pinned ? 1 : 0);
@@ -3383,6 +3479,12 @@
                 return a.name.localeCompare(b.name);
             });
             
+            if (searchingFolders && sortedFolders.length === 0) {
+                foldersColumn.innerHTML = '<div style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center;">No folders found</div>';
+                tagsColumn.innerHTML = '<div style="color: #94a3b8; font-size: 14px; padding: 20px; text-align: center;">Select a folder to view its tags</div>';
+                return;
+            }
+
             let foldersHtml = '';
             sortedFolders.forEach(folder => {
                 const isNoneFolder = folder.id === 'none';
@@ -3458,16 +3560,11 @@
                         const comparison = a.name.localeCompare(b.name);
                         return tagsSortOrder === 'asc' ? comparison : -comparison;
                     });
-                        sortedTagsWithoutFolder.forEach((tag, index) => {
+                    sortedTagsWithoutFolder.forEach((tag, index) => {
                         const isLast = index === sortedTagsWithoutFolder.length - 1;
                         tagsHtml += `
                             <div class="tag-item" draggable="true" data-tag-id="${tag.id}" style="display: flex; align-items: center; gap: 10px; padding: 8px; background: #ffffff; border-radius: 6px; margin-bottom: ${isLast ? '0' : '6px'}; transition: background 0.2s ease;">
-                                <div style="width: 12px; height: 12px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
-                                <span style="flex: 1; color: #1e293b; font-size: 14px;">${escapeHtml(tag.name)}</span>
-                                ${tag.pinned ? `<svg style="width: 14px; height: 14px; flex-shrink: 0; color: ${tag.color || '#3b82f6'};" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M17 12l4.5-2.5-7-7-2.5 4.5L3.5 10.5l10 10Z"></path>
-                                    <path d="m1.5 22.5 7-7"></path>
-                                </svg>` : ''}
+                                ${renderTagNameWithPin(tag)}
                             </div>
                         `;
                     });
@@ -3503,12 +3600,7 @@
                             const isLast = index === sortedFolderTags.length - 1;
                             tagsHtml += `
                                 <div class="tag-item" draggable="true" data-tag-id="${tag.id}" style="display: flex; align-items: center; gap: 10px; padding: 8px; background: #ffffff; border-radius: 6px; margin-bottom: ${isLast ? '0' : '6px'}; transition: background 0.2s ease;">
-                                    <div style="width: 12px; height: 12px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
-                                    <span style="flex: 1; color: #1e293b; font-size: 14px;">${escapeHtml(tag.name)}</span>
-                                    ${tag.pinned ? `<svg style="width: 14px; height: 14px; flex-shrink: 0; color: ${tag.color || '#3b82f6'};" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M17 12l4.5-2.5-7-7-2.5 4.5L3.5 10.5l10 10Z"></path>
-                                        <path d="m1.5 22.5 7-7"></path>
-                                    </svg>` : ''}
+                                    ${renderTagNameWithPin(tag)}
                                 </div>
                             `;
                         });
@@ -3622,10 +3714,24 @@
         // Context menu variables
         let contextMenuTarget = null;
         let contextMenuType = null; // 'folder' or 'tag'
+        const NO_FOLDER_PIN_KEY_PREFIX = 'noFolderPinned:';
+        let noFolderPinned = false;
         let contextSelectedElement = null;
         let contextMenuMode = 'options'; // 'options' or 'confirm'
 
         let activeTagModalDropdown = null;
+
+        function getNoFolderPinStorageKey() {
+            const identifier = userEmail || localStorage.getItem('userEmail') || 'anonymous';
+            return `${NO_FOLDER_PIN_KEY_PREFIX}${identifier}`;
+        }
+
+        function loadNoFolderPinnedState() {
+            const stored = localStorage.getItem(getNoFolderPinStorageKey());
+            noFolderPinned = stored === 'true';
+        }
+
+        loadNoFolderPinnedState();
 
         function getDefaultFolderIdForNewTag() {
             const tagsModal = document.getElementById('tagsModalOverlay');
@@ -3658,6 +3764,43 @@
             return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
         }
 
+        function getPinIcon(color = '#64748b', size = 14) {
+            return `<svg style="width: ${size}px; height: ${size}px; flex-shrink: 0; color: ${color};" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 12l4.5-2.5-7-7-2.5 4.5L3.5 10.5l10 10Z"></path>
+                <path d="m1.5 22.5 7-7"></path>
+            </svg>`;
+        }
+
+        function renderTagNameWithPin(tag, options = {}) {
+            const {
+                textColor = '#1e293b',
+                fontSize = '14px',
+                fontWeight = 'normal',
+                flex = true,
+                indicatorSize = 12,
+                gap = 6,
+                pinSize = 12,
+                pinColor,
+                showPin = true,
+                showIndicator = true
+            } = options;
+            const flexStyle = flex ? 'flex: 1;' : '';
+            const resolvedPinColor = pinColor || tag.color || '#3b82f6';
+            const parts = [];
+            if (showIndicator) {
+                parts.push(`<span style="width: ${indicatorSize}px; height: ${indicatorSize}px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></span>`);
+            }
+            if (showPin && tag.pinned) {
+                parts.push(getPinIcon(resolvedPinColor, pinSize));
+            }
+            parts.push(`<span style="flex: 1; color: inherit;">${escapeHtml(tag.name)}</span>`);
+            return `
+                <span style="display: inline-flex; align-items: center; gap: ${gap}px; ${flexStyle} color: ${textColor}; font-size: ${fontSize}; font-weight: ${fontWeight};">
+                    ${parts.join('')}
+                </span>
+            `;
+        }
+
         function closeActiveTagModalDropdown() {
             if (activeTagModalDropdown && typeof activeTagModalDropdown.cleanup === 'function') {
                 activeTagModalDropdown.cleanup();
@@ -3686,6 +3829,10 @@
 
             setContextMenuMode('options');
             const deleteOption = document.getElementById('contextMenuDeleteOption');
+            const editOption = document.getElementById('contextMenuEditOption');
+            const pinOption = document.getElementById('contextMenuPinOption');
+            const pinOptionLabel = document.getElementById('contextMenuPinOptionLabel');
+            const pinIconSlash = document.getElementById('contextMenuPinSlash');
             
             // Remove previous selection
             if (contextSelectedElement) {
@@ -3713,6 +3860,38 @@
                     deleteOption.style.display = 'none';
                 } else {
                     deleteOption.style.display = 'flex';
+                }
+            }
+            if (editOption) {
+                if (type === 'folder' && id === 'none') {
+                    editOption.style.display = 'none';
+                } else {
+                    editOption.style.display = 'flex';
+                }
+            }
+            if (pinOption) {
+                if (type === 'folder' && id === null) {
+                    pinOption.style.display = 'none';
+                } else {
+                    let isPinned = false;
+                    if (type === 'folder') {
+                        if (id === 'none') {
+                            isPinned = isNoFolderPinned();
+                        } else {
+                            const folder = folders.find(f => f.id === id);
+                            isPinned = !!folder?.pinned;
+                        }
+                    } else if (type === 'tag') {
+                        const tag = tags.find(t => t.id === id);
+                        isPinned = !!tag?.pinned;
+                    }
+                    pinOption.style.display = 'flex';
+                    if (pinOptionLabel) {
+                        pinOptionLabel.textContent = isPinned ? 'Unpin' : 'Pin';
+                    }
+                    if (pinIconSlash) {
+                        pinIconSlash.style.display = isPinned ? 'block' : 'none';
+                    }
                 }
             }
             
@@ -3774,16 +3953,60 @@
             });
         }
 
-        function handleContextMenuEdit() {
-            hideContextMenu();
-            
-            showMessage('Editing from this menu will be available soon.', 'info');
+        function startTagEdit(tagId) {
+            const numericId = typeof tagId === 'string' ? parseInt(tagId, 10) : tagId;
+            const tag = tags.find(t => t.id === numericId);
+            if (!tag) {
+                showMessage('Tag not found', 'error');
+                return;
+            }
+            openCreateTagModal({ mode: 'edit', tagData: tag });
         }
 
-        function handleContextMenuPin() {
+        function startFolderEdit(folderId) {
+            if (folderId === 'none') {
+                showMessage('This folder cannot be edited', 'error');
+                return;
+            }
+            const numericId = typeof folderId === 'string' ? parseInt(folderId, 10) : folderId;
+            const folder = folders.find(f => f.id === numericId);
+            if (!folder) {
+                showMessage('Folder not found', 'error');
+                return;
+            }
+            openCreateFolderModal({ mode: 'edit', folderData: folder });
+        }
+
+        function handleContextMenuEdit() {
+            const targetId = contextMenuTarget;
+            const targetType = contextMenuType;
             hideContextMenu();
             
-            showMessage('Pinning will be available soon. This will keep the item at the top.', 'info');
+            if (!targetType || targetId === null || targetId === undefined) {
+                return;
+            }
+            
+            if (targetType === 'folder') {
+                startFolderEdit(targetId);
+            } else if (targetType === 'tag') {
+                startTagEdit(targetId);
+            }
+        }
+
+        async function handleContextMenuPin() {
+            const targetId = contextMenuTarget;
+            const targetType = contextMenuType;
+            hideContextMenu();
+            
+            if (!targetType || targetId === null || targetId === undefined) {
+                return;
+            }
+            
+            if (targetType === 'folder') {
+                await toggleFolderPinnedState(targetId);
+            } else if (targetType === 'tag') {
+                await toggleTagPinnedState(targetId);
+            }
         }
 
         function handleContextMenuDelete() {
@@ -3813,6 +4036,127 @@
                 deleteFolder(targetId);
             } else if (targetType === 'tag' && targetId !== null) {
                 deleteTag(targetId);
+            }
+        }
+
+        async function toggleFolderPinnedState(folderId) {
+            if (folderId === 'none') {
+                setNoFolderPinnedState(!isNoFolderPinned());
+                return;
+            }
+            if (folderId === null || folderId === undefined) {
+                showMessage('This folder cannot be pinned', 'error');
+                return;
+            }
+
+            const numericId = typeof folderId === 'string' ? parseInt(folderId, 10) : folderId;
+            if (Number.isNaN(numericId)) {
+                return;
+            }
+
+            const folder = folders.find(f => f.id === numericId);
+            if (!folder) {
+                showMessage('Folder not found', 'error');
+                return;
+            }
+            const willPin = !folder.pinned;
+
+            try {
+                const res = await fetch(`${FOLDERS_URL}/${numericId}`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        name: folder.id === 'none' ? 'NO FOLDER' : folder.name,
+                        color: folder.color,
+                        pinned: willPin
+                    })
+                });
+
+                if (res.status === 401) {
+                    logout();
+                    return;
+                }
+
+                if (!res.ok) {
+                    const error = await res.json();
+                    throw new Error(error.message || 'Failed to update folder pin');
+                }
+
+                folder.pinned = willPin;
+                renderTags();
+                const tagsModal = document.getElementById('tagsModalOverlay');
+                if (tagsModal && tagsModal.classList.contains('active')) {
+                    renderTagsModal();
+                }
+                await loadFolders();
+                showMessage(willPin ? 'Folder pinned' : 'Folder unpinned', 'success');
+            } catch (error) {
+                console.error('Error updating folder pin:', error);
+                showMessage('Error updating folder pin', 'error');
+            }
+        }
+
+        function isNoFolderPinned() {
+            return noFolderPinned;
+        }
+
+        function setNoFolderPinnedState(shouldPin) {
+            noFolderPinned = shouldPin;
+            localStorage.setItem(getNoFolderPinStorageKey(), shouldPin ? 'true' : 'false');
+            renderTags();
+            const tagsModal = document.getElementById('tagsModalOverlay');
+            if (tagsModal && tagsModal.classList.contains('active')) {
+                renderTagsModal();
+            }
+            showMessage(shouldPin ? 'Folder pinned' : 'Folder unpinned', 'success');
+        }
+
+        async function toggleTagPinnedState(tagId) {
+            const numericId = typeof tagId === 'string' ? parseInt(tagId, 10) : tagId;
+            if (Number.isNaN(numericId)) {
+                return;
+            }
+
+            const tag = tags.find(t => t.id === numericId);
+            if (!tag) {
+                showMessage('Tag not found', 'error');
+                return;
+            }
+            const willPin = !tag.pinned;
+
+            try {
+                const res = await fetch(`${TAGS_URL}/${numericId}`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        name: tag.name,
+                        color: tag.color,
+                        folderId: tag.folderId,
+                        pinned: willPin
+                    })
+                });
+
+                if (res.status === 401) {
+                    logout();
+                    return;
+                }
+
+                if (!res.ok) {
+                    const error = await res.json();
+                    throw new Error(error.message || 'Failed to update tag pin');
+                }
+
+                tag.pinned = willPin;
+                renderTags();
+                const tagsModal = document.getElementById('tagsModalOverlay');
+                if (tagsModal && tagsModal.classList.contains('active')) {
+                    renderTagsModal();
+                }
+                await loadTags();
+                showMessage(willPin ? 'Tag pinned' : 'Tag unpinned', 'success');
+            } catch (error) {
+                console.error('Error updating tag pin:', error);
+                showMessage('Error updating tag pin', 'error');
             }
         }
 
@@ -3925,7 +4269,11 @@
                 // Update the tag in the local array
                 const tagIndex = tags.findIndex(t => t.id === tagId);
                 if (tagIndex !== -1) {
-                    tags[tagIndex] = updatedTag;
+                    tags[tagIndex] = {
+                        ...tags[tagIndex],
+                        ...updatedTag,
+                        pinned: !!updatedTag.pinned
+                    };
                 }
                 
                 // Reload folders to update counts
@@ -3942,6 +4290,13 @@
         function selectFolder(folderId) {
             if (viewMode === 'folders') {
                 selectedFolderId = folderId;
+                if (tagsSearchTerm.trim() && folderId !== null) {
+                    tagsSearchTerm = '';
+                    const searchInput = document.getElementById('tagsSearchInput');
+                    if (searchInput) {
+                        searchInput.value = '';
+                    }
+                }
                 renderTags();
             }
         }
@@ -3999,14 +4354,21 @@
                 const folderTags = tags.filter(tag => tag.folderId === folder.id);
                 if (folderTags.length > 0) {
                     const folderColor = folder.color || '#64748b';
+                    const sortedFolderTags = [...folderTags].sort((a, b) => {
+                        const aPinned = a.pinned ? 1 : 0;
+                        const bPinned = b.pinned ? 1 : 0;
+                        if (aPinned !== bPinned) {
+                            return bPinned - aPinned;
+                        }
+                        return a.name.localeCompare(b.name);
+                    });
                     html += `
                         <div style="margin-bottom: 8px;">
                             <div style="font-size: 11px; font-weight: 600; color: ${folderColor}; margin-bottom: 6px; letter-spacing: 0.5px;">${escapeHtml(folder.name.toUpperCase())}</div>
                             <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-                                ${folderTags.map(tag => `
+                                ${sortedFolderTags.map(tag => `
                                     <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; background: ${tag.color || '#3b82f6'}15; border: 1px solid ${tag.color || '#3b82f6'}40; border-radius: 6px; font-size: 12px; color: #1e293b;">
-                                        <span style="width: 8px; height: 8px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></span>
-                                        ${escapeHtml(tag.name)}
+                                        ${renderTagNameWithPin(tag, {fontSize: '12px', indicatorSize: 8, pinSize: 10, gap: 4, flex: false})}
                                     </span>
                                 `).join('')}
                             </div>
@@ -4016,16 +4378,23 @@
             });
 
             // Render tags without folder
-            const tagsWithoutFolder = tags.filter(tag => !tag.folderId).sort((a, b) => a.name.localeCompare(b.name));
-            if (tagsWithoutFolder.length > 0) {
+            const tagsWithoutFolder = tags.filter(tag => !tag.folderId);
+            const sortedAccountTagsWithoutFolder = [...tagsWithoutFolder].sort((a, b) => {
+                const aPinned = a.pinned ? 1 : 0;
+                const bPinned = b.pinned ? 1 : 0;
+                if (aPinned !== bPinned) {
+                    return bPinned - aPinned;
+                }
+                return a.name.localeCompare(b.name);
+            });
+            if (sortedAccountTagsWithoutFolder.length > 0) {
                 html += `
                     <div style="margin-bottom: 8px;">
                         <div style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Sin carpeta</div>
                         <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-                            ${tagsWithoutFolder.map(tag => `
+                            ${sortedAccountTagsWithoutFolder.map(tag => `
                                 <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; background: ${tag.color || '#3b82f6'}15; border: 1px solid ${tag.color || '#3b82f6'}40; border-radius: 6px; font-size: 12px; color: #1e293b;">
-                                    <span style="width: 8px; height: 8px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></span>
-                                    ${escapeHtml(tag.name)}
+                                    ${renderTagNameWithPin(tag, {fontSize: '12px', indicatorSize: 8, pinSize: 10, gap: 4, flex: false})}
                                 </span>
                             `).join('')}
                         </div>
@@ -4050,7 +4419,7 @@
                 selectedTagsForTask.forEach(tagId => {
                     const tag = tags.find(t => t.id === tagId);
                     if (tag) {
-                        const tagItem = createTagCheckboxItem(tag, true);
+                        const tagItem = createTagCheckboxItem(tag, true, { showPin: false });
                         container.appendChild(tagItem);
                     }
                 });
@@ -4099,8 +4468,13 @@
                 }
             });
             
-            // Sort tags by most used (count), prioritizing those that have been used
+            // Sort tags giving priority to pinned ones, then by most used
             const sortedTags = [...tags].sort((a, b) => {
+                const aPinned = a.pinned ? 1 : 0;
+                const bPinned = b.pinned ? 1 : 0;
+                if (aPinned !== bPinned) {
+                    return bPinned - aPinned;
+                }
                 const aUsage = tagUsageMap.get(a.id);
                 const bUsage = tagUsageMap.get(b.id);
                 
@@ -4120,15 +4494,24 @@
                 return bUsage.lastUsed - aUsage.lastUsed;
             });
             
-            // Always show top 4 most used tags
+            // Always show up to 4 tags (pinned first, then most used)
             const numTagsToShow = 4;
-            const visibleTags = sortedTags.slice(0, numTagsToShow);
-            const totalRemaining = tags.length - visibleTags.length;
+            const pinnedTags = sortedTags.filter(tag => tag.pinned);
+            const nonPinnedTags = sortedTags.filter(tag => !tag.pinned);
+            const prioritizedTags = [];
+            pinnedTags.forEach(tag => {
+                if (prioritizedTags.length < numTagsToShow) prioritizedTags.push(tag);
+            });
+            nonPinnedTags.forEach(tag => {
+                if (prioritizedTags.length < numTagsToShow) prioritizedTags.push(tag);
+            });
+            const visibleTags = prioritizedTags;
+            const totalRemaining = Math.max(0, tags.length - visibleTags.length);
             
             // Render visible tags (highlight selected ones)
             visibleTags.forEach(tag => {
                 const isSelected = selectedTagsForTask.includes(tag.id);
-                const tagItem = createTagCheckboxItem(tag, isSelected);
+                const tagItem = createTagCheckboxItem(tag, isSelected, { showPin: false });
                 container.appendChild(tagItem);
             });
             
@@ -4153,12 +4536,29 @@
             }
         }
         
-        function createTagCheckboxItem(tag, isSelectedFromModal = false) {
-                const tagItem = document.createElement('div');
-                tagItem.className = 'tag-checkbox-item';
-                tagItem.dataset.tagId = tag.id;
+        function createTagCheckboxItem(tag, isSelectedFromModal = false, options = {}) {
+            const { showPin = true } = options;
+            const tagItem = document.createElement('div');
+            tagItem.className = 'tag-checkbox-item';
+            tagItem.dataset.tagId = tag.id;
             const isSelected = isSelectedFromModal || selectedTagsForTask.includes(tag.id);
             const tagColor = tag.color || '#3b82f6';
+            const selectedMarkup = `
+                ${renderTagNameWithPin(tag, {
+                    textColor: '#ffffff',
+                    indicatorSize: 10,
+                    pinSize: 10,
+                    pinColor: '#ffffff',
+                    showPin,
+                    showIndicator: false
+                })}
+            `;
+            const defaultMarkup = `
+                ${renderTagNameWithPin(tag, {
+                    indicatorSize: 10,
+                    showPin
+                })}
+            `;
             
             // Create close button for selected tags
             const closeBtn = isSelected ? `
@@ -4193,14 +4593,13 @@
                 tagItem.style.textAlign = 'center';
                 tagItem.style.justifyContent = 'center';
                 tagItem.innerHTML = `
-                    <span style="color: white;">${escapeHtml(tag.name)}</span>
+                    ${selectedMarkup}
                     ${closeBtn}
                 `;
             } else {
                 // Not selected: show color indicator and normal styling
                 tagItem.innerHTML = `
-                    <span class="tag-color-indicator" style="background-color: ${tagColor}"></span>
-                    <span>${escapeHtml(tag.name)}</span>
+                    ${defaultMarkup}
                 `;
             }
             
@@ -4235,8 +4634,7 @@
                         this.style.textAlign = '';
                         this.style.justifyContent = '';
                         this.innerHTML = `
-                            <span class="tag-color-indicator" style="background-color: ${tagColor}"></span>
-                            <span>${escapeHtml(tag.name)}</span>
+                            ${defaultMarkup}
                         `;
                     } else {
                         // Select (with max 3 limit)
@@ -4253,7 +4651,7 @@
                         this.style.textAlign = 'center';
                         this.style.justifyContent = 'center';
                         this.innerHTML = `
-                            <span style="color: white;">${escapeHtml(tag.name)}</span>
+                            ${selectedMarkup}
                             ${closeBtn}
                         `;
                         // Re-attach hover listeners for close button
@@ -4404,6 +4802,34 @@
             openCreateTagModal();
         }
 
+        function resetTagFormState() {
+            tagFormMode = 'create';
+            editingTagId = null;
+            tagOriginalData = null;
+        }
+
+        function getTagFormValues() {
+            return {
+                name: (document.getElementById('createTagName')?.value || '').trim(),
+                color: document.getElementById('createTagColor')?.value || '',
+                folderId: document.getElementById('createTagFolderHidden')?.value || '',
+                pinned: document.getElementById('createTagPinnedHidden')?.value === 'true'
+            };
+        }
+
+        function hasTagFormChanges() {
+            if (tagFormMode !== 'edit' || !tagOriginalData) {
+                return true;
+            }
+            const current = getTagFormValues();
+            return (
+                current.name !== tagOriginalData.name ||
+                current.color !== tagOriginalData.color ||
+                current.folderId !== (tagOriginalData.folderId || '') ||
+                current.pinned !== tagOriginalData.pinned
+            );
+        }
+
         // Create Tag Modal Functions
         function toggleCreateTagButton() {
             const nameInput = document.getElementById('createTagName');
@@ -4412,8 +4838,12 @@
             if (!nameInput || !submitBtn) return;
             
             const hasValue = nameInput.value.trim().length > 0;
+            let canSubmit = hasValue;
+            if (tagFormMode === 'edit') {
+                canSubmit = hasValue && hasTagFormChanges();
+            }
             
-            if (hasValue) {
+            if (canSubmit) {
                 submitBtn.disabled = false;
                 submitBtn.style.background = '#3b82f6';
                 submitBtn.style.cursor = 'pointer';
@@ -4424,20 +4854,35 @@
                 submitBtn.style.cursor = 'not-allowed';
                 submitBtn.style.opacity = '0.7';
             }
+            submitBtn.textContent = tagFormMode === 'edit' ? 'Save Changes' : 'Create Tag';
         }
         
-        function openCreateTagModal() {
+        function openCreateTagModal(options = {}) {
             const modal = document.getElementById('createTagModalOverlay');
             const modalContent = modal ? modal.querySelector('.task-modal') : null;
             
             if (modal && modalContent) {
+                const { mode = 'create', tagData = null } = options;
+                const isEditMode = mode === 'edit' && tagData;
+                if (isEditMode) {
+                    tagFormMode = 'edit';
+                    editingTagId = tagData.id;
+                    tagOriginalData = {
+                        name: (tagData.name || '').trim(),
+                        color: tagData.color || '#3b82f6',
+                        folderId: tagData.folderId ? String(tagData.folderId) : '',
+                        pinned: !!tagData.pinned
+                    };
+                } else {
+                    resetTagFormState();
+                }
                 // Position relative to task creation modal
                 let targetX = 600;
                 let targetY = 120;
                 
                 const taskModal = document.getElementById('taskModalOverlay');
                 const tagsModal = document.getElementById('tagsModalOverlay');
-                const createTagModalHeight = 380;
+                const createTagModalHeight = 242.406;
                 const createTagModalWidth = 450;
                 
                 if (taskModal && taskModal.classList.contains('active')) {
@@ -4481,6 +4926,11 @@
                     modalContent.style.maxHeight = createTagModalHeight + 'px';
                 }
                 
+                const profileOverlay = document.getElementById('profileOverlay');
+                if (profileOverlay && profileOverlay.classList.contains('active')) {
+                    modalContent.style.height = createTagModalHeight + 'px';
+                    modalContent.style.maxHeight = createTagModalHeight + 'px';
+                }
                 // Ensure modal doesn't go off screen
                 const maxX = window.innerWidth - createTagModalWidth - 20;
                 const maxY = window.innerHeight - createTagModalHeight - 20;
@@ -4494,11 +4944,37 @@
                 
                 modal.classList.add('active');
                 
-                // Reset form state
-                const defaultFolderId = getDefaultFolderIdForNewTag();
-                document.getElementById('createTagFolderHidden').value = defaultFolderId ? defaultFolderId : '';
-                document.getElementById('createTagPinnedHidden').value = 'false';
-                document.getElementById('createTagColor').value = '#3b82f6';
+                const form = document.getElementById('createTagForm');
+                if (form) {
+                    form.reset();
+                }
+                
+                const nameInput = document.getElementById('createTagName');
+                const colorInput = document.getElementById('createTagColor');
+                const folderHidden = document.getElementById('createTagFolderHidden');
+                const pinnedHidden = document.getElementById('createTagPinnedHidden');
+                const headerTitle = modal.querySelector('.task-modal-header h2');
+                const submitBtn = document.getElementById('createTagSubmitBtn');
+                
+                if (headerTitle) {
+                    headerTitle.textContent = isEditMode ? 'Edit Tag' : 'Create Tag';
+                }
+                if (submitBtn) {
+                    submitBtn.textContent = isEditMode ? 'Save Changes' : 'Create Tag';
+                }
+                
+                if (isEditMode && tagOriginalData) {
+                    if (nameInput) nameInput.value = tagOriginalData.name;
+                    if (colorInput) colorInput.value = tagOriginalData.color;
+                    if (folderHidden) folderHidden.value = tagOriginalData.folderId || '';
+                    if (pinnedHidden) pinnedHidden.value = tagOriginalData.pinned ? 'true' : 'false';
+                } else {
+                    const defaultFolderId = getDefaultFolderIdForNewTag();
+                    if (nameInput) nameInput.value = '';
+                    if (colorInput) colorInput.value = '#3b82f6';
+                    if (folderHidden) folderHidden.value = defaultFolderId ? defaultFolderId : '';
+                    if (pinnedHidden) pinnedHidden.value = 'false';
+                }
                 updateCreateTagFolderBtnVisual(document.getElementById('createTagFolderBtn'));
                 updateCreateTagColorBtnVisual(document.getElementById('createTagColorBtn'));
                 updateCreateTagPinBtnVisual(document.getElementById('createTagPinnedBtn'));
@@ -4533,6 +5009,7 @@
                 updateCreateTagPreview();
                 toggleCreateTagButton();
             }
+            resetTagFormState();
         }
 
         function closeCreateTagModalOnOverlay(event) {
@@ -4542,11 +5019,24 @@
         }
         
         // Create Folder Modal Functions
-        function openCreateFolderModal() {
+        function openCreateFolderModal(options = {}) {
             const modal = document.getElementById('createFolderModalOverlay');
             const modalContent = modal ? modal.querySelector('.task-modal') : null;
             
             if (modal && modalContent) {
+                const { mode = 'create', folderData = null } = options;
+                const isEditMode = mode === 'edit' && folderData && folderData.id !== 'none';
+                if (isEditMode) {
+                    folderFormMode = 'edit';
+                    editingFolderId = folderData.id;
+                    folderOriginalData = {
+                        name: (folderData.name || '').trim(),
+                        color: folderData.color || '#64748b',
+                        pinned: !!folderData.pinned
+                    };
+                } else {
+                    resetFolderFormState();
+                }
                 // Position relative to task creation modal
                 let targetX = 600;
                 let targetY = 120;
@@ -4554,7 +5044,7 @@
                 const taskModal = document.getElementById('taskModalOverlay');
                 const tagsModal = document.getElementById('tagsModalOverlay');
                 const createTagModal = document.getElementById('createTagModalOverlay');
-                const createFolderModalHeight = 380;
+                const createFolderModalHeight = 242.406;
                 const createFolderModalWidth = 450;
                 
                 if (taskModal && taskModal.classList.contains('active')) {
@@ -4598,6 +5088,11 @@
                     modalContent.style.maxHeight = createFolderModalHeight + 'px';
                 }
                 
+                const profileOverlay = document.getElementById('profileOverlay');
+                if (profileOverlay && profileOverlay.classList.contains('active')) {
+                    modalContent.style.height = createFolderModalHeight + 'px';
+                    modalContent.style.maxHeight = createFolderModalHeight + 'px';
+                }
                 // Ensure modal doesn't go off screen
                 const maxX = window.innerWidth - createFolderModalWidth - 20;
                 const maxY = window.innerHeight - createFolderModalHeight - 20;
@@ -4612,8 +5107,32 @@
                 modal.classList.add('active');
                 
                 // Reset form state
-                document.getElementById('createFolderColor').value = '#64748b';
-                document.getElementById('createFolderPinnedHidden').value = 'false';
+                const form = document.getElementById('createFolderForm');
+                if (form) {
+                    form.reset();
+                }
+                const nameInput = document.getElementById('createFolderName');
+                const colorInput = document.getElementById('createFolderColor');
+                const pinnedHidden = document.getElementById('createFolderPinnedHidden');
+                const headerTitle = modal.querySelector('.task-modal-header h2');
+                const submitBtn = document.getElementById('createFolderSubmitBtn');
+                
+                if (headerTitle) {
+                    headerTitle.textContent = isEditMode ? 'Edit Folder' : 'New Folder';
+                }
+                if (submitBtn) {
+                    submitBtn.textContent = isEditMode ? 'Save Changes' : 'Create Folder';
+                }
+                
+                if (isEditMode && folderOriginalData) {
+                    if (nameInput) nameInput.value = folderOriginalData.name;
+                    if (colorInput) colorInput.value = folderOriginalData.color;
+                    if (pinnedHidden) pinnedHidden.value = folderOriginalData.pinned ? 'true' : 'false';
+                } else {
+                    if (nameInput) nameInput.value = '';
+                    if (colorInput) colorInput.value = '#64748b';
+                    if (pinnedHidden) pinnedHidden.value = 'false';
+                }
                 updateCreateFolderColorBtnVisual(document.getElementById('createFolderColorBtn'));
                 updateCreateFolderPinBtnVisual(document.getElementById('createFolderPinnedBtn'));
                 toggleCreateFolderButton();
@@ -4643,12 +5162,39 @@
                 updateCreateFolderPinBtnVisual(document.getElementById('createFolderPinnedBtn'));
                 toggleCreateFolderButton();
             }
+            resetFolderFormState();
         }
         
         function closeCreateFolderModalOnOverlay(event) {
             if (event.target.id === 'createFolderModalOverlay') {
                 closeCreateFolderModal();
             }
+        }
+
+        function resetFolderFormState() {
+            folderFormMode = 'create';
+            editingFolderId = null;
+            folderOriginalData = null;
+        }
+
+        function getFolderFormValues() {
+            return {
+                name: (document.getElementById('createFolderName')?.value || '').trim(),
+                color: document.getElementById('createFolderColor')?.value || '',
+                pinned: document.getElementById('createFolderPinnedHidden')?.value === 'true'
+            };
+        }
+
+        function hasFolderFormChanges() {
+            if (folderFormMode !== 'edit' || !folderOriginalData) {
+                return true;
+            }
+            const current = getFolderFormValues();
+            return (
+                current.name !== folderOriginalData.name ||
+                current.color !== folderOriginalData.color ||
+                current.pinned !== folderOriginalData.pinned
+            );
         }
         
         function toggleCreateFolderButton() {
@@ -4658,8 +5204,12 @@
             if (!nameInput || !submitBtn) return;
             
             const hasValue = nameInput.value.trim().length > 0;
+            let canSubmit = hasValue;
+            if (folderFormMode === 'edit') {
+                canSubmit = hasValue && hasFolderFormChanges();
+            }
             
-            if (hasValue) {
+            if (canSubmit) {
                 submitBtn.disabled = false;
                 submitBtn.style.background = '#3b82f6';
                 submitBtn.style.cursor = 'pointer';
@@ -4670,6 +5220,7 @@
                 submitBtn.style.cursor = 'not-allowed';
                 submitBtn.style.opacity = '0.7';
             }
+            submitBtn.textContent = folderFormMode === 'edit' ? 'Save Changes' : 'Create Folder';
             
             updateCreateFolderPreview();
         }
@@ -4790,6 +5341,7 @@
             }
             
             updateCreateFolderPreview();
+            toggleCreateFolderButton();
         }
         
         function toggleCreateFolderPin() {
@@ -4798,6 +5350,8 @@
             const isPinned = hiddenInput.value === 'true';
             hiddenInput.value = isPinned ? 'false' : 'true';
             updateCreateFolderPinBtnVisual(btn);
+            updateCreateFolderPreview();
+            toggleCreateFolderButton();
         }
         
         function updateCreateFolderPinBtnVisual(btnElement) {
@@ -4831,6 +5385,8 @@
             
             const name = document.getElementById('createFolderName').value.trim();
             const color = document.getElementById('createFolderColor').value;
+            const pinned = document.getElementById('createFolderPinnedHidden').value === 'true';
+            const isEditMode = folderFormMode === 'edit' && editingFolderId !== null;
             
             if (!name) {
                 showMessage('Folder name is required', 'error');
@@ -4842,10 +5398,12 @@
             }
             
             try {
-                const res = await fetch(FOLDERS_URL, {
-                    method: 'POST',
+                const endpoint = isEditMode ? `${FOLDERS_URL}/${editingFolderId}` : FOLDERS_URL;
+                const method = isEditMode ? 'PUT' : 'POST';
+                const res = await fetch(endpoint, {
+                    method,
                     headers: getAuthHeaders(),
-                    body: JSON.stringify({ name, color })
+                    body: JSON.stringify({ name, color, pinned })
                 });
                 
                 if (res.status === 401) {
@@ -4859,7 +5417,7 @@
                     return;
                 }
                 
-                showMessage('Folder created', 'success');
+                showMessage(isEditMode ? 'Folder updated' : 'Folder created', 'success');
                 closeCreateFolderModal();
                 await loadFolders();
                 renderTags();
@@ -4907,6 +5465,7 @@
                     folderPath.setAttribute('fill', 'none');
                 }
             }
+            toggleCreateTagButton();
         }
 
         function showCreateTagFolderMenu(event) {
@@ -4977,6 +5536,7 @@
                 document.getElementById('createTagFolderHidden').value = '';
                 updateCreateTagFolderBtnVisual(document.getElementById('createTagFolderBtn'));
                 updateCreateTagPreview();
+                toggleCreateTagButton();
                 cleanupFolderMenu();
             };
             menu.appendChild(noFolderItem);
@@ -4992,6 +5552,7 @@
                     document.getElementById('createTagFolderHidden').value = folder.id;
                     updateCreateTagFolderBtnVisual(document.getElementById('createTagFolderBtn'));
                     updateCreateTagPreview();
+                    toggleCreateTagButton();
                     cleanupFolderMenu();
                 };
                 menu.appendChild(folderItem);
@@ -5069,6 +5630,7 @@
                     document.getElementById('createTagColor').value = color;
                     updateCreateTagColorBtnVisual(document.getElementById('createTagColorBtn'));
                     updateCreateTagPreview();
+                    toggleCreateTagButton();
                     cleanupColorMenu();
                 };
                 menu.appendChild(colorItem);
@@ -5115,6 +5677,7 @@
                     tagDot.setAttribute('stroke', 'currentColor');
                 }
             }
+            toggleCreateTagButton();
         }
 
         function toggleCreateTagPin() {
@@ -5124,6 +5687,7 @@
             hiddenInput.value = isPinned ? 'false' : 'true';
             updateCreateTagPinBtnVisual(btn);
             updateCreateTagPreview();
+            toggleCreateTagButton();
         }
 
         function updateCreateTagPinBtnVisual(btnElement) {
@@ -5207,6 +5771,7 @@
             const color = document.getElementById('createTagColor').value;
             const folderId = document.getElementById('createTagFolderHidden').value || null;
             const pinned = document.getElementById('createTagPinnedHidden').value === 'true';
+            const isEditMode = tagFormMode === 'edit' && editingTagId !== null;
 
             if (!name) {
                 showMessage('Tag name is required', 'error');
@@ -5218,8 +5783,10 @@
             }
 
             try {
-                const res = await fetch(TAGS_URL, {
-                    method: 'POST',
+                const endpoint = isEditMode ? `${TAGS_URL}/${editingTagId}` : TAGS_URL;
+                const method = isEditMode ? 'PUT' : 'POST';
+                const res = await fetch(endpoint, {
+                    method,
                     headers: getAuthHeaders(),
                     body: JSON.stringify({ 
                         name, 
@@ -5240,7 +5807,7 @@
                     return;
                 }
 
-                showMessage('Tag created', 'success');
+                showMessage(isEditMode ? 'Tag updated' : 'Tag created', 'success');
                 closeCreateTagModal();
                 await loadTags();
                 renderTags();
@@ -5268,12 +5835,25 @@
             }
         }
 
-        function setTagsModalViewMode(mode) {
+        function setTagsModalViewMode(mode, reset = false) {
+            const wasMode = tagsModalViewMode;
+            const isSameMode = wasMode === mode;
+            const switchingMode = !isSameMode;
             tagsModalViewMode = mode;
             
             // Reset selected folder when switching to tags view
             if (mode === 'tags') {
                 tagsModalSelectedFolderId = null;
+            }
+            if ((reset && isSameMode) || switchingMode) {
+                if (mode === 'folders' && !(reset && isSameMode)) {
+                    // preserve folder selection unless explicit reset
+                } else {
+                    tagsModalSelectedFolderId = null;
+                }
+                tagsModalSearchTerm = '';
+                const searchInput = document.getElementById('tagsModalSearchInput');
+                if (searchInput) searchInput.value = '';
             }
             
             // Update button states
@@ -5300,13 +5880,43 @@
 
         function handleTagsModalSearch() {
             const searchInput = document.getElementById('tagsModalSearchInput');
-            if (searchInput) {
-                tagsModalSearchTerm = searchInput.value;
+            if (!searchInput) return;
+            const previous = tagsModalSearchTerm;
+            tagsModalSearchTerm = searchInput.value;
+            const reset = !tagsModalSelectedFolderId && !tagsModalSearchTerm.trim();
+            if (reset && previous === '') {
                 renderTagsModal();
-                // Adjust position after rendering
+                setTimeout(() => adjustTagsModalPosition(), 10);
+                return;
+            }
+            renderTagsModal();
+            // Adjust position after rendering
+            setTimeout(() => {
+                adjustTagsModalPosition();
+            }, 10);
+        }
+
+        function handleTagsModalViewFoldersClick() {
+            const reset = tagsModalViewMode === 'folders';
+            setTagsModalViewMode('folders', reset);
+            if (reset) {
                 setTimeout(() => {
-                    adjustTagsModalPosition();
-                }, 10);
+                    const foldersColumn = document.getElementById('tagsModalFoldersColumn');
+                    const tagsColumn = document.getElementById('tagsModalTagsColumn');
+                    if (foldersColumn) foldersColumn.scrollTop = 0;
+                    if (tagsColumn) tagsColumn.scrollTop = 0;
+                }, 0);
+            }
+        }
+
+        function handleTagsModalViewTagsClick() {
+            const reset = tagsModalViewMode === 'tags';
+            setTagsModalViewMode('tags', reset);
+            if (reset) {
+                setTimeout(() => {
+                    const allTagsColumn = document.getElementById('tagsModalAllTagsColumn');
+                    if (allTagsColumn) allTagsColumn.scrollTop = 0;
+                }, 0);
             }
         }
 
@@ -5450,8 +6060,7 @@
                     const selectedStyle = isSelected ? 'background: #dbeafe; border: 1px solid #3b82f6;' : 'background: #ffffff;';
                     html += `
                         <div class="tag-item" data-tag-id="${tag.id}" onclick="toggleTagSelection(${tag.id})" style="display: flex; align-items: center; gap: 8px; padding: 6px; ${selectedStyle} border-radius: 4px; margin-bottom: ${isLast ? '0' : '4px'}; transition: background 0.2s ease; cursor: pointer; position: relative;">
-                            <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
-                            <span style="flex: 1; color: #1e293b; font-size: 13px;">${escapeHtml(tag.name)}</span>
+                            ${renderTagNameWithPin(tag, {fontSize: '13px', indicatorSize: 10})}
                             ${folder ? `<span onclick="navigateToTagsModalFolder(${folder.id}); event.stopPropagation();" style="font-size: 11px; color: ${folder.color || '#64748b'}; padding: 2px 6px; background: ${folder.color || '#64748b'}20; border-radius: 3px; border: 1px solid ${folder.color || '#64748b'}; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.color='${folder.color || '#64748b'}'; this.style.borderColor='${folder.color || '#64748b'}'; this.style.filter='brightness(1.2) saturate(1.3)'" onmouseout="this.style.color='${folder.color || '#64748b'}'; this.style.borderColor='${folder.color || '#64748b'}'; this.style.filter='none'">${escapeHtml(folder.name.toUpperCase())}</span>` : ''}
                         </div>
                     `;
@@ -5587,12 +6196,7 @@
                         const selectedStyle = isSelected ? 'background: #dbeafe; border: 1px solid #3b82f6;' : 'background: #ffffff;';
                         tagsHtml += `
                             <div class="tag-item" data-tag-id="${tag.id}" onclick="toggleTagSelection(${tag.id})" style="display: flex; align-items: center; gap: 8px; padding: 6px; ${selectedStyle} border-radius: 4px; margin-bottom: ${isLast ? '0' : '4px'}; transition: background 0.2s ease; cursor: pointer; position: relative;">
-                                <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
-                                <span style="flex: 1; color: #1e293b; font-size: 13px;">${escapeHtml(tag.name)}</span>
-                                ${tag.pinned ? `<svg style="width: 12px; height: 12px; flex-shrink: 0; color: ${tag.color || '#3b82f6'};" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M17 12l4.5-2.5-7-7-2.5 4.5L3.5 10.5l10 10Z"></path>
-                                    <path d="m1.5 22.5 7-7"></path>
-                                </svg>` : ''}
+                                ${renderTagNameWithPin(tag, {fontSize: '13px', indicatorSize: 10})}
                             </div>
                         `;
                     });
@@ -5628,12 +6232,7 @@
                             const selectedStyle = isSelected ? 'background: #dbeafe; border: 1px solid #3b82f6;' : 'background: #ffffff;';
                             tagsHtml += `
                                 <div class="tag-item" data-tag-id="${tag.id}" onclick="toggleTagSelection(${tag.id})" style="display: flex; align-items: center; gap: 8px; padding: 6px; ${selectedStyle} border-radius: 4px; margin-bottom: ${isLast ? '0' : '4px'}; transition: background 0.2s ease; cursor: pointer; position: relative;">
-                                    <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${tag.color || '#3b82f6'}; flex-shrink: 0;"></div>
-                                    <span style="flex: 1; color: #1e293b; font-size: 13px;">${escapeHtml(tag.name)}</span>
-                                    ${tag.pinned ? `<svg style="width: 12px; height: 12px; flex-shrink: 0; color: ${tag.color || '#3b82f6'};" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M17 12l4.5-2.5-7-7-2.5 4.5L3.5 10.5l10 10Z"></path>
-                                        <path d="m1.5 22.5 7-7"></path>
-                                    </svg>` : ''}
+                                    ${renderTagNameWithPin(tag, {fontSize: '13px', indicatorSize: 10})}
                                 </div>
                             `;
                         });
@@ -5659,15 +6258,13 @@
                 return;
             }
             
-            // Fixed height: 500px
-            const fixedHeight = 500;
-            modalContent.style.height = fixedHeight + 'px';
-            modalContent.style.maxHeight = fixedHeight + 'px';
-            
             // Position relative to task creation modal
             const modalWidth = 450;
+            const createTagModalHeight = 242.406;
+            const margin = 16; // Same as lateral margin between taskModal and tagsModal
             let targetX = 600;
             let targetY = 80;
+            let calculatedHeight = 500; // Default fallback
             
             const taskModal = document.getElementById('taskModalOverlay');
             if (taskModal && taskModal.classList.contains('active')) {
@@ -5675,11 +6272,86 @@
                 if (taskModalContent) {
                     const taskModalRect = taskModalContent.getBoundingClientRect();
                     // Position to the right of the task modal with 16px gap
-                    targetX = taskModalRect.right + 16;
-                    // Align bottom of tags modal with bottom of task modal
-                    targetY = taskModalRect.bottom - fixedHeight;
+                    targetX = taskModalRect.right + margin;
+                    
+                    // Calculate height to maintain 16px margin with createTagModal
+                    // createTagModal top = taskModalRect.top
+                    // createTagModal bottom = taskModalRect.top + createTagModalHeight
+                    // tagsModal top = createTagModal bottom + margin = taskModalRect.top + createTagModalHeight + margin
+                    // tagsModal bottom = taskModalRect.bottom (aligned with task modal bottom)
+                    // tagsModal height = taskModalRect.bottom - (taskModalRect.top + createTagModalHeight + margin)
+                    const taskModalHeight = taskModalRect.bottom - taskModalRect.top;
+                    calculatedHeight = taskModalHeight - createTagModalHeight - margin;
+                    
+                    // Position tagsModal so it starts after createTagModal with margin
+                    targetY = taskModalRect.top + createTagModalHeight + margin;
                 }
             }
+            
+            // Ensure calculated height is reasonable (minimum 300px)
+            const fixedHeight = Math.max(300, calculatedHeight);
+            modalContent.style.height = fixedHeight + 'px';
+            modalContent.style.maxHeight = fixedHeight + 'px';
+            
+            // Update the tags list container height to maintain margins
+            // Use a small delay to ensure DOM is fully rendered
+            setTimeout(() => {
+                const tagsList = document.getElementById('tagsModalTagsList');
+                const foldersColumn = document.getElementById('tagsModalFoldersColumn');
+                const tagsColumn = document.getElementById('tagsModalTagsColumn');
+                const allTagsColumn = document.getElementById('tagsModalAllTagsColumn');
+                
+                if (!tagsList) return;
+                
+                // Calculate available height for tags list using getBoundingClientRect for accuracy
+                const header = modalContent.querySelector('.task-modal-header');
+                const content = modalContent.querySelector('.task-modal-content');
+                const controlsBar = content ? content.querySelector('div[style*="display: flex"]') : null;
+                
+                if (header && content && controlsBar) {
+                    const modalRect = modalContent.getBoundingClientRect();
+                    const headerRect = header.getBoundingClientRect();
+                    const controlsRect = controlsBar.getBoundingClientRect();
+                    
+                    // Calculate available height: from bottom of controls bar to bottom of modal content
+                    // Account for content padding (16px bottom) and controls margin-bottom (10px)
+                    const contentBottom = content.getBoundingClientRect().bottom;
+                    const controlsBottom = controlsRect.bottom;
+                    const marginBottom = 10; // margin-bottom of controls bar
+                    const contentPaddingBottom = 16; // padding-bottom of content
+                    
+                    const availableHeight = contentBottom - controlsBottom - marginBottom - contentPaddingBottom;
+                    
+                    if (availableHeight > 100) {
+                        tagsList.style.height = availableHeight + 'px';
+                        tagsList.style.maxHeight = availableHeight + 'px';
+                        
+                        // Add extra padding-bottom to folders and tags columns to match allTagsColumn margin
+                        const extraPaddingBottom = 16; // Additional padding to match allTagsColumn bottom margin
+                        
+                        if (foldersColumn) {
+                            foldersColumn.style.height = availableHeight + 'px';
+                            foldersColumn.style.maxHeight = availableHeight + 'px';
+                            // Add padding-bottom to match the margin of allTagsColumn
+                            // Keep existing padding-right: 6px, add padding-bottom
+                            foldersColumn.style.paddingRight = '6px';
+                            foldersColumn.style.paddingBottom = extraPaddingBottom + 'px';
+                        }
+                        if (tagsColumn) {
+                            tagsColumn.style.height = availableHeight + 'px';
+                            tagsColumn.style.maxHeight = availableHeight + 'px';
+                            // Update padding to include extra bottom padding (10px all sides + 16px extra bottom)
+                            tagsColumn.style.padding = '10px 10px ' + (10 + extraPaddingBottom) + 'px 10px';
+                        }
+                        if (allTagsColumn) {
+                            allTagsColumn.style.height = availableHeight + 'px';
+                            allTagsColumn.style.maxHeight = availableHeight + 'px';
+                            // Keep original padding for allTagsColumn (10px all sides)
+                            allTagsColumn.style.padding = '10px';
+                        }
+                    }
+                }
+            }, 10);
             
             // Ensure modal doesn't go off screen
             const maxX = window.innerWidth - modalWidth - 20;
