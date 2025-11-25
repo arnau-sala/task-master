@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     const db = req.db;
     const userId = req.userId;
-    const {name, color} = req.body;
+    const {name, color, pinned} = req.body;
 
     if (!name) {
         return res.status(400).json({message: 'Folder name is required'});
@@ -41,7 +41,8 @@ router.post('/', async (req, res) => {
         const newFolder = await db.insert(folders).values({
             name,
             color: color || '#64748b',
-            userId: userId
+            userId: userId,
+            pinned: pinned ? 1 : 0
         }).returning();
         
         res.status(201).json(newFolder[0]);
@@ -56,7 +57,7 @@ router.put('/:id', async (req, res) => {
     const db = req.db;
     const userId = req.userId;
     const folderId = parseInt(req.params.id);
-    const {name, color} = req.body;
+    const {name, color, pinned} = req.body;
 
     if (!name) {
         return res.status(400).json({message: 'Folder name is required'});
@@ -85,7 +86,8 @@ router.put('/:id', async (req, res) => {
         const updatedFolder = await db.update(folders)
             .set({
                 name,
-                color: color !== undefined ? color : folder[0].color
+                color: color !== undefined ? color : folder[0].color,
+                pinned: pinned !== undefined ? (pinned ? 1 : 0) : (folder[0].pinned || 0)
             })
             .where(eq(folders.id, folderId))
             .returning();

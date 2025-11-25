@@ -118,6 +118,14 @@ function initializeDataBase(){
         sqliteDB.exec(`ALTER TABLE tasks ADD COLUMN image TEXT;`);
     } catch (e) {}
     
+    try {
+        sqliteDB.exec(`ALTER TABLE tags ADD COLUMN pinned INTEGER DEFAULT 0;`);
+    } catch (e) {}
+    
+    try {
+        sqliteDB.exec(`ALTER TABLE folders ADD COLUMN pinned INTEGER DEFAULT 0;`);
+    } catch (e) {}
+    
     return db;
 }
 

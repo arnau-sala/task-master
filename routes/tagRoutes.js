@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     const db = req.db;
     const userId = req.userId;
-    const {name, color, folderId} = req.body;
+    const {name, color, folderId, pinned} = req.body;
 
     if (!name) {
         return res.status(400).json({message: 'Tag name is required'});
@@ -58,7 +58,8 @@ router.post('/', async (req, res) => {
             name,
             color: color || '#007bff',
             userId: userId,
-            folderId: folderId || null
+            folderId: folderId || null,
+            pinned: pinned ? 1 : 0
         }).returning();
         
         res.status(201).json(newTag[0]);
@@ -73,7 +74,7 @@ router.put('/:id', async (req, res) => {
     const db = req.db;
     const userId = req.userId;
     const tagId = parseInt(req.params.id);
-    const {name, color, folderId} = req.body;
+    const {name, color, folderId, pinned} = req.body;
 
     try {
         const tag = await db.select().from(tags).where(eq(tags.id, tagId)).limit(1);
@@ -99,7 +100,8 @@ router.put('/:id', async (req, res) => {
             .set({
                 name: name !== undefined ? name : tag[0].name,
                 color: color !== undefined ? color : tag[0].color,
-                folderId: folderId !== undefined ? folderId : tag[0].folderId
+                folderId: folderId !== undefined ? folderId : tag[0].folderId,
+                pinned: pinned !== undefined ? (pinned ? 1 : 0) : (tag[0].pinned || 0)
             })
             .where(eq(tags.id, tagId))
             .returning();
