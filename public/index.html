@@ -283,7 +283,7 @@
             color: #475569;
         }
 
-        input, textarea, select {
+        input, select {
             width: 100%;
             padding: 12px 16px;
             border: 1.5px solid #e2e8f0;
@@ -292,6 +292,20 @@
             transition: all 0.2s ease;
             background: #ffffff;
             color: #1e293b;
+            box-sizing: border-box;
+            height: 40px; /* altura fija compartida (Title, Date, Time, etc.) */
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: #ffffff;
+            color: #1e293b;
+            box-sizing: border-box;
         }
 
         input:focus, textarea:focus, select:focus {
@@ -337,8 +351,40 @@
 
         .date-time-row {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1.1fr 0.9fr 1fr; /* fecha un poco más ancha, hora un poco más estrecha, último tercio libre */
             gap: 16px;
+            align-items: start;
+        }
+
+        .date-time-summary-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            position: relative;
+            margin-left: -10px; /* eliminar el gap con la columna del time picker */
+        }
+
+        .date-time-summary-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            visibility: hidden;
+            height: 20px;
+            line-height: 20px;
+        }
+
+        .date-time-summary {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1e293b;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 47px; /* altura aproximada del input: 12px padding top + ~20px contenido + 12px padding bottom + 3px border */
         }
 
         .date-picker-wrapper {
@@ -350,39 +396,350 @@
 
         .date-picker-wrapper input[type="text"] {
             flex: 1;
-            padding-right: 40px;
+            padding-right: 110px; /* espacio para días restantes + icono */
         }
 
-        .date-picker-button {
+        .time-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        /* Hacer que el campo de hora tenga el mismo estilo visual que el de fecha */
+        #taskTime {
+            flex: 1;
+            box-sizing: border-box;
+            padding: 12px 100px 12px 16px; /* espacio para el label de horas + icono del reloj */
+            border-radius: 8px;
+            border: 1.5px solid #e2e8f0;
+            background: #ffffff;
+            font-size: 14px;
+            color: #1e293b;
+            -webkit-appearance: none;
+               -moz-appearance: textfield;
+                    appearance: none;
+        }
+
+        #taskTime:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .time-picker-diff {
             position: absolute;
-            right: 8px;
+            right: 40px; /* antes del icono del reloj */
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            font-weight: 600;
+            color: #9ca3af; /* gris suave */
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .time-picker-diff.time-picker-diff-past {
+            color: #f97373; /* rojo apagado para fechas pasadas */
+        }
+
+        .time-picker-button {
+            position: absolute;
+            right: 14px; /* desplazado un poco hacia la izquierda para más margen con el borde */
             top: 50%;
             transform: translateY(-50%);
             background: transparent;
             border: none;
-            padding: 4px;
+            padding: 0;
             cursor: pointer;
             color: #64748b;
+            border-radius: 0; /* sin recuadro redondeado */
+            box-shadow: none; /* sin sombra por defecto */
             transition: color 0.2s ease, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .date-picker-button:hover {
-            color: #3b82f6;
-            transform: translateY(-50%) scale(1.05);
+        .time-picker-button:hover,
+        .time-picker-button:focus-visible {
+            color: #2563eb; /* solo cambia el color del icono */
+            background: transparent; /* sin fondo */
+            box-shadow: none;
+            transform: translateY(-50%);
         }
 
-        .date-picker-popover {
+        .date-picker-remove-btn,
+        .time-picker-remove-btn {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 10;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .date-picker-wrapper:hover .date-picker-remove-btn.has-value,
+        .time-picker-wrapper:hover .time-picker-remove-btn.has-value {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .date-picker-remove-btn:hover,
+        .time-picker-remove-btn:hover {
+            background: #ef4444; /* mantener el color rojo */
+            opacity: 0.9;
+            transform: scale(1.1);
+        }
+
+        .date-picker-remove-btn svg,
+        .time-picker-remove-btn svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .tag-remove-btn svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .tag-remove-btn:hover {
+            background: #ef4444; /* mantener el color rojo */
+            opacity: 0.9;
+            transform: scale(1.1);
+        }
+
+        .date-picker-diff {
+            position: absolute;
+            right: 40px; /* antes del icono del calendario */
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            font-weight: 600;
+            color: #9ca3af; /* gris suave */
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        /* Time Picker */
+
+        .time-picker-popover {
             position: absolute;
             z-index: 3000;
             background: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 16px;
             box-shadow: 0 12px 24px rgba(15, 23, 42, 0.15);
+            padding: 12px 16px;
+            width: 520px; /* un poco más ancha para que quepan bien los quick options */
+            display: none;
+            display: none;
+        }
+
+        .time-picker-popover.active {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            animation: fadeInScale 0.15s ease;
+        }
+
+        .time-picker-quick-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .time-picker-quick-row button {
+            flex: 1;
+            min-width: 0;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            color: #1e293b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .time-picker-quick-row button:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .time-picker-hours-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 0;
+            padding-top: 10px;
+            border-top: 1px solid #e2e8f0; /* línea divisoria entre opciones rápidas y horas */
+        }
+
+        .time-picker-hours-bar {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 4px;
+        }
+
+        .time-hour {
+            padding: 8px 0;
+            min-height: 32px;
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .time-hour:hover {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            color: #1d4ed8;
+        }
+
+        .time-hour.selected {
+            background: #3b82f6;
+            color: #ffffff;
+            border-color: #3b82f6;
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+        }
+
+        .time-picker-minutes-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: space-between;
+            margin-top: 10px; /* más espacio respecto a la fila de horas para diferenciarlas */
+        }
+
+        .time-picker-minutes-bar {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            flex: 1 1 auto;
+        }
+
+        .time-picker-minutes-row.disabled {
+            opacity: 0.45;
+        }
+
+        .time-picker-minutes-row.disabled .time-minute,
+        .time-picker-minutes-row.disabled .time-adjust-btn {
+            pointer-events: none;
+        }
+
+        .time-minute {
+            width: 60px; /* ancho fijo, algo más estrecho para equilibrar márgenes */
+            padding: 8px 0;
+            min-height: 32px;
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
+            border-radius: 6px; /* mismo estilo cuadrado que las horas, solo un poco más ancho */
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .time-minute:hover {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            color: #1d4ed8;
+        }
+
+        .time-minute.selected {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: #ffffff;
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+        }
+
+        .time-adjust-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        .time-adjust-btn {
+            min-width: 34px;
+            padding: 6px 8px;
+            min-height: 34px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .time-adjust-btn:hover {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            color: #1d4ed8;
+        }
+
+        .date-picker-button {
+            position: absolute;
+            right: 14px; /* desplazado un poco hacia la izquierda para más margen con el borde */
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            color: #64748b;
+            border-radius: 0; /* sin recuadro redondeado */
+            box-shadow: none; /* sin sombra por defecto */
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .date-picker-button:hover,
+        .date-picker-button:focus-visible {
+            color: #2563eb; /* solo cambia el color del icono */
+            background: transparent; /* sin fondo */
+            box-shadow: none;
+            transform: translateY(-50%);
+        }
+
+        .date-picker-popover {
+            position: absolute;
+            z-index: 3000;
+            background: #ffffff;
+            border: 1px solid #e2e8f0; /* recuperamos contorno sutil */
+            border-radius: 16px; /* recuperamos esquinas redondeadas para aspecto de ventana */
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.15); /* sombra para destacar la ventana */
             padding: 16px;
             width: 540px;
             display: none;
             flex-direction: row;
             gap: 16px;
+            align-items: stretch;
         }
 
         .date-picker-popover.active {
@@ -408,11 +765,13 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            height: 100%;
+            flex: 1 1 auto;
         }
 
         .date-picker-quick-options button {
             width: 100%;
-            padding: 8px 12px;
+            padding: 12px 12px;
             border-radius: 10px;
             border: 1px solid #e2e8f0;
             background: #f8fafc;
@@ -422,6 +781,23 @@
             cursor: pointer;
             transition: all 0.2s ease;
             text-align: left;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 45.7px;
+        }
+
+        .quick-option-label {
+            flex: 1;
+        }
+
+        .quick-option-date {
+            font-size: 12px;
+            font-weight: 500;
+            color: #64748b;
+            margin-left: 8px;
+            white-space: nowrap;
         }
 
         .date-picker-quick-options button:hover {
@@ -440,15 +816,17 @@
 
         .date-picker-calendar-header {
             display: grid;
-            grid-template-columns: 90px auto 90px;
+            grid-template-columns: 80px 1fr 80px;
             align-items: center;
             min-height: 36px;
+            gap: 8px;
         }
 
         .date-picker-calendar-header-left {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            color: #94a3b8;
+            height: 100%;
+            color: #475569;
             font-size: 13px;
             font-weight: 600;
             letter-spacing: 1px;
@@ -463,13 +841,15 @@
         }
 
         .date-picker-calendar-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-        }
-
-        .date-picker-calendar-title {
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 16px;
+            font-weight: 700;
             color: #0f172a;
+            white-space: nowrap;
+            min-width: 0;
         }
 
         .calendar-nav {
@@ -480,19 +860,36 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: #94a3b8;
+            color: #475569;
             font-size: 26px;
-            line-height: 1;
+            line-height: 0;
+            transform: translateY(-2px);
             transition: color 0.2s ease, transform 0.2s ease;
             outline: none;
             appearance: none;
             box-shadow: none;
         }
 
+        /* Ajuste específico para el texto MONTH/YEAR: mismo estilo pero tamaño como antes */
+        #datePickerModeLabel.calendar-nav {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1;
+            /* Pequeño ajuste para centrar visualmente con el título del mes/año */
+            transform: translateY(1px);
+            padding: 0 2px;
+        }
+
+        /* Evitar que el hover global de .calendar-nav desplace demasiado el botón MONTH/YEAR */
+        #datePickerModeLabel.calendar-nav:hover,
+        #datePickerModeLabel.calendar-nav:focus-visible {
+            transform: translateY(1px);
+        }
+
         .calendar-nav:hover,
         .calendar-nav:focus-visible {
             color: #2563eb;
-            transform: translateY(-1px);
+            transform: translateY(-3px);
             background: transparent;
             box-shadow: none;
         }
@@ -514,6 +911,48 @@
             gap: 6px;
         }
 
+        .calendar-month {
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            padding: 10px 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1e293b;
+            cursor: pointer;
+            transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            white-space: nowrap;
+            box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.4) inset; /* sutil recuadro */
+        }
+
+        .calendar-month:hover {
+            background: #f1f5f9;
+            color: #1d4ed8;
+            /* mantenemos el mismo borde sutil al resaltar */
+            box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.4) inset;
+        }
+
+        .calendar-month.hover-linked {
+            background: #f1f5f9;
+            color: #1d4ed8;
+            /* mismo borde también cuando se resalta desde las opciones rápidas */
+            box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.4) inset;
+        }
+
+        .calendar-month.today {
+            box-shadow: 0 0 0 1px #3b82f6 inset;
+        }
+
+        .calendar-month.selected {
+            background: #3b82f6;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25);
+        }
+
         .calendar-day {
             border: none;
             background: transparent;
@@ -523,12 +962,22 @@
             font-weight: 500;
             color: #1e293b;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+            box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.35) inset; /* sutil recuadro */
         }
 
         .calendar-day:hover {
             background: #f1f5f9;
             color: #1d4ed8;
+            /* mantenemos el mismo borde al pasar el cursor */
+            box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.35) inset;
+        }
+
+        .calendar-day.hover-linked {
+            background: #f1f5f9;
+            color: #1d4ed8;
+            /* y también cuando se resalta desde las opciones rápidas */
+            box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.35) inset;
         }
 
         .calendar-day.outside {
@@ -536,7 +985,9 @@
         }
 
         .calendar-day.today {
-            border: 1px solid #3b82f6;
+            /* Visual highlight without affecting layout height */
+            border: none;
+            box-shadow: 0 0 0 1px #3b82f6 inset;
         }
 
         .calendar-day.selected {
@@ -2264,7 +2715,8 @@
                             <div>
                                 <label for="taskDate">Date</label>
                                 <div class="date-picker-wrapper">
-                                    <input type="text" id="taskDateDisplay" placeholder="--/--/----" inputmode="numeric" autocomplete="off">
+                                    <input type="text" id="taskDateDisplay" placeholder="dd/mm/yyyy" inputmode="numeric" autocomplete="off">
+                                    <span id="taskDateDiffLabel" class="date-picker-diff"></span>
                                     <input type="date" id="taskDate" style="display: none;">
                                     <button type="button" class="date-picker-button" onclick="toggleDatePicker(event)" aria-label="Select date">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -2274,11 +2726,37 @@
                                             <line x1="3" y1="10" x2="21" y2="10"></line>
                                         </svg>
                                     </button>
+                                    <button type="button" class="date-picker-remove-btn" onclick="clearDateValue(event)" aria-label="Clear date">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
                             <div>
                                 <label for="taskTime">Time</label>
-                                <input type="time" id="taskTime">
+                                <div class="time-picker-wrapper">
+                                    <input type="text" id="taskTime" placeholder="hh:mm" inputmode="numeric" autocomplete="off">
+                                    <span id="taskTimeDiffLabel" class="time-picker-diff"></span>
+                                    <input type="time" id="taskTimeHidden" style="display: none;">
+                                    <button type="button" class="time-picker-button" onclick="toggleTimePicker(event)" aria-label="Select time">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="time-picker-remove-btn" onclick="clearTimeValue(event)" aria-label="Clear time">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="date-time-summary-wrapper">
+                                <label>Summary</label>
+                                <span id="dateTimeSummary" class="date-time-summary"></span>
                             </div>
                         </div>
                     </div>
@@ -2298,9 +2776,9 @@
                         </div>
                         <small style="color: #666; font-size: 12px; display: block; margin-top: 5px;">Formats allowed: JPEG, JPG, PNG, GIF, WEBP (max 5MB)</small>
                     </div>
-                    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
-                        <button type="button" onclick="closeTaskModal()" style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
-                        <button type="submit" style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Create Task</button>
+                    <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
+                        <button type="button" onclick="closeTaskModal()" style="min-width: 120px; background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
+                        <button type="submit" style="min-width: 120px; background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Create Task</button>
                     </div>
                 </form>
             </div>
@@ -2309,16 +2787,31 @@
 
     <div id="datePickerPopover" class="date-picker-popover" onclick="event.stopPropagation()">
         <div class="date-picker-column quick-column date-picker-quick-options">
-            <button type="button" onclick="applyQuickDateOption('today')">Today</button>
-            <button type="button" onclick="applyQuickDateOption('tomorrow')">Tomorrow</button>
-            <button type="button" onclick="applyQuickDateOption('next-week')">Next Week</button>
-            <button type="button" onclick="applyQuickDateOption('next-month')">Next Month</button>
-            <button type="button" onclick="applyQuickDateOption('next-year')">Next Year</button>
+            <button type="button" data-option="today" onclick="applyQuickDateOption('today')">
+                <span class="quick-option-label">Today</span>
+                <span class="quick-option-date"></span>
+            </button>
+            <button type="button" data-option="tomorrow" onclick="applyQuickDateOption('tomorrow')">
+                <span class="quick-option-label">Tomorrow</span>
+                <span class="quick-option-date"></span>
+            </button>
+            <button type="button" data-option="next-week" onclick="applyQuickDateOption('next-week')">
+                <span class="quick-option-label">Next Week</span>
+                <span class="quick-option-date"></span>
+            </button>
+            <button type="button" data-option="next-month" onclick="applyQuickDateOption('next-month')">
+                <span class="quick-option-label">Next Month</span>
+                <span class="quick-option-date"></span>
+            </button>
+            <button type="button" data-option="next-year" onclick="applyQuickDateOption('next-year')">
+                <span class="quick-option-label">Next Year</span>
+                <span class="quick-option-date"></span>
+            </button>
         </div>
         <div class="date-picker-column calendar-column date-picker-calendar">
             <div class="date-picker-calendar-header">
                 <div class="date-picker-calendar-header-left">
-                    <span id="datePickerModeLabel">MONTH</span>
+                    <button type="button" id="datePickerModeLabel" class="calendar-nav" onclick="toggleCalendarMode()" aria-label="Toggle between month and year view">MONTH</button>
                 </div>
                 <span id="datePickerMonthLabel" class="date-picker-calendar-title"></span>
                 <div class="date-picker-calendar-header-right">
@@ -2336,6 +2829,32 @@
                 <span>Sun</span>
             </div>
             <div id="datePickerDays" class="date-picker-calendar-grid"></div>
+        </div>
+    </div>
+
+    <!-- Time Picker Popover -->
+    <div id="timePickerPopover" class="time-picker-popover" onclick="event.stopPropagation()">
+        <div class="time-picker-quick-row">
+            <button type="button" onclick="applyQuickTimeOption('now')">Now</button>
+            <button type="button" onclick="applyQuickTimeOption('midnight')">Midnight</button>
+            <button type="button" onclick="applyQuickTimeOption('morning')">Morning</button>
+            <button type="button" onclick="applyQuickTimeOption('noon')">Noon</button>
+            <button type="button" onclick="applyQuickTimeOption('afternoon')">Afternoon</button>
+            <button type="button" onclick="applyQuickTimeOption('evening')">Evening</button>
+        </div>
+        <div class="time-picker-hours-row">
+            <div id="timePickerHoursBar" class="time-picker-hours-bar"></div>
+            <div id="timePickerMinutesRow" class="time-picker-minutes-row">
+                <div class="time-adjust-group">
+                    <button type="button" class="time-adjust-btn" onclick="adjustSelectedTime(-5)">-5</button>
+                    <button type="button" class="time-adjust-btn" onclick="adjustSelectedTime(-1)">-1</button>
+                </div>
+                <div id="timePickerMinutesBar" class="time-picker-minutes-bar"></div>
+                <div class="time-adjust-group">
+                    <button type="button" class="time-adjust-btn" onclick="adjustSelectedTime(1)">+1</button>
+                    <button type="button" class="time-adjust-btn" onclick="adjustSelectedTime(5)">+5</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2769,7 +3288,25 @@
             calendarDaysContainer: null,
             calendarMonthLabel: null,
             calendarYear: null,
-            calendarMonth: null
+            calendarMonth: null,
+            calendarMode: 'month', // 'month' or 'year'
+            monthViewBaseHeight: null,
+            shouldReplaceOnInput: false,
+            previousValue: null
+        };
+        let timePickerState = {
+            input: null,
+            popover: null,
+            hoursBar: null,
+            minutesBar: null,
+            selectedHour: null,
+            selectedMinute: null,
+            isOpen: false,
+            outsideHandler: null,
+            keyHandler: null,
+            hiddenInput: null,
+            shouldReplaceOnInput: false,
+            previousValue: null
         };
         const DATE_PICKER_MONTH_NAMES = [
             'January', 'February', 'March', 'April', 'May', 'June',
@@ -4035,14 +4572,36 @@
             const popover = document.getElementById('datePickerPopover');
             const daysContainer = document.getElementById('datePickerDays');
             const monthLabel = document.getElementById('datePickerMonthLabel');
+            const modeLabel = document.getElementById('datePickerModeLabel');
 
-            if (!displayInput || !hiddenInput || !popover || !daysContainer || !monthLabel) return;
+            if (!displayInput || !hiddenInput || !popover || !daysContainer || !monthLabel || !modeLabel) return;
 
             datePickerState.displayInput = displayInput;
             datePickerState.hiddenInput = hiddenInput;
             datePickerState.popover = popover;
             datePickerState.calendarDaysContainer = daysContainer;
             datePickerState.calendarMonthLabel = monthLabel;
+            datePickerState.calendarMode = 'month';
+            // En vista de mes, el botón muestra la acción contraria: YEAR
+            modeLabel.textContent = 'YEAR';
+
+            // Inicializar los textos de las fechas rápidas
+            updateQuickOptionLabels();
+
+            // Configurar el comportamiento de hover de las opciones rápidas
+            setupQuickOptionHover();
+
+            // Máscara de entrada para que las barras se coloquen solas (dd/mm/yyyy)
+            displayInput.addEventListener('input', handleDateInputMask);
+
+            // Al hacer focus, guardar el valor previo y si hay contenido, seleccionar todo para que se reemplace al escribir
+            displayInput.addEventListener('focus', () => {
+                datePickerState.previousValue = displayInput.value;
+                if (displayInput.value.trim()) {
+                    displayInput.select();
+                    datePickerState.shouldReplaceOnInput = true;
+                }
+            });
 
             displayInput.addEventListener('blur', handleDateDisplayBlur);
             displayInput.addEventListener('change', handleDateDisplayBlur);
@@ -4050,12 +4609,70 @@
                 if (event.key === 'Enter') {
                     event.preventDefault();
                     handleDateDisplayBlur();
+                    displayInput.blur();
+                } else if (event.key === 'Backspace' && displayInput.value.trim()) {
+                    // Prevenir borrar con backspace si hay contenido
+                    event.preventDefault();
                 }
             });
 
             syncDateDisplayFromHidden();
+            updateDateRemoveButton();
             initializeDatePickerCalendarFromValue();
             renderDatePickerCalendar();
+        }
+
+        function setupTimePicker() {
+            const input = document.getElementById('taskTime');
+            const hiddenInput = document.getElementById('taskTimeHidden');
+            const popover = document.getElementById('timePickerPopover');
+            const hoursBar = document.getElementById('timePickerHoursBar');
+            const minutesBar = document.getElementById('timePickerMinutesBar');
+
+            if (!input || !popover || !hoursBar || !minutesBar) return;
+
+            timePickerState.input = input;
+            timePickerState.hiddenInput = hiddenInput;
+            timePickerState.popover = popover;
+            timePickerState.hoursBar = hoursBar;
+            timePickerState.minutesBar = minutesBar;
+
+            // Máscara de entrada para que los dos puntos se coloquen solos (hh:mm)
+            input.addEventListener('input', handleTimeInputMask);
+            
+            // Al hacer focus, guardar el valor previo y si hay contenido, seleccionar todo para que se reemplace al escribir
+            input.addEventListener('focus', () => {
+                timePickerState.previousValue = input.value;
+                if (input.value.trim()) {
+                    input.select();
+                    timePickerState.shouldReplaceOnInput = true;
+                }
+            });
+            
+            // Sincronizar cuando se pierde el foco
+            input.addEventListener('blur', handleTimeInputBlur);
+            input.addEventListener('change', handleTimeInputBlur);
+            input.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    handleTimeInputBlur();
+                    input.blur();
+                } else if (event.key === 'Backspace' && input.value.trim()) {
+                    // Prevenir borrar con backspace si hay contenido
+                    event.preventDefault();
+                }
+            });
+
+            // Inicializar valor desde el input si ya tiene hora
+            if (input.value) {
+                const [h, m] = input.value.split(':').map(v => parseInt(v, 10));
+                if (!Number.isNaN(h)) timePickerState.selectedHour = h;
+                if (!Number.isNaN(m)) timePickerState.selectedMinute = m;
+                syncTimeHiddenInput();
+            }
+
+            updateTimeRemoveButton();
+            renderTimePicker();
         }
 
         function toggleDatePicker(event) {
@@ -4066,6 +4683,17 @@
                 closeDatePicker();
             } else {
                 openDatePicker();
+            }
+        }
+
+        function toggleTimePicker(event) {
+            event.stopPropagation();
+            if (!timePickerState.popover || !timePickerState.input) return;
+
+            if (timePickerState.isOpen) {
+                closeTimePicker();
+            } else {
+                openTimePicker();
             }
         }
 
@@ -4080,9 +4708,21 @@
             initializeDatePickerCalendarFromValue();
             renderDatePickerCalendar();
 
+            // Actualizar las fechas mostradas en las opciones rápidas cada vez que se abre
+            updateQuickOptionLabels();
+
             datePickerState.outsideHandler = (event) => {
                 const clickedInsideTrigger = event.target.closest('.date-picker-wrapper');
-                if (!datePickerState.popover.contains(event.target) && !clickedInsideTrigger) {
+                const clickedInsidePopover = datePickerState.popover.contains(event.target);
+
+                // Si hace clic fuera del popover y del trigger, cerramos y evitamos que
+                // el clic dispare otras acciones en la interfaz.
+                if (!clickedInsidePopover && !clickedInsideTrigger) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (event.stopImmediatePropagation) {
+                        event.stopImmediatePropagation();
+                    }
                     closeDatePicker();
                 }
             };
@@ -4093,9 +4733,54 @@
                 }
             };
 
-            document.addEventListener('click', datePickerState.outsideHandler);
+            // Usamos captura para interceptar el clic antes que el resto de la UI
+            document.addEventListener('click', datePickerState.outsideHandler, true);
             document.addEventListener('keydown', datePickerState.keyHandler);
             window.addEventListener('resize', positionDatePicker);
+        }
+
+        function openTimePicker() {
+            if (!timePickerState.popover || !timePickerState.input) return;
+
+            timePickerState.popover.classList.add('active');
+            timePickerState.isOpen = true;
+
+            positionTimePicker();
+            renderTimePicker();
+
+            timePickerState.outsideHandler = (event) => {
+                const clickedInsideTrigger = event.target.closest('.time-picker-wrapper');
+                const clickedInsidePopover = timePickerState.popover.contains(event.target);
+                if (!clickedInsidePopover && !clickedInsideTrigger) {
+                    closeTimePicker();
+                }
+            };
+
+            timePickerState.keyHandler = (event) => {
+                if (event.key === 'Escape') {
+                    closeTimePicker();
+                }
+            };
+
+            document.addEventListener('click', timePickerState.outsideHandler, true);
+            document.addEventListener('keydown', timePickerState.keyHandler);
+            window.addEventListener('resize', positionTimePicker);
+        }
+
+        function closeTimePicker() {
+            if (!timePickerState.popover) return;
+            timePickerState.popover.classList.remove('active');
+            timePickerState.isOpen = false;
+
+            if (timePickerState.outsideHandler) {
+                document.removeEventListener('click', timePickerState.outsideHandler, true);
+                timePickerState.outsideHandler = null;
+            }
+            if (timePickerState.keyHandler) {
+                document.removeEventListener('keydown', timePickerState.keyHandler);
+                timePickerState.keyHandler = null;
+            }
+            window.removeEventListener('resize', positionTimePicker);
         }
 
         function closeDatePicker() {
@@ -4104,7 +4789,7 @@
             datePickerState.isOpen = false;
 
             if (datePickerState.outsideHandler) {
-                document.removeEventListener('click', datePickerState.outsideHandler);
+                document.removeEventListener('click', datePickerState.outsideHandler, true);
                 datePickerState.outsideHandler = null;
             }
             if (datePickerState.keyHandler) {
@@ -4135,6 +4820,33 @@
             datePickerState.popover.style.left = `${Math.max(20, left)}px`;
         }
 
+        function positionTimePicker() {
+            if (!timePickerState.popover || !timePickerState.input) return;
+            const rect = timePickerState.input.getBoundingClientRect();
+            const scrollY = window.scrollY || document.documentElement.scrollTop;
+            const scrollX = window.scrollX || document.documentElement.scrollLeft;
+
+            // Intentar abrir por defecto ARRIBA, igual que el selector de fecha
+            let top = rect.top + scrollY - (timePickerState.popover.offsetHeight || 0) - 8;
+            if (top < 20) {
+                // Si no hay espacio suficiente arriba, abrimos debajo
+                top = rect.bottom + scrollY + 8;
+            }
+
+            const popoverWidth = timePickerState.popover.offsetWidth || 320;
+            const viewportWidth = window.innerWidth;
+            // Centrar horizontalmente respecto al campo de hora
+            let left = rect.left + scrollX + (rect.width / 2) - (popoverWidth / 2);
+            // Ajustar para no salirnos de los márgenes de la ventana
+            if (left < 20) left = 20;
+            if (left + popoverWidth > viewportWidth - 20) {
+                left = viewportWidth - popoverWidth - 20;
+            }
+
+            timePickerState.popover.style.top = `${top}px`;
+            timePickerState.popover.style.left = `${left}px`;
+        }
+
         function initializeDatePickerCalendarFromValue() {
             let baseDate = null;
             if (datePickerState.hiddenInput && datePickerState.hiddenInput.value) {
@@ -4156,9 +4868,70 @@
             const year = datePickerState.calendarYear;
             const month = datePickerState.calendarMonth;
 
-            if (datePickerState.calendarMonthLabel) {
-                datePickerState.calendarMonthLabel.textContent = `${DATE_PICKER_MONTH_NAMES[month]} ${year}`;
+            const mode = datePickerState.calendarMode || 'month';
+
+            const weekdaysRow = document.querySelector('.date-picker-calendar-weekdays');
+            if (weekdaysRow) {
+                weekdaysRow.style.display = mode === 'year' ? 'none' : 'grid';
             }
+
+            if (datePickerState.calendarMonthLabel) {
+                if (mode === 'month') {
+                    datePickerState.calendarMonthLabel.textContent = `${DATE_PICKER_MONTH_NAMES[month]} ${year}`;
+                } else {
+                    datePickerState.calendarMonthLabel.textContent = `${year}`;
+                }
+            }
+
+            if (mode === 'year') {
+                // Year view: 3x4 grid of months
+                container.style.gridTemplateColumns = 'repeat(3, 1fr)';
+                container.style.gridAutoRows = '1fr';
+                container.style.alignContent = 'stretch';
+                // Hacer que el grid de meses ocupe todo el alto disponible de la columna
+                container.style.flex = '1 1 auto';
+
+                const selectedDate = datePickerState.hiddenInput && datePickerState.hiddenInput.value
+                    ? parseISODate(datePickerState.hiddenInput.value)
+                    : null;
+                const today = new Date();
+
+                for (let m = 0; m < 12; m++) {
+                    const monthButton = document.createElement('button');
+                    monthButton.type = 'button';
+                    monthButton.className = 'calendar-month';
+
+                    const monthDate = new Date(year, m, 1);
+
+                    if (selectedDate && selectedDate.getFullYear() === year && selectedDate.getMonth() === m) {
+                        monthButton.classList.add('selected');
+                    }
+
+                    if (today.getFullYear() === year && today.getMonth() === m) {
+                        monthButton.classList.add('today');
+                    }
+
+                    monthButton.textContent = DATE_PICKER_MONTH_NAMES[m];
+                    monthButton.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        datePickerState.calendarMonth = m;
+                        datePickerState.calendarMode = 'month';
+                        const modeLabel = document.getElementById('datePickerModeLabel');
+                        if (modeLabel) modeLabel.textContent = 'YEAR';
+                        renderDatePickerCalendar();
+                    });
+
+                    container.appendChild(monthButton);
+                }
+                return;
+            }
+
+            // Month view: days grid
+            container.style.gridTemplateColumns = 'repeat(7, 1fr)';
+            container.style.gridAutoRows = '';
+            container.style.height = '';
+            // En vista de días, dejamos que el contenido marque la altura (sin forzar flex)
+            container.style.flex = '';
 
             const firstOfMonth = new Date(year, month, 1);
             const startOffset = (firstOfMonth.getDay() + 6) % 7; // Shift so Monday is first column
@@ -4195,21 +4968,402 @@
 
                 container.appendChild(dayButton);
             }
+
+            // Guardar altura mínima de la ventana (popover) solo la primera vez
+            if (!datePickerState.monthViewBaseHeight && datePickerState.popover) {
+                const baseHeight = datePickerState.popover.offsetHeight || datePickerState.popover.clientHeight;
+                if (baseHeight) {
+                    datePickerState.monthViewBaseHeight = baseHeight;
+                    datePickerState.popover.style.minHeight = baseHeight + 'px';
+                }
+            } else if (datePickerState.monthViewBaseHeight && datePickerState.popover) {
+                // Aseguramos el mínimo en siguientes renders
+                datePickerState.popover.style.minHeight = datePickerState.monthViewBaseHeight + 'px';
+            }
         }
 
         function changeDatePickerMonth(delta) {
             if (datePickerState.calendarYear === null || datePickerState.calendarMonth === null) {
                 initializeDatePickerCalendarFromValue();
             }
-            datePickerState.calendarMonth += delta;
-            if (datePickerState.calendarMonth > 11) {
-                datePickerState.calendarMonth = 0;
-                datePickerState.calendarYear += 1;
-            } else if (datePickerState.calendarMonth < 0) {
-                datePickerState.calendarMonth = 11;
-                datePickerState.calendarYear -= 1;
+            const mode = datePickerState.calendarMode || 'month';
+            if (mode === 'year') {
+                datePickerState.calendarYear += delta;
+            } else {
+                datePickerState.calendarMonth += delta;
+                if (datePickerState.calendarMonth > 11) {
+                    datePickerState.calendarMonth = 0;
+                    datePickerState.calendarYear += 1;
+                } else if (datePickerState.calendarMonth < 0) {
+                    datePickerState.calendarMonth = 11;
+                    datePickerState.calendarYear -= 1;
+                }
             }
             renderDatePickerCalendar();
+        }
+
+        function renderTimePicker() {
+            if (!timePickerState.hoursBar || !timePickerState.minutesBar) return;
+
+            const hoursBar = timePickerState.hoursBar;
+            const minutesBar = timePickerState.minutesBar;
+            hoursBar.innerHTML = '';
+            minutesBar.innerHTML = '';
+
+            const selectedHour = timePickerState.selectedHour;
+            const selectedMinute = timePickerState.selectedMinute;
+
+            for (let h = 0; h < 24; h++) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'time-hour';
+                if (h === selectedHour) {
+                    btn.classList.add('selected');
+                }
+                btn.textContent = String(h).padStart(2, '0');
+                btn.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    timePickerState.selectedHour = h;
+                    // Si aún no hay minutos seleccionados, por defecto :00
+                    if (timePickerState.selectedMinute == null) {
+                        timePickerState.selectedMinute = 0;
+                    }
+                    updateTimeInputFromState();
+                    renderTimePicker();
+                    renderTimeMinutesBar();
+                });
+                hoursBar.appendChild(btn);
+            }
+
+            // Siempre mostramos la barra de minutos para que :00, :15, etc. sean visibles desde el principio
+            renderTimeMinutesBar();
+        }
+
+        function renderTimeMinutesBar() {
+            if (!timePickerState.minutesBar) return;
+
+            const minutesBar = timePickerState.minutesBar;
+            minutesBar.innerHTML = '';
+
+            const minutesOptions = [0, 15, 30, 45];
+            const selectedMinute = timePickerState.selectedMinute;
+            const selectedHour = timePickerState.selectedHour;
+
+            // Desactivar visualmente la fila completa si no hay hora seleccionada
+            const minutesRow = document.getElementById('timePickerMinutesRow');
+            if (minutesRow) {
+                if (selectedHour == null) {
+                    minutesRow.classList.add('disabled');
+                } else {
+                    minutesRow.classList.remove('disabled');
+                }
+            }
+
+            minutesOptions.forEach((m) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'time-minute';
+                if (selectedMinute != null && m === selectedMinute) {
+                    btn.classList.add('selected');
+                }
+                const hourLabel = selectedHour != null
+                    ? String(selectedHour).padStart(2, '0')
+                    : 'hh';
+                btn.textContent = `${hourLabel}:${String(m).padStart(2, '0')}`;
+                btn.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    if (timePickerState.selectedHour == null) return; // seguridad extra
+                    timePickerState.selectedMinute = m;
+                    updateTimeInputFromState();
+                    renderTimeMinutesBar();
+                });
+                minutesBar.appendChild(btn);
+            });
+        }
+
+        function updateTimeInputFromState() {
+            if (!timePickerState.input) return;
+            if (timePickerState.selectedHour == null) {
+                timePickerState.input.value = '';
+                syncTimeHiddenInput();
+                updateTimeDiffLabel(null);
+                updateTimeRemoveButton();
+                return;
+            }
+            const hour = String(timePickerState.selectedHour).padStart(2, '0');
+            const minute = String((timePickerState.selectedMinute ?? 0)).padStart(2, '0');
+            timePickerState.input.value = `${hour}:${minute}`;
+            syncTimeHiddenInput();
+            updateTimeDiffLabel();
+            updateDateTimeSummary();
+            updateTimeRemoveButton();
+        }
+
+        function updateTimeDiffLabel() {
+            const labelEl = document.getElementById('taskTimeDiffLabel');
+            if (!labelEl) return;
+
+            // Necesitamos fecha y hora para calcular la diferencia
+            const dateInput = document.getElementById('taskDate');
+            if (!dateInput || !dateInput.value) {
+                labelEl.textContent = '';
+                labelEl.classList.remove('time-picker-diff-past');
+                return;
+            }
+
+            if (timePickerState.selectedHour == null) {
+                labelEl.textContent = '';
+                labelEl.classList.remove('time-picker-diff-past');
+                return;
+            }
+
+            // Crear fecha/hora objetivo
+            const targetDate = new Date(dateInput.value);
+            targetDate.setHours(timePickerState.selectedHour, timePickerState.selectedMinute ?? 0, 0, 0);
+
+            // Fecha/hora actual
+            const now = new Date();
+
+            // Calcular diferencia en milisegundos
+            const diffMs = targetDate.getTime() - now.getTime();
+            const diffMinutes = Math.round(diffMs / (1000 * 60));
+            const diffHours = Math.round(diffMs / (1000 * 60 * 60));
+
+            // Solo mostrar si la diferencia es menor a 48 horas (en valor absoluto)
+            if (Math.abs(diffHours) >= 48) {
+                labelEl.textContent = '';
+                labelEl.classList.remove('time-picker-diff-past');
+                return;
+            }
+
+            let label = '';
+            const absMinutes = Math.abs(diffMinutes);
+            const absHours = Math.abs(diffHours);
+
+            // Si la diferencia es 60 minutos o menos, mostrar en minutos (sin redondear la primera hora)
+            if (absMinutes < 60) {
+                if (diffMinutes === 0) {
+                    label = 'Now';
+                } else if (diffMinutes === 1) {
+                    label = '1 minute left';
+                } else if (diffMinutes > 1) {
+                    label = `${diffMinutes} minutes left`;
+                } else if (diffMinutes === -1) {
+                    label = '1 minute ago';
+                } else {
+                    label = `${absMinutes} minutes ago`;
+                }
+            } else {
+                // Si es más de 60 minutos, mostrar en horas
+                if (diffHours === 1) {
+                    label = '1 hour left';
+                } else if (diffHours > 1) {
+                    label = `${diffHours} hours left`;
+                } else if (diffHours === -1) {
+                    label = '1 hour ago';
+                } else {
+                    label = `${absHours} hours ago`;
+                }
+            }
+
+            labelEl.textContent = label;
+
+            // Aplicar color según si es pasado o futuro (rojo si ya pasó)
+            if (diffMinutes < 0) {
+                labelEl.classList.add('time-picker-diff-past');
+            } else {
+                labelEl.classList.remove('time-picker-diff-past');
+            }
+        }
+
+        function updateDateTimeSummary() {
+            const summaryEl = document.getElementById('dateTimeSummary');
+            if (!summaryEl) return;
+
+            const dateInput = document.getElementById('taskDate');
+            const timeInput = document.getElementById('taskTimeHidden');
+
+            if (!dateInput || !dateInput.value) {
+                summaryEl.textContent = '';
+                return;
+            }
+
+            // Parsear la fecha
+            const date = parseISODate(dateInput.value);
+            if (!date) {
+                summaryEl.textContent = '';
+                return;
+            }
+
+            // Nombres de los meses en inglés
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+
+            const day = date.getDate();
+            const month = monthNames[date.getMonth()];
+            const year = date.getFullYear();
+
+            let summary = `${day} ${month} ${year}`;
+
+            // Añadir la hora si está disponible
+            if (timeInput && timeInput.value) {
+                const [hours, minutes] = timeInput.value.split(':');
+                if (hours && minutes) {
+                    summary += ` at ${hours}:${minutes}`;
+                }
+            }
+
+            summaryEl.textContent = summary;
+        }
+
+        function syncTimeHiddenInput() {
+            if (!timePickerState.hiddenInput || !timePickerState.input) return;
+            const value = timePickerState.input.value;
+            if (value && value.includes(':')) {
+                timePickerState.hiddenInput.value = value;
+            } else {
+                timePickerState.hiddenInput.value = '';
+            }
+        }
+
+        function handleTimeInputMask(event) {
+            const input = event.target;
+            
+            // Si debe reemplazar todo (texto estaba seleccionado), tomar solo el nuevo carácter
+            if (timePickerState.shouldReplaceOnInput && event.inputType === 'insertText' && event.data) {
+                // Reemplazar todo con el nuevo carácter
+                input.value = event.data;
+                timePickerState.shouldReplaceOnInput = false;
+                // Continuar con el procesamiento normal
+            } else if (timePickerState.shouldReplaceOnInput) {
+                // Si no es insertText, resetear el flag
+                timePickerState.shouldReplaceOnInput = false;
+            }
+            
+            // Tomamos solo dígitos de lo que se haya escrito/pegado
+            let digits = input.value.replace(/\D/g, '');
+
+            if (!digits) {
+                input.value = '';
+                return;
+            }
+
+            // Limitar a 4 dígitos (hhmm)
+            if (digits.length > 4) {
+                digits = digits.slice(0, 4);
+            }
+
+            let formatted = '';
+            if (digits.length <= 2) {
+                // h, hh
+                formatted = digits;
+            } else {
+                // hhmm
+                formatted = `${digits.slice(0, 2)}:${digits.slice(2)}`;
+            }
+
+            input.value = formatted;
+        }
+
+        function handleTimeInputBlur() {
+            if (!timePickerState.input) return;
+            const value = timePickerState.input.value.trim();
+            if (!value) {
+                timePickerState.selectedHour = null;
+                timePickerState.selectedMinute = null;
+                syncTimeHiddenInput();
+                updateTimeRemoveButton();
+                renderTimePicker();
+                return;
+            }
+
+            const parsed = parseTimeValue(value);
+            if (parsed) {
+                timePickerState.selectedHour = parsed.hour;
+                timePickerState.selectedMinute = parsed.minute;
+                updateTimeInputFromState();
+                renderTimePicker();
+            } else {
+                // Si no es válido, restaurar el valor previo
+                if (timePickerState.previousValue !== null) {
+                    timePickerState.input.value = timePickerState.previousValue;
+                    // Intentar parsear el valor previo para actualizar el estado
+                    const prevParsed = parseTimeValue(timePickerState.previousValue);
+                    if (prevParsed) {
+                        timePickerState.selectedHour = prevParsed.hour;
+                        timePickerState.selectedMinute = prevParsed.minute;
+                        updateTimeInputFromState();
+                    } else {
+                        // Si el valor previo tampoco es válido, limpiar
+                        timePickerState.input.value = '';
+                        timePickerState.selectedHour = null;
+                        timePickerState.selectedMinute = null;
+                        syncTimeHiddenInput();
+                    }
+                } else {
+                    // Si no hay valor previo, limpiar
+                    timePickerState.input.value = '';
+                    timePickerState.selectedHour = null;
+                    timePickerState.selectedMinute = null;
+                    syncTimeHiddenInput();
+                }
+                updateTimeRemoveButton();
+                renderTimePicker();
+            }
+        }
+
+        function parseTimeValue(value) {
+            // Formato esperado: hh:mm o hhmm
+            const clean = value.replace(/\D/g, '');
+            if (clean.length < 1) return null;
+
+            let hour, minute;
+            if (value.includes(':')) {
+                const parts = value.split(':');
+                hour = parseInt(parts[0], 10);
+                minute = parseInt(parts[1] || '0', 10);
+            } else {
+                if (clean.length === 1) {
+                    // Un solo dígito: interpretar como hora (0-9) con minutos en 00
+                    hour = parseInt(clean, 10);
+                    minute = 0;
+                } else if (clean.length === 2) {
+                    hour = parseInt(clean, 10);
+                    minute = 0;
+                } else if (clean.length >= 3) {
+                    hour = parseInt(clean.slice(0, 2), 10);
+                    minute = parseInt(clean.slice(2, 4) || '0', 10);
+                } else {
+                    return null;
+                }
+            }
+
+            // Validar rango
+            if (Number.isNaN(hour) || Number.isNaN(minute)) return null;
+            if (hour < 0 || hour > 23) return null;
+            if (minute < 0 || minute > 59) return null;
+
+            return { hour, minute };
+        }
+
+        function adjustSelectedTime(deltaMinutes) {
+            // Solo ajustamos si ya hay una hora seleccionada
+            if (timePickerState.selectedHour == null) return;
+
+            const currentMinutes =
+                timePickerState.selectedHour * 60 + (timePickerState.selectedMinute ?? 0);
+            let total = currentMinutes + deltaMinutes;
+
+            // Limitar entre 00:00 y 23:59
+            if (total < 0) total = 0;
+            const maxMinutes = 23 * 60 + 59;
+            if (total > maxMinutes) total = maxMinutes;
+
+            timePickerState.selectedHour = Math.floor(total / 60);
+            timePickerState.selectedMinute = total % 60;
+
+            updateTimeInputFromState();
+            renderTimePicker();
         }
 
         function isSameCalendarDate(dateA, dateB) {
@@ -4220,22 +5374,117 @@
             );
         }
 
+        function toggleCalendarMode() {
+            const modeLabel = document.getElementById('datePickerModeLabel');
+            if (!modeLabel) return;
+
+            datePickerState.calendarMode = datePickerState.calendarMode === 'year' ? 'month' : 'year';
+            // El texto siempre muestra la acción disponible (vista contraria)
+            modeLabel.textContent = datePickerState.calendarMode === 'year' ? 'MONTH' : 'YEAR';
+            renderDatePickerCalendar();
+        }
+
         function handleDateDisplayBlur() {
             if (!datePickerState.displayInput) return;
+            
             const value = datePickerState.displayInput.value.trim();
             if (!value) {
                 if (datePickerState.hiddenInput) {
                     datePickerState.hiddenInput.value = '';
                 }
+                // Actualizar label de horas cuando se borra la fecha
+                updateTimeDiffLabel();
+                updateDateRemoveButton();
+                updateDateTimeSummary();
                 return;
             }
 
-            const parsed = parseDisplayDate(value);
+            // Completar automáticamente si el valor está incompleto
+            const completedValue = completeDateValue(value);
+            if (completedValue && completedValue !== value) {
+                datePickerState.displayInput.value = completedValue;
+            }
+
+            const finalValue = completedValue || value;
+            const parsed = parseDisplayDate(finalValue);
             if (parsed) {
                 setDateValue(parsed, false);
             } else {
-                syncDateDisplayFromHidden();
+                // Si el input no es válido, restaurar el valor previo
+                if (datePickerState.previousValue !== null) {
+                    datePickerState.displayInput.value = datePickerState.previousValue;
+                    // Intentar parsear el valor previo para actualizar el estado
+                    const prevParsed = parseDisplayDate(datePickerState.previousValue);
+                    if (prevParsed) {
+                        setDateValue(prevParsed, false);
+                    } else {
+                        syncDateDisplayFromHidden();
+                    }
+                } else {
+                    syncDateDisplayFromHidden();
+                }
+                // Actualizar label de horas aunque no se haya parseado correctamente
+                updateTimeDiffLabel();
+                updateDateRemoveButton();
             }
+        }
+
+        function completeDateValue(value) {
+            // Tomar solo dígitos
+            const digits = value.replace(/\D/g, '');
+            if (!digits) return null;
+
+            const now = new Date();
+            const currentMonth = now.getMonth() + 1; // 1-12
+            const currentYear = now.getFullYear();
+
+            if (digits.length === 1) {
+                // d → dd/mm/yyyy (día del mes actual, año actual)
+                const day = digits.padStart(2, '0');
+                return `${day}/${String(currentMonth).padStart(2, '0')}/${currentYear}`;
+            } else if (digits.length === 2) {
+                // dd → dd/mm/yyyy (día del mes actual, año actual)
+                return `${digits}/${String(currentMonth).padStart(2, '0')}/${currentYear}`;
+            } else if (digits.length === 3) {
+                // dmm → dd/mm/yyyy (día 1 dígito, mes 2 dígitos, año actual)
+                const day = digits.slice(0, 1).padStart(2, '0');
+                const month = digits.slice(1, 3);
+                return `${day}/${month}/${currentYear}`;
+            } else if (digits.length === 4) {
+                // ddmm → dd/mm/yyyy (día 2 dígitos, mes 2 dígitos, año actual)
+                return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${currentYear}`;
+            } else if (digits.length === 5) {
+                // d/mmyy → dd/mm/yyyy (día 1 dígito, mes 2 dígitos, año 2 dígitos)
+                const day = digits.slice(0, 1).padStart(2, '0');
+                const month = digits.slice(1, 3);
+                const year = 2000 + parseInt(digits.slice(3, 5), 10);
+                return `${day}/${month}/${year}`;
+            } else if (digits.length === 6) {
+                // dd/mmyy → dd/mm/yyyy (día 2 dígitos, mes 2 dígitos, año 2 dígitos)
+                const day = digits.slice(0, 2);
+                const month = digits.slice(2, 4);
+                const year = 2000 + parseInt(digits.slice(4, 6), 10);
+                return `${day}/${month}/${year}`;
+            } else if (value.includes('/') && value.split('/').length === 2) {
+                // Si ya tiene formato dd/mm pero falta el año
+                const parts = value.split('/');
+                if (parts.length === 2) {
+                    return `${parts[0]}/${parts[1]}/${currentYear}`;
+                }
+            } else if (value.includes('/') && value.split('/').length === 3) {
+                // Si ya tiene formato completo, verificar si el año es de 2 dígitos
+                const parts = value.split('/');
+                if (parts.length === 3) {
+                    const yearPart = parts[2];
+                    if (yearPart.length === 2) {
+                        // Año de 2 dígitos, añadir 2000
+                        const year = 2000 + parseInt(yearPart, 10);
+                        return `${parts[0]}/${parts[1]}/${year}`;
+                    }
+                }
+            }
+
+            return null; // No necesita completar
         }
 
         function parseDisplayDate(value) {
@@ -4279,6 +5528,128 @@
             return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
         }
 
+        function formatDisplayDateWithDiff(date) {
+            const base = formatDisplayDate(date);
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const target = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            const diffMs = target.getTime() - today.getTime();
+            const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+
+            let label = '';
+            if (diffDays === 0) {
+                label = 'Today';
+            } else {
+                const absDays = Math.abs(diffDays);
+                const isPast = diffDays < 0;
+                
+                // Calcular meses aproximados (usando 30 días por mes)
+                const months = Math.round(absDays / 30);
+                // Calcular años aproximados (usando 365 días por año)
+                const years = Math.round(absDays / 365);
+                
+                if (absDays > 90) {
+                    // Más de 90 días: mostrar en meses o años
+                    if (months >= 12) {
+                        // Más de 12 meses: mostrar en años
+                        if (years === 1) {
+                            label = isPast ? '1 year ago' : '1 year left';
+                        } else {
+                            label = isPast ? `${years} years ago` : `${years} years left`;
+                        }
+                    } else {
+                        // Entre 90 días y 12 meses: mostrar en meses
+                        if (months === 1) {
+                            label = isPast ? '1 month ago' : '1 month left';
+                        } else {
+                            label = isPast ? `${months} months ago` : `${months} months left`;
+                        }
+                    }
+                } else {
+                    // Menos de 90 días: mostrar en días
+                    if (diffDays === 1) {
+                        label = '1 day left';
+                    } else if (diffDays > 1) {
+                        label = `${diffDays} days left`;
+                    } else if (diffDays === -1) {
+                        label = '1 day ago';
+                    } else {
+                        label = `${absDays} days ago`;
+                    }
+                }
+            }
+
+            return { base, label };
+        }
+
+        function updateDateDiffLabel(labelOrDate) {
+            const labelEl = document.getElementById('taskDateDiffLabel');
+            if (!labelEl) return;
+
+            // Si recibimos null o cadena vacía, limpiamos el texto
+            if (!labelOrDate) {
+                labelEl.textContent = '';
+                labelEl.style.color = '#9ca3af'; // gris por defecto
+                return;
+            }
+
+            // Se asume que labelOrDate ya es el texto formateado (Today, 3 days left, etc.)
+            labelEl.textContent = labelOrDate;
+
+            // Colores según si la fecha está en el futuro/pasado:
+            // - left / Today → gris suave
+            // - ago → rojo suave apagado
+            const lower = labelOrDate.toLowerCase();
+            if (lower.includes('ago')) {
+                labelEl.style.color = '#f97373'; // rojo apagado
+            } else {
+                labelEl.style.color = '#9ca3af'; // gris suave
+            }
+        }
+
+        function handleDateInputMask(event) {
+            const input = event.target;
+            
+            // Si debe reemplazar todo (texto estaba seleccionado), tomar solo el nuevo carácter
+            if (datePickerState.shouldReplaceOnInput && event.inputType === 'insertText' && event.data) {
+                // Reemplazar todo con el nuevo carácter
+                input.value = event.data;
+                datePickerState.shouldReplaceOnInput = false;
+                // Continuar con el procesamiento normal
+            } else if (datePickerState.shouldReplaceOnInput) {
+                // Si no es insertText, resetear el flag
+                datePickerState.shouldReplaceOnInput = false;
+            }
+            
+            // Tomamos solo dígitos de lo que se haya escrito/pegado
+            let digits = input.value.replace(/\D/g, '');
+
+            if (!digits) {
+                input.value = '';
+                return;
+            }
+
+            // Limitar a 8 dígitos (ddmmyyyy)
+            if (digits.length > 8) {
+                digits = digits.slice(0, 8);
+            }
+
+            let formatted = '';
+            // Solo formatear con barras si hay 7 o más dígitos (fecha completa)
+            // Para 1-6 dígitos, mostrar solo los dígitos sin barras (se formateará al presionar Enter)
+            if (digits.length <= 6) {
+                // Mostrar solo los dígitos sin formatear
+                formatted = digits;
+            } else {
+                // ddmmyyyy (o parcial) - lógica original con barras
+                formatted = `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+            }
+
+            input.value = formatted;
+        }
+
         function formatISODate(date) {
             return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
         }
@@ -4287,12 +5658,17 @@
             if (!datePickerState.hiddenInput || !datePickerState.displayInput) return;
             if (!datePickerState.hiddenInput.value) {
                 datePickerState.displayInput.value = '';
+                updateDateDiffLabel(null);
+                updateDateRemoveButton();
                 return;
             }
 
             const date = parseISODate(datePickerState.hiddenInput.value);
             if (date) {
-                datePickerState.displayInput.value = formatDisplayDate(date);
+                const { base, label } = formatDisplayDateWithDiff(date);
+                datePickerState.displayInput.value = base;
+                updateDateDiffLabel(label);
+                updateDateRemoveButton();
             }
         }
 
@@ -4300,7 +5676,15 @@
             if (!datePickerState.hiddenInput || !datePickerState.displayInput) return;
             const iso = formatISODate(date);
             datePickerState.hiddenInput.value = iso;
-            datePickerState.displayInput.value = formatDisplayDate(date);
+            const { base, label } = formatDisplayDateWithDiff(date);
+            datePickerState.displayInput.value = base;
+            updateDateDiffLabel(label);
+            // Actualizar también el label de horas si hay hora seleccionada
+            updateTimeDiffLabel();
+            // Actualizar el resumen de fecha y hora
+            updateDateTimeSummary();
+            // Actualizar visibilidad del botón de cerrar
+            updateDateRemoveButton();
             datePickerState.calendarYear = date.getFullYear();
             datePickerState.calendarMonth = date.getMonth();
             if (datePickerState.isOpen) {
@@ -4311,8 +5695,110 @@
             }
         }
 
+        function clearDateValue(event) {
+            event.stopPropagation();
+            if (!datePickerState.hiddenInput || !datePickerState.displayInput) return;
+            datePickerState.hiddenInput.value = '';
+            datePickerState.displayInput.value = '';
+            updateDateDiffLabel(null);
+            // Si se elimina la fecha, también eliminar la hora (sin día no tiene sentido tener hora)
+            if (timePickerState.input) {
+                timePickerState.selectedHour = null;
+                timePickerState.selectedMinute = null;
+                timePickerState.input.value = '';
+                syncTimeHiddenInput();
+                updateTimeInputFromState();
+            }
+            updateTimeDiffLabel();
+            updateDateTimeSummary();
+            updateDateRemoveButton();
+        }
+
+        function clearTimeValue(event) {
+            event.stopPropagation();
+            if (!timePickerState.input) return;
+            timePickerState.selectedHour = null;
+            timePickerState.selectedMinute = null;
+            timePickerState.input.value = '';
+            syncTimeHiddenInput();
+            updateTimeInputFromState();
+            updateTimeDiffLabel();
+            updateDateTimeSummary();
+            updateTimeRemoveButton();
+        }
+
+        function updateDateRemoveButton() {
+            const removeBtn = document.querySelector('.date-picker-remove-btn');
+            const dateInput = document.getElementById('taskDate');
+            if (removeBtn && dateInput) {
+                if (dateInput.value) {
+                    removeBtn.classList.add('has-value');
+                } else {
+                    removeBtn.classList.remove('has-value');
+                }
+            }
+        }
+
+        function updateTimeRemoveButton() {
+            const removeBtn = document.querySelector('.time-picker-remove-btn');
+            if (removeBtn && timePickerState.input) {
+                if (timePickerState.input.value) {
+                    removeBtn.classList.add('has-value');
+                } else {
+                    removeBtn.classList.remove('has-value');
+                }
+            }
+        }
+
         function applyQuickDateOption(option) {
             const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            let targetDate = new Date(today);
+
+            targetDate = getQuickOptionDate(option, today);
+            if (!targetDate) return;
+
+            setDateValue(targetDate, true);
+        }
+
+        function applyQuickTimeOption(option) {
+            const now = new Date();
+            let target = new Date(now);
+
+            switch (option) {
+                case 'now':
+                    break;
+                case 'midnight':
+                    target.setHours(0, 0, 0, 0);
+                    break;
+                case 'noon':
+                    target.setHours(12, 0, 0, 0);
+                    break;
+                case 'morning':
+                    target.setHours(9, 0, 0, 0);
+                    break;
+                case 'afternoon':
+                    target.setHours(16, 0, 0, 0);
+                    break;
+                case 'evening':
+                    target.setHours(20, 0, 0, 0);
+                    break;
+                default:
+                    return;
+            }
+
+            const h = target.getHours();
+            const m = target.getMinutes();
+            timePickerState.selectedHour = h;
+            // Para "now" usamos los minutos exactos; para el resto, redondeamos al cuarto de hora inferior
+            timePickerState.selectedMinute =
+                option === 'now' ? m : m - (m % 15);
+            updateTimeInputFromState();
+            renderTimePicker();
+        }
+
+        function getQuickOptionDate(option, baseDate = null) {
+            const today = baseDate ? new Date(baseDate) : new Date();
             today.setHours(0, 0, 0, 0);
             let targetDate = new Date(today);
 
@@ -4332,10 +5818,90 @@
                     targetDate = addYears(today, 1);
                     break;
                 default:
-                    return;
+                    return null;
             }
+            return targetDate;
+        }
 
-            setDateValue(targetDate, true);
+        function updateQuickOptionLabels() {
+            const buttons = document.querySelectorAll('.date-picker-quick-options button[data-option]');
+            if (!buttons.length) return;
+
+            buttons.forEach((button) => {
+                const option = button.getAttribute('data-option');
+                if (!option) return;
+
+                const dateSpan = button.querySelector('.quick-option-date');
+                if (!dateSpan) return;
+
+                const date = getQuickOptionDate(option);
+                if (!date) {
+                    dateSpan.textContent = '';
+                    return;
+                }
+
+                dateSpan.textContent = formatDisplayDate(date);
+            });
+        }
+
+        function setupQuickOptionHover() {
+            const buttons = document.querySelectorAll('.date-picker-quick-options button[data-option]');
+            if (!buttons.length) return;
+
+            buttons.forEach((button) => {
+                const option = button.getAttribute('data-option');
+                if (!option) return;
+
+                button.addEventListener('mouseenter', () => {
+                    setQuickOptionHover(option, true);
+                });
+                button.addEventListener('mouseleave', () => {
+                    setQuickOptionHover(option, false);
+                });
+            });
+        }
+
+        function setQuickOptionHover(option, isHover) {
+            if (!datePickerState.calendarDaysContainer) return;
+
+            const container = datePickerState.calendarDaysContainer;
+
+            // Limpiar cualquier hover previo
+            const prev = container.querySelectorAll('.hover-linked');
+            prev.forEach((el) => el.classList.remove('hover-linked'));
+
+            if (!isHover) return;
+
+            const mode = datePickerState.calendarMode || 'month';
+            const year = datePickerState.calendarYear;
+            const month = datePickerState.calendarMonth;
+            if (year == null) return;
+
+            const targetDate = getQuickOptionDate(option);
+            if (!targetDate) return;
+
+            if (mode === 'month') {
+                // Resaltar el día concreto si está en el mes/año visibles
+                if (targetDate.getFullYear() !== year || targetDate.getMonth() !== month) return;
+                const targetDay = targetDate.getDate();
+                const dayButtons = container.querySelectorAll('.calendar-day');
+                dayButtons.forEach((btn) => {
+                    const dayNumber = parseInt(btn.textContent, 10);
+                    if (dayNumber === targetDay) {
+                        btn.classList.add('hover-linked');
+                    }
+                });
+            } else if (mode === 'year') {
+                // Resaltar el mes correspondiente dentro del año visible
+                if (targetDate.getFullYear() !== year) return;
+                const targetMonthIndex = targetDate.getMonth();
+                const monthButtons = container.querySelectorAll('.calendar-month');
+                monthButtons.forEach((btn, index) => {
+                    if (index === targetMonthIndex) {
+                        btn.classList.add('hover-linked');
+                    }
+                });
+            }
         }
 
         function addDays(date, days) {
@@ -5001,6 +6567,7 @@
             }
             
             // If modal has been opened, show only selected tags
+            // Renderizar en orden normal: más antigua a la izquierda, más nueva a la derecha
             if (tagsModalOpened && selectedTagsForTask.length > 0) {
                 selectedTagsForTask.forEach(tagId => {
                     const tag = tags.find(t => t.id === tagId);
@@ -5094,11 +6661,22 @@
             const visibleTags = prioritizedTags;
             const totalRemaining = Math.max(0, tags.length - visibleTags.length);
             
-            // Render visible tags (highlight selected ones)
+            // Primero renderizar las etiquetas seleccionadas (más antigua a la izquierda)
+            selectedTagsForTask.forEach(tagId => {
+                const tag = tags.find(t => t.id === tagId);
+                if (tag) {
+                    const tagItem = createTagCheckboxItem(tag, true, { showPin: false });
+                    container.appendChild(tagItem);
+                }
+            });
+            
+            // Luego renderizar las etiquetas no seleccionadas (recomendadas)
             visibleTags.forEach(tag => {
                 const isSelected = selectedTagsForTask.includes(tag.id);
-                const tagItem = createTagCheckboxItem(tag, isSelected, { showPin: false });
-                container.appendChild(tagItem);
+                if (!isSelected) {
+                    const tagItem = createTagCheckboxItem(tag, false, { showPin: false });
+                    container.appendChild(tagItem);
+                }
             });
             
             // Add "X more" button if there are remaining tags
@@ -5160,13 +6738,17 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 12px;
                     cursor: pointer;
                     opacity: 0;
-                    transition: opacity 0.2s ease;
+                    transition: opacity 0.2s ease, transform 0.2s ease;
                     z-index: 10;
                     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                ">×</span>
+                ">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </span>
             ` : '';
             
             tagItem.style.position = 'relative';
@@ -5206,59 +6788,54 @@
             }
                 
                 tagItem.addEventListener('click', function(e) {
-                if (e.target.className !== 'tag-remove-btn') {
-                    const wasSelected = selectedTagsForTask.includes(tag.id);
-                    
-                    if (wasSelected) {
-                        // Deselect
-                        selectedTagsForTask = selectedTagsForTask.filter(id => id !== tag.id);
-                        this.classList.remove('selected');
-                        // Restore normal styling
-                        this.style.backgroundColor = '';
-                        this.style.borderColor = '';
-                        this.style.color = '';
-                        this.style.textAlign = '';
-                        this.style.justifyContent = '';
-                        this.innerHTML = `
-                            ${defaultMarkup}
-                        `;
-                    } else {
-                        // Select (with max 3 limit)
-                        if (selectedTagsForTask.length >= 3) {
-                            // Remove the first (oldest) selected tag
-                            selectedTagsForTask.shift();
-                        }
-                        selectedTagsForTask.push(tag.id);
-                        this.classList.add('selected');
-                        // Apply selected styling
-                        this.style.backgroundColor = tagColor;
-                        this.style.borderColor = tagColor;
-                        this.style.color = 'white';
-                        this.style.textAlign = 'center';
-                        this.style.justifyContent = 'center';
-                        this.innerHTML = `
-                            ${selectedMarkup}
-                            ${closeBtn}
-                        `;
-                        // Re-attach hover listeners for close button
-                        this.addEventListener('mouseenter', function() {
-                            const closeBtn = this.querySelector('.tag-remove-btn');
-                            if (closeBtn) closeBtn.style.opacity = '1';
-                        });
-                        this.addEventListener('mouseleave', function() {
-                            const closeBtn = this.querySelector('.tag-remove-btn');
-                            if (closeBtn) closeBtn.style.opacity = '0';
-                        });
-                    }
-                    
-                    updateTagSelect();
-                    // Re-render tags modal if it's open
-                    const tagsModal = document.getElementById('tagsModalOverlay');
-                    if (tagsModal && tagsModal.classList.contains('active')) {
-                        renderTagsModal();
-                    }
-                    }
+                // Si se hace clic en la cruz, no hacer nada aquí (ya se maneja en removeTagFromSelection)
+                if (e.target.closest('.tag-remove-btn')) {
+                    return;
+                }
+                
+                const wasSelected = selectedTagsForTask.includes(tag.id);
+                
+                // Si ya está seleccionado, no permitir deseleccionar haciendo clic en la etiqueta
+                // Solo se puede deseleccionar con la cruz
+                if (wasSelected) {
+                    return;
+                }
+                
+                // Select (with max 3 limit)
+                // Si ya hay 3 etiquetas, eliminar la más antigua (la primera del array, más a la izquierda)
+                if (selectedTagsForTask.length >= 3) {
+                    selectedTagsForTask.shift();
+                }
+                // Añadir la nueva etiqueta al final (más a la derecha entre las seleccionadas)
+                selectedTagsForTask.push(tag.id);
+                this.classList.add('selected');
+                // Apply selected styling
+                this.style.backgroundColor = tagColor;
+                this.style.borderColor = tagColor;
+                this.style.color = 'white';
+                this.style.textAlign = 'center';
+                this.style.justifyContent = 'center';
+                this.innerHTML = `
+                    ${selectedMarkup}
+                    ${closeBtn}
+                `;
+                // Re-attach hover listeners for close button
+                this.addEventListener('mouseenter', function() {
+                    const closeBtn = this.querySelector('.tag-remove-btn');
+                    if (closeBtn) closeBtn.style.opacity = '1';
                 });
+                this.addEventListener('mouseleave', function() {
+                    const closeBtn = this.querySelector('.tag-remove-btn');
+                    if (closeBtn) closeBtn.style.opacity = '0';
+                });
+                
+                updateTagSelect();
+                // Re-render tags modal if it's open
+                const tagsModal = document.getElementById('tagsModalOverlay');
+                if (tagsModal && tagsModal.classList.contains('active')) {
+                    renderTagsModal();
+                }
+            });
             
             return tagItem;
         }
@@ -7397,9 +8974,121 @@
             }
         }
 
+        function setupTaskDescriptionLists() {
+            const descriptionTextarea = document.getElementById('taskDescription');
+            if (!descriptionTextarea) return;
+
+            const LIST_INDENT = '     '; // 5 espacios
+
+            descriptionTextarea.addEventListener('input', function(e) {
+                const textarea = e.target;
+                const value = textarea.value;
+                const cursorPos = textarea.selectionStart;
+
+                // Obtener la línea actual y su posición
+                const textBeforeCursor = value.substring(0, cursorPos);
+                const lines = textBeforeCursor.split('\n');
+                const currentLineIndex = lines.length - 1;
+                const allLines = value.split('\n');
+                const currentLine = allLines[currentLineIndex] || '';
+                const trimmedLine = currentLine.trim();
+
+                // Detectar si se acaba de escribir "- " al inicio de una línea (sin los 5 espacios)
+                if (trimmedLine.startsWith('- ') && !currentLine.startsWith(LIST_INDENT)) {
+                    // Calcular la posición del inicio de la línea actual
+                    const lineStartPos = textBeforeCursor.lastIndexOf('\n') + 1;
+                    const lineBeforeDash = currentLine.substring(0, currentLine.indexOf('- '));
+                    const lineAfterDash = currentLine.substring(currentLine.indexOf('- '));
+                    
+                    // Construir la nueva línea con los 5 espacios
+                    const newLine = LIST_INDENT + lineAfterDash;
+                    
+                    // Reemplazar la línea en el texto completo
+                    const beforeLine = value.substring(0, lineStartPos);
+                    const afterLine = value.substring(lineStartPos + currentLine.length);
+                    const newValue = beforeLine + newLine + afterLine;
+                    
+                    // Calcular la nueva posición del cursor
+                    const newCursorPos = lineStartPos + newLine.length - (currentLine.length - cursorPos);
+                    
+                    textarea.value = newValue;
+                    textarea.setSelectionRange(newCursorPos, newCursorPos);
+                    return;
+                }
+
+                // Detectar si se acaba de escribir "1. " (o cualquier número) al inicio de una línea (sin los 5 espacios)
+                const numberedMatch = trimmedLine.match(/^(\d+)\.\s/);
+                if (numberedMatch && !currentLine.startsWith(LIST_INDENT)) {
+                    // Calcular la posición del inicio de la línea actual
+                    const lineStartPos = textBeforeCursor.lastIndexOf('\n') + 1;
+                    const numberPattern = numberedMatch[0];
+                    const lineBeforeNumber = currentLine.substring(0, currentLine.indexOf(numberPattern));
+                    const lineAfterNumber = currentLine.substring(currentLine.indexOf(numberPattern));
+                    
+                    // Construir la nueva línea con los 5 espacios
+                    const newLine = LIST_INDENT + lineAfterNumber;
+                    
+                    // Reemplazar la línea en el texto completo
+                    const beforeLine = value.substring(0, lineStartPos);
+                    const afterLine = value.substring(lineStartPos + currentLine.length);
+                    const newValue = beforeLine + newLine + afterLine;
+                    
+                    // Calcular la nueva posición del cursor
+                    const newCursorPos = lineStartPos + newLine.length - (currentLine.length - cursorPos);
+                    
+                    textarea.value = newValue;
+                    textarea.setSelectionRange(newCursorPos, newCursorPos);
+                    return;
+                }
+            });
+
+            descriptionTextarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const textarea = e.target;
+                    const value = textarea.value;
+                    const cursorPos = textarea.selectionStart;
+                    
+                    // Obtener la línea actual
+                    const lines = value.split('\n');
+                    const currentLineIndex = value.substring(0, cursorPos).split('\n').length - 1;
+                    const currentLine = lines[currentLineIndex] || '';
+                    const trimmedLine = currentLine.trim();
+                    
+                    // Detectar si estamos en una lista con guiones
+                    if (trimmedLine.match(/^-\s/)) {
+                        e.preventDefault();
+                        const newLine = LIST_INDENT + '- ';
+                        const beforeCursor = value.substring(0, cursorPos);
+                        const afterCursor = value.substring(cursorPos);
+                        textarea.value = beforeCursor + '\n' + newLine + afterCursor;
+                        const newCursorPos = cursorPos + 1 + newLine.length;
+                        textarea.setSelectionRange(newCursorPos, newCursorPos);
+                        return;
+                    }
+                    
+                    // Detectar si estamos en una lista numerada
+                    const numberedMatch = trimmedLine.match(/^(\d+)\.\s/);
+                    if (numberedMatch) {
+                        e.preventDefault();
+                        const currentNumber = parseInt(numberedMatch[1], 10);
+                        const nextNumber = currentNumber + 1;
+                        const newLine = LIST_INDENT + nextNumber + '. ';
+                        const beforeCursor = value.substring(0, cursorPos);
+                        const afterCursor = value.substring(cursorPos);
+                        textarea.value = beforeCursor + '\n' + newLine + afterCursor;
+                        const newCursorPos = cursorPos + 1 + newLine.length;
+                        textarea.setSelectionRange(newCursorPos, newCursorPos);
+                        return;
+                    }
+                }
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             updateCreateTagPreview();
             setupDatePicker();
+            setupTimePicker();
+            setupTaskDescriptionLists();
         });
 
         document.getElementById('taskForm').addEventListener('submit', async (e) => {
@@ -7407,7 +9096,7 @@
             const title = document.getElementById('taskTitle').value.trim();
             const description = document.getElementById('taskDescription').value.trim();
             const dueDate = document.getElementById('taskDate').value;
-            const dueTime = document.getElementById('taskTime').value;
+            const dueTime = document.getElementById('taskTimeHidden')?.value || '';
             
             // Get selected tag IDs
             // Use selectedTagsForTask
