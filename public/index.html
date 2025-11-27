@@ -2405,14 +2405,207 @@
             font-size: 14px;
         }
 
-        /* Image Styles */
-        .image-preview {
-            margin-top: 12px;
+        /* Files Upload Styles */
+        .files-upload-container {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .files-preview-list {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        .files-preview-list:empty {
+            display: none;
+        }
+
+        .files-upload-container:not(:has(.files-preview-list > *)) .image-upload-area,
+        .files-upload-container.no-files .image-upload-area {
+            width: 100%;
+            flex: none;
+        }
+
+        .file-preview-item {
+            position: relative;
+            flex-shrink: 0;
+            border-radius: 12px;
+            overflow: visible;
+            border: 2px solid #e2e8f0;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-preview-item.image-preview {
+            /* Para imágenes, la altura se sincronizará con el área de carga */
+        }
+
+        .file-preview-item.pdf-preview {
+            width: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .file-preview-image {
+            width: auto;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 12px;
+        }
+
+        .file-preview-pdf-box {
+            width: auto;
+            height: auto;
+            background: #ef4444;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 8px;
+            margin-bottom: 8px;
+            flex-shrink: 0;
+        }
+
+        .file-preview-pdf-box-text {
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
+
+        .file-preview-pdf-title {
+            font-size: 11px;
+            color: #1e293b;
+            text-align: center;
+            word-break: break-word;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
             max-width: 100%;
-            max-height: 200px;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            line-height: 1.5;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .file-preview-pdf-title.single-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-line-clamp: unset;
+            -webkit-box-orient: unset;
+        }
+
+        .file-remove-btn {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 100;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            opacity: 0;
+            pointer-events: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .file-preview-item:hover .file-remove-btn {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .file-remove-btn:hover {
+            background: #ef4444;
+            opacity: 0.9;
+            transform: scale(1.1);
+        }
+
+        .file-remove-btn svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* Image Styles - Legacy support */
+        .image-upload-container {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .image-preview-wrapper {
+            position: relative;
+            flex-shrink: 0;
+            border-radius: 12px;
+            overflow: visible;
+            border: 2px solid #e2e8f0;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-image-preview {
+            width: auto;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 12px;
+        }
+
+        .image-remove-btn {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 100;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            opacity: 0;
+            pointer-events: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-preview-wrapper:hover .image-remove-btn {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .image-remove-btn:hover {
+            background: #ef4444;
+            opacity: 0.9;
+            transform: scale(1.1);
+        }
+
+        .image-remove-btn svg {
+            width: 12px;
+            height: 12px;
         }
 
         .task-image {
@@ -2439,6 +2632,23 @@
             cursor: pointer;
             transition: all 0.3s ease;
             background: #f8fafc;
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-upload-area.has-files {
+            padding: 24px 16px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .image-upload-area.has-image {
+            padding: 24px 16px;
+            flex: 1;
+            min-width: 0;
         }
 
         .image-upload-area:hover {
@@ -2457,19 +2667,12 @@
             display: none;
         }
 
-        .remove-image-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-
-        .remove-image-btn:hover {
-            background: #c82333;
+        #imagePreviewText {
+            font-size: 14px;
+            color: #64748b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* Filter Buttons */
@@ -2767,14 +2970,15 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Image</label>
-                        <div class="image-upload-area" onclick="document.getElementById('taskImage').click()">
-                            <input type="file" id="taskImage" accept="image/*">
-                            <div id="imagePreviewText">Click to select or drag & drop image</div>
-                            <img id="taskImagePreview" class="image-preview" style="display: none;">
-                            <button type="button" class="remove-image-btn" id="removeImageBtn" style="display: none;" onclick="event.stopPropagation(); removeTaskImage()">Remove</button>
+                        <label>Files</label>
+                        <div class="files-upload-container no-files">
+                            <div class="files-preview-list" id="filesPreviewList"></div>
+                            <div class="image-upload-area" id="imageUploadArea" onclick="document.getElementById('taskFiles').click()">
+                                <input type="file" id="taskFiles" accept="image/*,.pdf" multiple>
+                                <div id="imagePreviewText">Click to select or drag & drop images/PDF</div>
+                            </div>
                         </div>
-                        <small style="color: #666; font-size: 12px; display: block; margin-top: 5px;">Formats allowed: JPEG, JPG, PNG, GIF, WEBP (max 5MB)</small>
+                        <small style="color: #94a3b8; font-size: 11px; display: block; margin-top: 5px;">Formats: Images (JPEG, JPG, PNG, GIF, WEBP) max 10MB each, PDF max 20MB. Max 3 images + 1 PDF</small>
                     </div>
                     <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid #e2e8f0;">
                         <button type="button" onclick="closeTaskModal()" style="min-width: 120px; background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
@@ -3366,6 +3570,7 @@
         function openTaskModal() {
             const modal = document.getElementById('taskModalOverlay');
             if (modal) {
+                resetTaskForm();
                 modal.classList.add('active');
                 // Focus on title input
                 setTimeout(() => {
@@ -8771,38 +8976,252 @@
         }
 
         // Function to validate image format
+        // Store uploaded files
+        let uploadedFiles = [];
+
         function isValidImageFormat(file) {
             const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
             const allowedExtensions = ['.jpeg', '.jpg', '.png', '.gif', '.webp'];
             
-            // Check MIME type (jpeg and jpg both use image/jpeg)
             const fileType = file.type.toLowerCase();
             const isValidMimeType = allowedTypes.includes(fileType) || fileType === 'image/jpg';
             
-            // Check file extension as fallback
             const fileName = file.name.toLowerCase();
             const hasValidExtension = allowedExtensions.some(ext => fileName.endsWith(ext));
             
             return isValidMimeType || hasValidExtension;
         }
 
-        // Image handling - File input
-        document.getElementById('taskImage').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                if (isValidImageFormat(file)) {
-                handleImageFile(file, 'taskImagePreview', 'imagePreviewText', 'removeImageBtn');
-                } else {
-                    const fileName = file.name;
-                    const fileExtension = fileName.substring(fileName.lastIndexOf('.')).toUpperCase() || 'unknown';
-                    showMessage(`This file format is not accepted (${fileExtension})`, 'error');
-                    // Clear the input
-                    document.getElementById('taskImage').value = '';
+        function isValidPdfFormat(file) {
+            const allowedTypes = ['application/pdf'];
+            const allowedExtensions = ['.pdf'];
+            
+            const fileType = file.type.toLowerCase();
+            const isValidMimeType = allowedTypes.includes(fileType);
+            
+            const fileName = file.name.toLowerCase();
+            const hasValidExtension = allowedExtensions.some(ext => fileName.endsWith(ext));
+            
+            return isValidMimeType || hasValidExtension;
+        }
+
+        function isValidFileFormat(file) {
+            return isValidImageFormat(file) || isValidPdfFormat(file);
+        }
+
+        function getCurrentFilesCount() {
+            const images = uploadedFiles.filter(f => isValidImageFormat(f.file)).length;
+            const pdfs = uploadedFiles.filter(f => isValidPdfFormat(f.file)).length;
+            return { images, pdfs, total: uploadedFiles.length };
+        }
+
+        function renderFilePreview(fileData) {
+            const { file, id } = fileData;
+            const isImage = isValidImageFormat(file);
+            const isPdf = isValidPdfFormat(file);
+            
+            const previewItem = document.createElement('div');
+            previewItem.className = `file-preview-item ${isImage ? 'image-preview' : 'pdf-preview'}`;
+            previewItem.dataset.fileId = id;
+            
+            if (isImage) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.className = 'file-preview-image';
+                    img.src = e.target.result;
+                    previewItem.appendChild(img);
+                    
+                    // Sincronizar altura con el área de carga
+                    const uploadArea = document.getElementById('imageUploadArea');
+                    setTimeout(() => {
+                        const uploadAreaHeight = uploadArea.offsetHeight;
+                        if (uploadAreaHeight > 0) {
+                            previewItem.style.height = uploadAreaHeight + 'px';
+                        }
+                    }, 10);
+                };
+                reader.readAsDataURL(file);
+            } else if (isPdf) {
+                // Recuadro rojo con "PDF" en blanco
+                const pdfBox = document.createElement('div');
+                pdfBox.className = 'file-preview-pdf-box';
+                const pdfBoxText = document.createElement('div');
+                pdfBoxText.className = 'file-preview-pdf-box-text';
+                pdfBoxText.textContent = 'PDF';
+                pdfBox.appendChild(pdfBoxText);
+                
+                // Título del PDF
+                const pdfTitle = document.createElement('div');
+                pdfTitle.className = 'file-preview-pdf-title';
+                pdfTitle.textContent = file.name.replace('.pdf', '').replace('.PDF', '');
+                
+                previewItem.appendChild(pdfBox);
+                previewItem.appendChild(pdfTitle);
+                
+                // Sincronizar altura con el área de carga y detectar si el título tiene una línea
+                const uploadArea = document.getElementById('imageUploadArea');
+                setTimeout(() => {
+                    const uploadAreaHeight = uploadArea.offsetHeight;
+                    if (uploadAreaHeight > 0) {
+                        previewItem.style.height = uploadAreaHeight + 'px';
+                    }
+                    
+                    // Detectar si el título tiene solo una línea
+                    const titleHeight = pdfTitle.scrollHeight;
+                    const lineHeight = parseFloat(getComputedStyle(pdfTitle).lineHeight);
+                    if (titleHeight <= lineHeight * 1.5) {
+                        pdfTitle.classList.add('single-line');
+                    }
+                }, 50);
+            }
+            
+            // Botón de eliminar
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'file-remove-btn';
+            removeBtn.onclick = (e) => {
+                e.stopPropagation();
+                removeFile(id);
+            };
+            removeBtn.setAttribute('aria-label', 'Remove file');
+            removeBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+            previewItem.appendChild(removeBtn);
+            
+            return previewItem;
+        }
+
+        function renderAllFilePreviews() {
+            const filesList = document.getElementById('filesPreviewList');
+            const uploadArea = document.getElementById('imageUploadArea');
+            const container = document.querySelector('.files-upload-container');
+            
+            filesList.innerHTML = '';
+            
+            uploadedFiles.forEach(fileData => {
+                const previewItem = renderFilePreview(fileData);
+                filesList.appendChild(previewItem);
+            });
+            
+            // Actualizar estado del área de carga
+            const isMaxFiles = uploadedFiles.length >= 4;
+            
+            if (uploadedFiles.length > 0) {
+                uploadArea.classList.add('has-files');
+                container.classList.remove('no-files');
+                const previewText = document.getElementById('imagePreviewText');
+                previewText.textContent = 'Add more files';
+            } else {
+                uploadArea.classList.remove('has-files');
+                container.classList.add('no-files');
+                const previewText = document.getElementById('imagePreviewText');
+                previewText.textContent = 'Click to select or drag & drop images/PDF';
+            }
+            
+            // Deshabilitar cuando se alcanza el máximo
+            if (isMaxFiles) {
+                uploadArea.classList.add('disabled');
+                uploadArea.style.pointerEvents = 'none';
+                uploadArea.style.cursor = 'default';
+                uploadArea.style.opacity = '0.5';
+                uploadArea.onclick = null;
+                uploadArea.removeAttribute('onclick');
+            } else {
+                uploadArea.classList.remove('disabled');
+                uploadArea.style.pointerEvents = 'auto';
+                uploadArea.style.cursor = 'pointer';
+                uploadArea.style.opacity = '1';
+                uploadArea.onclick = function() {
+                    document.getElementById('taskFiles').click();
+                };
+            }
+            
+            // Sincronizar alturas de imágenes y PDFs
+            const syncFileHeights = () => {
+                const uploadAreaHeight = uploadArea.offsetHeight;
+                if (uploadAreaHeight > 0) {
+                    document.querySelectorAll('.file-preview-item.image-preview, .file-preview-item.pdf-preview').forEach(item => {
+                        item.style.height = uploadAreaHeight + 'px';
+                    });
+                }
+            };
+            
+            setTimeout(syncFileHeights, 10);
+            setTimeout(syncFileHeights, 100);
+            
+            // Usar ResizeObserver para mantener las alturas sincronizadas
+            if (window.filesResizeObserver) {
+                window.filesResizeObserver.disconnect();
+            }
+            window.filesResizeObserver = new ResizeObserver(() => {
+                syncFileHeights();
+            });
+            window.filesResizeObserver.observe(uploadArea);
+        }
+
+        function addFile(file) {
+            const counts = getCurrentFilesCount();
+            
+            // Validar formato
+            if (!isValidFileFormat(file)) {
+                const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toUpperCase() || 'unknown';
+                showMessage(`This file format is not accepted (${fileExtension})`, 'error');
+                return false;
+            }
+            
+            // Validar límites
+            if (isValidImageFormat(file)) {
+                if (counts.images >= 3) {
+                    showMessage('Maximum 3 images allowed', 'error');
+                    return false;
+                }
+            } else if (isValidPdfFormat(file)) {
+                if (counts.pdfs >= 1) {
+                    showMessage('Maximum 1 PDF allowed', 'error');
+                    return false;
                 }
             }
+            
+            // Validar tamaño (10MB para imágenes, 20MB para PDFs)
+            const maxSize = isValidImageFormat(file) ? 10 * 1024 * 1024 : 20 * 1024 * 1024;
+            if (file.size > maxSize) {
+                const maxSizeMB = maxSize / (1024 * 1024);
+                showMessage(`File size exceeds maximum allowed size (${maxSizeMB}MB)`, 'error');
+                return false;
+            }
+            
+            // Añadir archivo
+            const id = Date.now() + Math.random();
+            uploadedFiles.push({ file, id });
+            renderAllFilePreviews();
+            return true;
+        }
+
+        function removeFile(fileId) {
+            uploadedFiles = uploadedFiles.filter(f => f.id !== fileId);
+            renderAllFilePreviews();
+            updateFileInput();
+        }
+
+        function updateFileInput() {
+            const fileInput = document.getElementById('taskFiles');
+            const dataTransfer = new DataTransfer();
+            uploadedFiles.forEach(fileData => {
+                dataTransfer.items.add(fileData.file);
+            });
+            fileInput.files = dataTransfer.files;
+        }
+
+        // File handling - File input
+        document.getElementById('taskFiles').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                addFile(file);
+            });
+            updateFileInput();
         });
 
-        // Drag and drop for task image
+        // Drag and drop for task files
         const taskImageArea = document.querySelector('.image-upload-area');
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             taskImageArea.addEventListener(eventName, preventDefaults, false);
@@ -8814,7 +9233,12 @@
         }
 
         ['dragenter', 'dragover'].forEach(eventName => {
-            taskImageArea.addEventListener(eventName, function() {
+            taskImageArea.addEventListener(eventName, function(e) {
+                if (uploadedFiles.length >= 4) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return;
+                }
                 this.classList.add('drag-over');
             }, false);
         });
@@ -8826,41 +9250,76 @@
         });
 
         taskImageArea.addEventListener('drop', function(e) {
+            if (uploadedFiles.length >= 4) {
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
             const dt = e.dataTransfer;
-            const files = dt.files;
-            if (files.length > 0) {
-                const file = files[0];
-                if (isValidImageFormat(file)) {
-                    handleImageFile(file, 'taskImagePreview', 'imagePreviewText', 'removeImageBtn');
-                    // Also set the file input
-                    const dataTransfer = new DataTransfer();
-                    dataTransfer.items.add(file);
-                    document.getElementById('taskImage').files = dataTransfer.files;
-                } else {
-                    const fileName = file.name;
-                    const fileExtension = fileName.substring(fileName.lastIndexOf('.')).toUpperCase() || 'unknown';
-                    showMessage(`This file format is not accepted (${fileExtension})`, 'error');
+            const files = Array.from(dt.files);
+            let added = false;
+            files.forEach(file => {
+                if (addFile(file)) {
+                    added = true;
                 }
+            });
+            if (added) {
+                updateFileInput();
             }
         }, false);
 
         function handleImageFile(file, previewId, textId, removeBtnId) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                document.getElementById(previewId).src = e.target.result;
-                document.getElementById(previewId).style.display = 'block';
-                document.getElementById(textId).style.display = 'none';
-                document.getElementById(removeBtnId).style.display = 'block';
+                const previewWrapper = document.getElementById('imagePreviewWrapper');
+                const previewImg = document.getElementById(previewId);
+                const uploadArea = document.getElementById('imageUploadArea');
+                const previewText = document.getElementById(textId);
+                
+                previewImg.src = e.target.result;
+                previewWrapper.style.display = 'block';
+                uploadArea.classList.add('has-image');
+                previewText.textContent = 'Click to change or drag & drop image';
+                
+                // Función para sincronizar alturas
+                const syncHeights = () => {
+                    const uploadAreaHeight = uploadArea.offsetHeight;
+                    if (uploadAreaHeight > 0) {
+                        previewWrapper.style.height = uploadAreaHeight + 'px';
+                    }
+                };
+                
+                // Sincronizar inmediatamente y después de un pequeño delay
+                setTimeout(syncHeights, 10);
+                setTimeout(syncHeights, 100);
+                
+                // Usar ResizeObserver para mantener las alturas sincronizadas
+                if (window.imageResizeObserver) {
+                    window.imageResizeObserver.disconnect();
+                }
+                window.imageResizeObserver = new ResizeObserver(() => {
+                    syncHeights();
+                });
+                window.imageResizeObserver.observe(uploadArea);
             };
             reader.readAsDataURL(file);
         }
 
         function removeTaskImage() {
-            document.getElementById('taskImage').value = '';
-            document.getElementById('taskImagePreview').style.display = 'none';
-            document.getElementById('imagePreviewText').style.display = 'block';
-            document.getElementById('removeImageBtn').style.display = 'none';
+            uploadedFiles = [];
+            renderAllFilePreviews();
+            document.getElementById('taskFiles').value = '';
             currentTaskImage = null;
+            
+            // Desconectar los ResizeObservers si existen
+            if (window.imageResizeObserver) {
+                window.imageResizeObserver.disconnect();
+                window.imageResizeObserver = null;
+            }
+            if (window.filesResizeObserver) {
+                window.filesResizeObserver.disconnect();
+                window.filesResizeObserver = null;
+            }
         }
 
         function previewEditImage(taskId) {
@@ -9102,7 +9561,11 @@
             // Use selectedTagsForTask
             const tagIds = selectedTagsForTask;
             
-            const imageFile = document.getElementById('taskImage').files[0];
+            // Get uploaded files (images and PDFs)
+            // TODO: Implement upload for multiple files
+            const files = uploadedFiles.map(f => f.file);
+            const imageFiles = files.filter(f => isValidImageFormat(f));
+            const pdfFiles = files.filter(f => isValidPdfFormat(f));
 
             if (!title) {
                 showMessage('Please enter a task title', 'error');
@@ -9110,10 +9573,13 @@
             }
 
             try {
-                // Upload image if provided
+                // TODO: Upload multiple files (images and PDFs)
+                // For now, just use the first image if available (backward compatibility)
                 let imagePath = null;
-                if (imageFile) {
-                    imagePath = await uploadImage(imageFile);
+                if (imageFiles.length > 0) {
+                    // Temporary: upload first image for backward compatibility
+                    // TODO: Upload all files and store paths
+                    imagePath = await uploadImage(imageFiles[0]);
                     if (!imagePath) return; // Error already shown
                 }
 
